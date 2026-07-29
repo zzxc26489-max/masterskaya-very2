@@ -1,0 +1,4 @@
+node_modules/
+.env
+data/content.local.json
+public/media/uploads/

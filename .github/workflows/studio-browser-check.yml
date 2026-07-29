@@ -1,0 +1,74 @@
+name: Final studio checks
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'studio/**'
+      - 'tests/studio.spec.mjs'
+      - 'playwright.studio.config.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/studio-browser-check.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'studio/**'
+      - 'tests/studio.spec.mjs'
+      - 'playwright.studio.config.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/studio-browser-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  check-studio:
+    name: Server, admin and responsive browser checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm --prefix studio ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Check JavaScript and data
+        run: |
+          npm run studio:check
+          node --input-type=module -e "import fs from 'node:fs/promises'; JSON.parse(await fs.readFile('studio/data/content.seed.json', 'utf8')); console.log('content seed: OK')"
+          git diff --check
+
+      - name: Run public and admin browser checks
+        run: npm run studio:test
+        env:
+          CI: 'true'
+
+      - name: Upload screenshots and traces
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: studio-browser-artifacts-${{ github.run_attempt }}
+          path: |
+            artifacts/studio-screenshots/
+            playwright-report/
+            test-results/
+          if-no-files-found: warn
+          retention-days: 21

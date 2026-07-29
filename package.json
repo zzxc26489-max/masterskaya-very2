@@ -1,0 +1,13 @@
+{
+  "name": "masterskaya-very",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "studio:dev": "npm --prefix studio run dev",
+    "studio:check": "npm --prefix studio run check",
+    "studio:test": "playwright test --config=playwright.studio.config.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1"
+  }
+}
