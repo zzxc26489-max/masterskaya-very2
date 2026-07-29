@@ -1,6 +1,18 @@
 const app = document.querySelector('#app');
 const page = document.body.dataset.page || 'home';
 let content;
+const isStaticPreview = window.location.hostname.endsWith('.github.io');
+const staticBasePath = isStaticPreview ? `/${window.location.pathname.split('/').filter(Boolean)[0] || ''}`.replace(/\/$/, '') : '';
+
+function rewritePreviewPaths(root = document) {
+  if (!isStaticPreview) return;
+  root.querySelectorAll('[href^="/"], [src^="/"]').forEach((element) => {
+    for (const attribute of ['href', 'src']) {
+      const value = element.getAttribute(attribute);
+      if (value?.startsWith('/') && !value.startsWith('//')) element.setAttribute(attribute, `${staticBasePath}${value}`);
+    }
+  });
+}
 
 const esc = (value = '') => String(value).replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
 const byId = (items, key) => items.find((item) => item.id === key || item.slug === key);
@@ -44,10 +56,13 @@ function setShell(active) {
       <nav class="main-nav" id="main-nav" aria-label="Основная навигация">${nav.map(([id, href, label]) => `<a class="${id === active ? 'is-active' : ''}" ${id === active ? 'aria-current="page"' : ''} href="${href}">${label}</a>`).join('')}</nav>
       <div class="header-actions"><a class="button button--wine button--compact header-cta" href="/create.html">Создать Жителя</a><button class="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false" data-menu-toggle>☰</button></div>
     </div></div>`;
+  const footerNote = isStaticPreview
+    ? 'Сейчас открыта версия для просмотра. Админка появится на серверной версии сайта.'
+    : 'Свиток Жителя и его Хроника — часть встречи. <a href="/admin">Вход в админку</a>';
   footer.innerHTML = `<footer class="site-footer"><div class="shell footer-grid">
       <div><a class="brand" href="/"><span class="brand__mark" aria-hidden="true">✦</span><span class="brand__name">Мастерская Веры</span></a><p class="footer-copy">Авторские Жители из глины, красок, деталей и историй. Каждый создаётся вручную и находит своего Хранителя.</p></div>
       <nav class="footer-nav" aria-label="Навигация в подвале"><a href="/residents.html">Жители</a><a href="/collections.html">Коллекции</a><a href="/process.html">Как создаются</a><a href="/create.html">Создать Жителя</a><a href="/contact.html">Связаться с Верой</a></nav>
-      <p class="footer-note">Свиток Жителя и его Хроника — часть встречи. <a href="/admin">Вход в админку</a></p>
+      <p class="footer-note">${footerNote}</p>
     </div></footer><button class="scroll-top" type="button" data-scroll-top aria-label="Наверх">↑</button>`;
   document.querySelector('[data-menu-toggle]').addEventListener('click', () => {
     const button = document.querySelector('[data-menu-toggle]');
@@ -203,6 +218,11 @@ function bindInquiryForm() {
     const values = Object.fromEntries(new FormData(form));
     if (values.selection) values.message = `${values.message}\n\n${values.selection}`;
     submit.disabled = true;
+    if (isStaticPreview) {
+      message.textContent = 'Это версия для просмотра: заявки пока не отправляются. На серверной версии они будут сохраняться в админке.';
+      submit.disabled = false;
+      return;
+    }
     message.textContent = 'Отправляем…';
     try {
       const response = await fetch('/api/inquiries', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(values) });
@@ -240,15 +260,17 @@ function notFound() {
 
 async function boot() {
   try {
-    const response = await fetch('/api/content');
+    const response = await fetch(isStaticPreview ? 'content.json' : '/api/content');
     if (!response.ok) throw new Error('Контент недоступен');
     content = await response.json();
     const active = page === 'collection' || page === 'collections' ? 'collections' : page === 'chronicle' ? 'residents' : page === 'create' ? '' : page;
     setShell(active);
     ({ home, residents, collections, collection: collectionPage, process, create: createResident, chronicle, about, contact }[page] || notFound)();
+    rewritePreviewPaths();
   } catch (error) {
     setShell('');
     app.innerHTML = `<main id="main"><section class="section"><div class="shell"><p class="eyebrow">Техническая пауза</p><h1>Мастерская пока не открылась</h1><p class="lede">${esc(error.message)}. Попробуйте обновить страницу чуть позже.</p></div></section></main>`;
+    rewritePreviewPaths();
   }
 }
 
