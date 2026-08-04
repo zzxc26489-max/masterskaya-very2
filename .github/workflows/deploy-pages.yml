@@ -40,6 +40,7 @@ jobs:
           mkdir -p _site
           cp -R studio/public/. _site/
           rm -rf _site/admin
+          rm -f _site/assets/js/nutcracker-world-data.js _site/assets/js/forest-dragon-world-data.js
           touch _site/.nojekyll
 
           node studio/scripts/build-content.mjs \
@@ -72,6 +73,8 @@ jobs:
           test -s _site/media/world-residents/nutcracker-ernst.webp
           test -s _site/media/world-residents/forest-dragon.webp
           test -s _site/media/world-residents/baby-dragon.webp
+          test ! -f _site/assets/js/nutcracker-world-data.js
+          test ! -f _site/assets/js/forest-dragon-world-data.js
           grep -q 'site-fixes.css?v=20260805e' _site/residents.html
           grep -q 'site-enhancements.js?v=20260805e' _site/chronicle.html
           grep -q '/media/world-residents/nutcracker-ernst.webp' _site/content.json
