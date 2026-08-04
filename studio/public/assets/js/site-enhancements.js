@@ -16,6 +16,41 @@ const contentUrl = staticPreview
 
 const normalize = (value = '') => String(value).trim().toLocaleLowerCase('ru-RU');
 
+const worldImageOverrides = {
+  'azimondias': { heroImage: '/media/residents/azimondias/world-v2.svg', focus: '73% center' },
+  'nutcracker-ernst': { heroImage: '/media/residents/nutcracker-ernst/world-v2.svg', focus: '72% center' },
+  'girl-with-nutcracker': { heroImage: '/media/residents/girl-with-nutcracker/world-v2.svg', focus: '70% center' },
+  'mouse-queen': { heroImage: '/media/residents/mouse-queen/world-v2.svg', focus: '71% center', availability: 'available' },
+  'mouse-king': { heroImage: '/media/residents/mouse-king/world-v2.svg', focus: '73% center' },
+  'gorynych-amber': { heroImage: '/media/residents/gorynych-amber/world-v2.svg', focus: '72% center' },
+  'gorynych-green': { heroImage: '/media/residents/gorynych-green/world-v2.svg', focus: '72% center' },
+  'forest-dragon': { heroImage: '/media/residents/forest-dragon/world-v2.svg', focus: '73% center' },
+  'forest-mushrooms': { heroImage: '/media/residents/forest-mushrooms/world-v2.svg', focus: '72% center' },
+  'baby-dragon': { heroImage: '/media/residents/baby-dragon/world-v2.svg', focus: '72% center' },
+  'soul-regan': { heroImage: '/media/residents/soul-regan/world-v2.svg', focus: '72% center' },
+  'chicken-sun': { heroImage: '/media/residents/chicken-sun/world-v2.svg', focus: '71% center' },
+  'rocking-horse': { heroImage: '/media/residents/rocking-horse/world-v2.svg', focus: '71% center' },
+  'sirin': { heroImage: '/media/residents/sirin/world-v2.svg', mobileImage: '/media/residents/sirin/mobile-v2.svg', focus: '66% center', mobileFocus: 'center' },
+  'mermaid': { heroImage: '/media/residents/mermaid/world-v2.svg', focus: '72% center' },
+  'little-humpbacked-horse': { heroImage: '/media/residents/little-humpbacked-horse/world-v2.svg', focus: '71% center' }
+};
+
+const collectionRepresentative = {
+  'Зимние легенды': 'nutcracker-ernst',
+  'Тайны древнего леса': 'forest-dragon',
+  'Древние существа': 'azimondias',
+  'Русские сказки': 'sirin',
+  'Домашние легенды': 'rocking-horse'
+};
+
+function applyWorldOverrides(data) {
+  data.residents = data.residents.map((resident) => {
+    const override = worldImageOverrides[resident.id] || worldImageOverrides[resident.slug];
+    return override ? { ...resident, ...override, gallery: [override.heroImage] } : resident;
+  });
+  return data;
+}
+
 function statusClass(status) {
   return {
     available: 'status--available',
@@ -65,6 +100,11 @@ function upgradeCards(data, lookup) {
     card.style.setProperty('--resident-focus', resident.focus || '72% center');
     card.style.setProperty('--resident-focus-mobile', resident.mobileFocus || (resident.mobileImage ? 'center' : resident.focus || '72% center'));
     setResidentImage(card.querySelector('.resident-card__image img'), resident);
+    const badge = card.querySelector('.status');
+    if (badge) {
+      badge.className = `status ${statusClass(resident.availability)}`;
+      badge.textContent = statusText(resident.availability);
+    }
   });
 
   document.querySelectorAll('.world-resident').forEach((slide) => {
@@ -127,6 +167,15 @@ function replaceGenericResidentImages(data, lookup) {
   document.querySelectorAll('.manifesto-portrait img, .about-image img').forEach((image) => setResidentImage(image, forest));
 }
 
+function upgradeCollectionCards(lookup) {
+  document.querySelectorAll('.world-chapter').forEach((chapter) => {
+    const worldName = chapter.querySelector('.world-chapter__copy h3')?.textContent?.trim();
+    const residentId = collectionRepresentative[worldName];
+    const resident = residentId ? lookup.get(normalize(residentId)) : null;
+    if (resident) setResidentImage(chapter.querySelector('.world-chapter__resident img'), resident);
+  });
+}
+
 function refreshResponsiveImages() {
   document.querySelectorAll('img[data-desktop-src]').forEach((image) => {
     image.src = mobileQuery.matches ? image.dataset.mobileSrc : image.dataset.desktopSrc;
@@ -136,7 +185,7 @@ function refreshResponsiveImages() {
 async function runUpgrade() {
   const response = await fetch(contentUrl, { cache: 'no-store' });
   if (!response.ok) return;
-  const data = await response.json();
+  const data = applyWorldOverrides(await response.json());
   const lookup = residentLookup(data);
 
   const apply = () => {
@@ -144,6 +193,7 @@ async function runUpgrade() {
     upgradeCards(data, lookup);
     upgradeChronicle(data, lookup);
     replaceGenericResidentImages(data, lookup);
+    upgradeCollectionCards(lookup);
     refreshResponsiveImages();
     document.documentElement.classList.add('resident-worlds-ready');
     return true;
