@@ -1,12 +1,15 @@
-/* Visual upgrade: every Resident is shown inside a cinematic world. */
-:root { --resident-world-focus: 72% center; }
+/* Cinematic Resident worlds and stable mobile layout. */
+:root { --resident-world-focus: center; }
 
 .resident-card__image img,
 .world-resident__photo img,
 .resident-detail__image img,
 .chronicle-hero__scene {
+  width: 100%;
+  height: 100%;
   filter: none !important;
   image-rendering: auto;
+  object-fit: cover;
   object-position: var(--resident-focus, var(--resident-world-focus));
 }
 
@@ -15,13 +18,10 @@
   box-shadow: 0 1.5rem 4rem rgb(8 5 3 / .22);
 }
 .resident-card__image {
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 3 / 2;
   background: #0e0b09;
 }
-.resident-card__image img {
-  transform: none !important;
-  object-fit: cover;
-}
+.resident-card__image img { transform: none !important; }
 .resident-card__image::after {
   background: linear-gradient(0deg, rgb(12 8 6 / .76), transparent 44%);
 }
@@ -49,10 +49,8 @@
   background: #0d0a08;
 }
 .chronicle-hero__scene {
-  object-fit: cover;
-  object-position: var(--hero-focus, 72% center);
+  object-position: var(--hero-focus, center);
   transform: scale(1.002);
-  filter: none !important;
 }
 .chronicle-hero__shade {
   background:
@@ -93,7 +91,7 @@
 .gallery img,
 .gallery__video video {
   aspect-ratio: 16 / 9;
-  object-position: var(--resident-focus, 72% center);
+  object-position: var(--resident-focus, center);
 }
 
 .world-stage__scene,
@@ -109,7 +107,7 @@
   clip-path: none;
   border: 1px solid rgb(255 238 211 / .2);
 }
-.world-resident__photo img { object-position: var(--resident-focus, 72% center); }
+.world-resident__photo img { object-position: var(--resident-focus, center); }
 
 [data-site-footer],
 .site-footer {
@@ -120,8 +118,13 @@
 .site-footer { overflow: hidden; }
 .scroll-top { z-index: 90; }
 
+[data-showcase="false"],
+.resident-card[data-resident="mermaid"],
+.world-resident[data-resident="mermaid"] {
+  display: none !important;
+}
+
 @media (max-width: 64rem) {
-  .resident-card__image { aspect-ratio: 3 / 2; }
   .chronicle-hero > .shell > * { max-width: min(32rem, 52vw); }
 }
 
@@ -138,32 +141,31 @@
     padding: .75rem .7rem;
   }
 
-  .resident-card__image { aspect-ratio: 4 / 5; }
+  .resident-card__image { aspect-ratio: 3 / 2; }
   .resident-card__image img {
-    object-position: var(--resident-focus-mobile, var(--resident-focus, 68% center));
+    object-position: var(--resident-focus-mobile, var(--resident-focus, center));
   }
   .resident-card__body { min-height: auto; }
 
   .chronicle-hero {
+    --mobile-hero-height: min(66.667vw, 32rem);
     display: block;
     min-height: 0;
-    padding: 27rem 0 2.75rem;
+    padding: var(--mobile-hero-height) 0 2.75rem;
     background: #0d0a08;
   }
   .chronicle-hero__scene,
   .chronicle-hero__shade {
     top: 0;
     bottom: auto;
-    height: 27rem;
+    height: var(--mobile-hero-height);
   }
   .chronicle-hero__scene {
-    object-fit: cover;
-    object-position: var(--hero-focus-mobile, var(--hero-focus, 68% center));
+    object-position: var(--hero-focus-mobile, var(--hero-focus, center));
     transform: none;
-    filter: none !important;
   }
   .chronicle-hero__shade {
-    background: linear-gradient(0deg, #0d0a08 0%, rgb(13 10 8 / .5) 10%, transparent 32%);
+    background: linear-gradient(0deg, #0d0a08 0%, rgb(13 10 8 / .52) 10%, transparent 34%);
   }
   .chronicle-hero > .shell {
     padding-top: 1.25rem;
@@ -177,24 +179,21 @@
   .section.section--paper:has(.resident-detail) { padding-top: 2.5rem; }
   .gallery img,
   .gallery__video video {
-    aspect-ratio: 4 / 5;
-    object-position: var(--resident-focus-mobile, var(--resident-focus, 68% center));
+    aspect-ratio: 3 / 2;
+    object-position: var(--resident-focus-mobile, var(--resident-focus, center));
   }
 
-  .world-slider { min-height: 58rem; }
+  .world-slider { min-height: 48rem; }
+  .world-resident__photo {
+    height: auto;
+    aspect-ratio: 3 / 2;
+  }
   .world-resident__photo img {
-    object-position: var(--resident-focus-mobile, var(--resident-focus, 68% center));
+    object-position: var(--resident-focus-mobile, var(--resident-focus, center));
   }
   .footer-grid { position: relative; z-index: 2; }
 }
 
 @media (max-width: 34rem) {
-  .chronicle-hero { padding-top: 24rem; }
-  .chronicle-hero__scene,
-  .chronicle-hero__shade { height: 24rem; }
   .filters { padding-inline: .68rem; }
 }
-
-.resident-card[data-resident="mermaid"],
-.world-resident[data-resident="mermaid"],
-.world-slider__rail button[hidden] { display: none !important; }
