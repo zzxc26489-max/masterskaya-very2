@@ -25,16 +25,28 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout current main
         uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 1
 
-      - name: Prepare static preview
+      - name: Prepare and verify static preview
         run: |
+          set -euo pipefail
+          rm -rf _site
           mkdir -p _site
           cp -R studio/public/. _site/
           cp studio/data/content.seed.json _site/content.json
           rm -rf _site/admin
           touch _site/.nojekyll
+          printf '{"commit":"%s","builtAt":"%s"}\n' "$GITHUB_SHA" "$(date -u +%FT%TZ)" > _site/build-info.json
+          test -f _site/residents.html
+          test -f _site/chronicle.html
+          test -f _site/assets/css/site-fixes.css
+          test -f _site/assets/js/site-enhancements.js
+          grep -q 'site-fixes.css?v=20260804b' _site/residents.html
+          grep -q 'site-enhancements.js?v=20260804b' _site/chronicle.html
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
