@@ -47,22 +47,36 @@ jobs:
             studio/data/content.worlds.json \
             _site/content.json
 
+          mkdir -p _site/media/world-residents
+          cat _site/media/world-residents/nutcracker-ernst/part-*.txt | tr -d '\n\r' | base64 -d > _site/media/world-residents/nutcracker-ernst.webp
+          cat _site/media/world-residents/forest-dragon/part-*.txt | tr -d '\n\r' | base64 -d > _site/media/world-residents/forest-dragon.webp
+          cat _site/media/world-residents/baby-dragon/part-*.txt | tr -d '\n\r' | base64 -d > _site/media/world-residents/baby-dragon.webp
+          rm -rf \
+            _site/media/world-residents/nutcracker-ernst \
+            _site/media/world-residents/forest-dragon \
+            _site/media/world-residents/baby-dragon
+
+          test "$(wc -c < _site/media/world-residents/nutcracker-ernst.webp)" -eq 26568
+          test "$(wc -c < _site/media/world-residents/forest-dragon.webp)" -eq 26636
+          test "$(wc -c < _site/media/world-residents/baby-dragon.webp)" -eq 15482
+          file _site/media/world-residents/*.webp | grep -q 'Web/P image'
+
           printf '{"commit":"%s","builtAt":"%s"}\n' "$GITHUB_SHA" "$(date -u +%FT%TZ)" > _site/build-info.json
 
           test -f _site/residents.html
           test -f _site/chronicle.html
           test -f _site/assets/css/site-fixes.css
+          test -f _site/assets/js/site.js
           test -f _site/assets/js/site-enhancements.js
-          test -f _site/assets/js/nutcracker-world-data.js
-          test -f _site/assets/js/forest-dragon-world-data.js
           test -f _site/content.json
-          grep -q 'site-fixes.css?v=20260805c' _site/residents.html
-          grep -q 'site-enhancements.js?v=20260805c' _site/chronicle.html
-          grep -q 'nutcracker-world-data.js?v=20260805c' _site/chronicle.html
-          grep -q 'forest-dragon-world-data.js?v=20260805c' _site/chronicle.html
-          grep -q 'removeBadChronicleGallery' _site/assets/js/site-enhancements.js
-          grep -q 'nutcracker-ernst' _site/assets/js/nutcracker-world-data.js
-          grep -q 'forest-dragon' _site/assets/js/forest-dragon-world-data.js
+          test -s _site/media/world-residents/nutcracker-ernst.webp
+          test -s _site/media/world-residents/forest-dragon.webp
+          test -s _site/media/world-residents/baby-dragon.webp
+          grep -q 'site-fixes.css?v=20260805e' _site/residents.html
+          grep -q 'site-enhancements.js?v=20260805e' _site/chronicle.html
+          grep -q '/media/world-residents/nutcracker-ernst.webp' _site/content.json
+          grep -q '/media/world-residents/forest-dragon.webp' _site/content.json
+          grep -q '/media/world-residents/baby-dragon.webp' _site/content.json
           grep -q '"showcase": false' _site/content.json
 
       - name: Configure Pages
