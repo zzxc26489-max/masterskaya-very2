@@ -19,7 +19,9 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
       await page.goto(route, { waitUntil: 'networkidle' });
       await expect(page.locator('#app main')).toBeVisible();
       await expect(page.locator('.site-header')).toBeVisible();
-      const broken = await page.locator('img').evaluateAll((images) => images.filter((image) => image.naturalWidth === 0).map((image) => image.currentSrc));
+      const broken = await page.locator('img').evaluateAll((images) => images
+        .filter((image) => image.complete && image.naturalWidth === 0)
+        .map((image) => image.currentSrc || image.src));
       expect(broken, `broken photos on ${route}`).toEqual([]);
       const width = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
       expect(width.scroll, `horizontal overflow on ${route}`).toBeLessThanOrEqual(width.client + 1);
@@ -56,6 +58,6 @@ test('admin accepts the local developer login and exposes content tools', async 
   const residentsButton = page.locator('[data-nav="residents"]');
   expect(await residentsButton.count()).toBe(1);
   await residentsButton.click();
-  await expect(page.getByRole('heading', { name: 'Жители' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Жители', exact: true })).toBeVisible();
   await expect(page.getByText('Азимондиас')).toBeVisible();
 });
