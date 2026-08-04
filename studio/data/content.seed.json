@@ -1,1 +1,478 @@
-{"settings":{"brand":"Мастерская Веры","tagline":"Здесь рождаются Жители и находят своих Хранителей.","contactNote":"Чтобы забрать готового Жителя или обсудить будущего, оставьте сообщение. Вера ответит лично."},"collections":[{"id":"winter","slug":"winter-legends","name":"Зимние легенды","description":"Щелкунчики, мышиные короли и другие Жители, в которых живут зимние истории, музыка и ожидание чуда.","theme":"winter","image":"/media/residents/nutcracker/portrait.webp","sceneImage":"/media/worlds/winter-scene.webp","cue":"Снег · еловая тень · тёплый свет","accent":"#b4cbe1"},{"id":"forest","slug":"forest-secrets","name":"Тайны древнего леса","description":"Лесные драконы, грибы, гномы и существа, которые не любят шум, но знают много старых историй.","theme":"forest","image":"/media/residents/mushrooms/hero.webp","sceneImage":"/media/worlds/forest-scene.webp","cue":"Мох · корни · живые огни","accent":"#8ba06a"},{"id":"dragons","slug":"ancient-creatures","name":"Древние существа","description":"Чешуя, крылья, характер и своя легенда. Здесь живут большие и маленькие драконы, грифоны и авторские создания Веры.","theme":"dragons","image":"/media/residents/azimondias/final.webp","sceneImage":"/media/worlds/dragons-scene.webp","cue":"Камень · старые карты · дыхание огня","accent":"#bb845d"},{"id":"russian","slug":"russian-tales","name":"Русские сказки","description":"Сирин, Змей Горыныч, Конёк-Горбунок, русалки и другие сказочные Жители в авторском прочтении Мастерской.","theme":"russian","image":"/media/residents/gorynych-green/hero.webp","sceneImage":"/media/worlds/russian-scene.webp","cue":"Старый дуб · вязь · вечерняя сказка","accent":"#b95639"},{"id":"home","slug":"home-legends","name":"Домашние легенды","description":"Не каждая легенда должна быть грозной: здесь появляются тихие, солнечные и очень домашние Жители.","theme":"home","image":"/media/residents/chicken/hero.webp","sceneImage":"/media/worlds/home-scene.webp","cue":"Солнечное дерево · лён · тихий дом","accent":"#d5a346"}],"residents":[{"id":"azimondias","slug":"azimondias","name":"Азимондиас","collectionId":"dragons","availability":"archive","technique":"one-of-a-kind","type":"Синий дракон","character":"Любопытный, смелый и очень внимательный к книгам.","habitat":"Там, где на полках живут сказки, а за окном начинается зима.","excerpt":"Первый большой путь Мастерской — от проволочного каркаса до собственного взгляда.","story":"Азимондиас, или просто Зим, появился постепенно: сначала был каркас, потом форма, крылья, глаз и характер.","heroImage":"/media/residents/azimondias/final.webp","gallery":["/media/residents/azimondias/hero.webp","/media/residents/azimondias/final.webp","/media/residents/azimondias/armature.webp","/media/residents/azimondias/sculpture.webp"],"chronicle":{"origin":"Начался с каркаса из фольги и проволоки, а затем стал учить Мастерскую слышать форму","character":"Смотрит внимательно и предпочитает сначала познакомиться, а уже потом лететь навстречу приключению","path":"Уже живёт у своего Хранителя.","keeper":"У своего Хранителя"}},{"id":"nutcracker-ernst","slug":"nutcracker-ernst","name":"Щелкунчик","collectionId":"winter","availability":"available","technique":"one-of-a-kind","type":"Зимний Житель","character":"Собранный, храбрый и немного театральный.","habitat":"Тёплый дом, в котором уже поставили ёлку и ждут праздника.","excerpt":"Зимняя история с ровной осанкой, мундиром и очень серьёзной задачей — беречь чудо.","story":"Щелкунчики Веры не повторяют друг друга: меняются выражение лица, детали формы, оттенки, роспись и маленькие следы ручной работы","heroImage":"/media/residents/nutcracker/portrait.webp","gallery":["/media/residents/nutcracker/portrait.webp","/media/residents/nutcracker/detail.webp","/media/residents/nutcracker/studio.webp"],"chronicle":{"origin":"Родился из зимней сказки и желания сделать праздничный образ живым, а не сувенирным","character":"Никогда не опаздывает к началу праздника и замечает даже тихое чудо","path":"Готов к встрече с новым Хранителем","keeper":"Можно приобрести"}},{"id":"girl-with-nutcracker","slug":"girl-with-nutcracker","name":"Девочка со Щелкунчиком","collectionId":"winter","availability":"available","technique":"one-of-a-kind","type":"Зимняя сказочная композиция","character":"Мягкая, заботливая и умеющая беречь маленькое чудо.","habitat":"Тёплая детская комната, вечерний свет и место рядом с любимыми праздничными историями.","excerpt":"Тихая зимняя сцена: девочка прижимает к себе Щелкунчика, будто уже знает, чем закончится сказка.","story":"Эта композиция соединяет два образа в одной ручной работе.","heroImage":"/media/residents/girl-with-nutcracker/hero.avif","gallery":["/media/residents/girl-with-nutcracker/hero.avif"],"chronicle":{"origin":"Родилась из зимней истории о храбрости, доверии и чуде, которое начинается в обычной комнате","character":"Не торопит сказку и держит своего маленького спутника очень бережно","path":"Готова к встрече с новым Хранителем","keeper":"Можно приобрести"}},{"id":"mouse-queen","slug":"mouse-queen","name":"Мышиная Королева","collectionId":"winter","availability":"in-progress","technique":"one-of-a-kind","type":"Королевский Житель","character":"Величественная, наблюдательная и чуть-чуть готическая.","habitat":"Театральные кулисы, бархат и места, где шорох ткани важнее громких слов.","excerpt":"Три взгляда, чёрно-фиолетовое платье и корона — всё в ней говорит без спешки.","story":"Мышиная Королева — образ с театральным характером.","heroImage":"/media/residents/mouse-queen/hero.webp","gallery":["/media/residents/mouse-queen/hero.webp","/media/residents/mouse-queen/angle.webp"],"chronicle":{"origin":"Собрана из образов старой сказки, театрального костюма и королевского упрямства","character":"Не правит громко — её власть слышна в шорохе ткани и спокойных взглядах","path":"Пока рождается в Мастерской","keeper":"В работе"}},{"id":"mouse-king","slug":"mouse-king","name":"Мышиный Король","collectionId":"winter","availability":"available","technique":"one-of-a-kind","type":"Королевский Житель","character":"Немного дерзкий, но очень заботливый о своей свите.","habitat":"Зимняя коробка с подарками, где каждая мелочь уже часть церемонии встречи.","excerpt":"Корона, мундир и трое внимательных голов — королевство в ладони.","story":"Мышиный Король может быть частью подарочного набора или самостоятельным героем.","heroImage":"/media/residents/mouse-king/hero.webp","gallery":["/media/residents/mouse-king/hero.webp","/media/residents/mouse-king/angle.webp","/media/residents/mouse-king/studio.webp"],"chronicle":{"origin":"Появился там, где зимний подарок захотел стать маленьким спектаклем","character":"Собирает истории, а не земли","path":"Готов к встрече с новым Хранителем","keeper":"Можно приобрести"}},{"id":"gorynych-amber","slug":"gorynych-amber","name":"Трёхглавый дракон","collectionId":"dragons","availability":"available","technique":"one-of-a-kind","type":"Трёхглавый дракон","character":"Фактурный, подвижный и совсем не молчаливый.","habitat":"Камень, старые карты и тёплый свет мастерской.","excerpt":"Три головы, тёплая палитра и чешуя, которую хочется рассматривать близко.","story":"Трёхглавый дракон собран из тёплых оранжевых, бордовых и кремовых оттенков.","heroImage":"/media/residents/gorynych/amber-hero.webp","gallery":["/media/residents/gorynych/amber-hero.webp","/media/residents/gorynych/amber-angle.webp"],"chronicle":{"origin":"Родился из сложной фактуры, трёх разных выражений и ручной росписи","character":"Слышно ещё до того, как он открывает пасти","path":"Готов к встрече с новым Хранителем","keeper":"Можно приобрести"}},{"id":"gorynych-green","slug":"gorynych-green","name":"Змей Горыныч","collectionId":"russian","availability":"available","technique":"one-of-a-kind","type":"Сказочный трёхглавый дракон","character":"Царственный, упрямый и удивительно живой в каждом из трёх взглядов.","habitat":"Старая сказка у дубового дупла, где золото корон встречает лесную зелень.","excerpt":"Зелёный трёхглавый Горыныч с коронами, крыльями и яркой ручной росписью.","story":"Зелёный Змей Горыныч — отдельная готовая работа Веры.","heroImage":"/media/residents/gorynych-green/hero.webp","gallery":["/media/residents/gorynych-green/hero.webp","/media/residents/gorynych-green/angle.webp","/media/residents/gorynych-green/back.webp"],"chronicle":{"origin":"Пришёл из русской сказочной традиции и получил собственный характер в ручной лепке Веры","character":"Три взгляда спорят между собой, но короны держат общий порядок","path":"Готов к встрече с новым Хранителем","keeper":"Можно приобрести"}},{"id":"forest-dragon","slug":"forest-dragon","name":"Лесной дракон","collectionId":"forest","availability":"available","technique":"one-of-a-kind","type":"Лесной Житель","character":"Терпеливый, внимательный и не слишком разговорчивый.","habitat":"Мшистые ущелья, тёплая кора и тихие полки с книгами.","excerpt":"Зелёный дракон с природной палитрой и множеством деталей, которые открываются при близком взгляде.","story":"Лесной дракон — пример того, как характер рождается из цвета и поверхности: зелёные переходы, шипы и живые фактуры ведут зрителя вокруг фигуры","heroImage":"/media/residents/forest-dragon/studio.webp","gallery":["/media/residents/forest-dragon/hero.webp","/media/residents/forest-dragon/portrait.webp","/media/residents/forest-dragon/studio.webp"],"chronicle":{"origin":"Собран из лесных оттенков и внимательной работы с чешуёй","character":"Предпочитает сначала наблюдать, а потом решать, можно ли доверять путнику","path":"Готов к встрече с новым Хранителем","keeper":"Можно приобрести"}},{"id":"forest-mushrooms","slug":"forest-mushrooms","name":"Лесные грибы","collectionId":"forest","availability":"available","technique":"author-series","type":"Лесная миниатюра","character":"Тихие, разные и собранные будто после прогулки по настоящему лесу.","habitat":"Мох, корзинка, подарочная коробка и тёплая полка дома.","excerpt":"Мухоморы, лисички, белые и другие грибы — небольшие ручные миниатюры с живой фактурой.","story":"Грибочки Веры появляются по одному, парами и целыми лесными наборами.","heroImage":"/media/residents/mushrooms/hero.webp","gallery":["/media/residents/mushrooms/hero.webp","/media/residents/mushrooms/basket.webp","/media/residents/mushrooms/gift-box.webp"],"chronicle":{"origin":"Начались с наблюдений за настоящими грибами и любви к маленьким лесным деталям","character":"Лучше всего чувствуют себя компанией, но каждый сохраняет собственную форму","path":"Можно выбрать отдельные грибочки или собрать лесной набор","keeper":"Можно приобрести"}},{"id":"baby-dragon","slug":"baby-dragon","name":"Малыш-дракон","collectionId":"dragons","availability":"in-progress","technique":"one-of-a-kind","type":"Будущий Житель","character":"Ещё выбирает цвет, но взгляд уже появился.","habitat":"Пока — на рабочем столе Мастерской, рядом с инструментами и первыми эскизами.","excerpt":"Житель в рождении: форма уже говорит, а окончательная история ещё выбирает направление.","story":"Малыш-дракон показывает важный этап: работа ещё не расписана, но характер уже начинает проступать через взгляд, крылья и линию тела","heroImage":"/media/residents/baby-dragon/hero.webp","gallery":["/media/residents/baby-dragon/hero.webp","/media/residents/baby-dragon/angle.webp"],"chronicle":{"origin":"Начался с мягкой формы и большого синего глаза","character":"Пока только учится смотреть на мир","path":"История ещё пишется в Мастерской","keeper":"Ищет своё имя"}},{"id":"soul-regan","slug":"soul-regan","name":"Соул Реган","collectionId":"dragons","availability":"in-progress","technique":"one-of-a-kind","type":"Белый дракон","character":"Сдержанный, высокий и немного чужой для привычных драконьих легенд.","habitat":"Каменный стол Мастерской, старые эскизы и тёплый свет над ещё не законченной историей.","excerpt":"Белый длинношеий дракон с зелёным взглядом и ветвистыми рогами — форма уже завершена, а цветовая легенда ещё выбирается.","story":"Соул Реган строится на вытянутом силуэте, длинной шее и необычных рогах, похожих на древние ветви.","heroImage":"/media/residents/soul-regan/hero.avif","gallery":["/media/residents/soul-regan/hero.avif"],"chronicle":{"origin":"Начался с высокого силуэта и рогов, которые задали всей работе неземной характер","character":"Наблюдает спокойно и не торопится раскрывать свою историю","path":"Ждёт окончательного решения по цвету и деталям","keeper":"В работе"}},{"id":"chicken-sun","slug":"chicken-sun","name":"Курочка","collectionId":"home","availability":"available","technique":"one-of-a-kind","type":"Домашний Житель","character":"Солнечная, прямолинейная и очень домашняя.","habitat":"Тихий двор, подоконник и место рядом с теми, кому нужен тёплый знак дня.","excerpt":"Не всякая легенда должна рычать: некоторые просто выходят на свет и смотрят прямо.","story":"Курочка открывает более тихую линию Мастерской — маленьких домашних Жителей, в которых живут цвет, юмор и ощущение заботы","heroImage":"/media/residents/chicken/hero.webp","gallery":["/media/residents/chicken/hero.webp","/media/residents/chicken/angle.webp"],"chronicle":{"origin":"Появилась из желания оставить в доме маленький солнечный след","character":"Делает вид, что всё знает заранее","path":"Готова к встрече с новым Хранителем","keeper":"Можно приобрести"}},{"id":"rocking-horse","slug":"rocking-horse","name":"Солнечная лошадка-качалка","shortName":"Лошадка-качалка","collectionId":"home","availability":"available","technique":"one-of-a-kind","type":"Домашняя сказочная игрушка","character":"Светлая, терпеливая и всегда готовая унести в воображаемое путешествие.","habitat":"Солнечная комната, деревянная полка и место, где старые игрушки продолжают жить.","excerpt":"Белая лошадка с золотой гривой и яркой росписью — маленькая домашняя история о движении и детстве.","story":"Лошадка-качалка выполнена и расписана вручную.","heroImage":"/media/residents/rocking-horse/hero.avif","gallery":["/media/residents/rocking-horse/hero.avif"],"chronicle":{"origin":"Родилась из памяти о деревянных игрушках, солнечном окне и первых придуманных путешествиях","character":"Не спешит, но всегда знает, куда начинается дорога","path":"Готова к встрече с новым Хранителем","keeper":"Можно приобрести"}},{"id":"sirin","slug":"sirin","name":"Птица Сирин","shortName":"Сирин","collectionId":"russian","availability":"available","technique":"one-of-a-kind","type":"Сказочная птица","character":"Спокойная, гордая и внимательная к тому, что слышно только в тишине.","habitat":"Сумеречный лес, влажный мох и места, где между корнями мерцают старые огни.","excerpt":"Сказочная птица с человеческим лицом, бирюзовым оперением и песней, которую каждый слышит по-своему.","story":"Сирин — авторское прочтение древнего образа.","heroImage":"/media/residents/sirin/cinematic.avif","gallery":["/media/residents/sirin/cinematic.avif","/media/residents/sirin/hero.webp","/media/residents/sirin/angle.webp"],"chronicle":{"origin":"Родилась на границе птицы, человека и старой песни","character":"Не любит суеты и умеет превращать тишину в собственную музыку","path":"Готова к встрече с новым Хранителем","keeper":"Можно приобрести"}},{"id":"mermaid","slug":"mermaid","name":"Русалка","collectionId":"russian","availability":"in-progress","technique":"one-of-a-kind","type":"Сказочная Жительница","character":"Мечтательная, независимая и немного морская.","habitat":"Вода, камни, лунный свет и истории, которые лучше не рассказывать слишком громко.","excerpt":"Сказочный образ с авторской росписью и живым цветом.","story":"Русалка — один из будущих мостов к новой водной главе.","heroImage":"/media/residents/mermaid/hero.webp","gallery":["/media/residents/mermaid/hero.webp","/media/residents/mermaid/angle.webp"],"chronicle":{"origin":"Родилась из воды, цвета и желания рассказать новую сказку","character":"Слушает долго, отвечает редко","path":"Пока рождается в Мастерской","keeper":"В работе"}},{"id":"little-humpbacked-horse","slug":"little-humpbacked-horse","name":"Конёк-Горбунок","collectionId":"russian","availability":"available","technique":"one-of-a-kind","type":"Сказочный спутник","character":"Верный, быстрый и с хорошим чувством направления.","habitat":"Дальние дороги, огни в окнах и места, куда без сказки не добраться.","excerpt":"Небольшой спутник большого пути — авторская фигура, в которой важны силуэт, движение и характер.","story":"Конёк-Горбунок дополняет русскую линию Мастерской: узнаваемый сказочный спутник становится самостоятельным образом через ручную лепку, тёмную роспись, светлую гриву и стремительную позу","heroImage":"/media/residents/horse/cinematic.avif","gallery":["/media/residents/horse/cinematic.avif","/media/residents/horse/hero.webp","/media/residents/horse/studio.webp"],"chronicle":{"origin":"Родился из дороги, сказки и пластики быстрого движения","character":"Знает короткую дорогу, но выбирает красивую","path":"Готов к встрече с новым Хранителем","keeper":"Можно приобрести"}}],"stories":[{"id":"big-dragon-threshold","title":"Когда работа берёт власть в свои лапы","lead":"Иногда Житель рождается не по плану: пока Вера прорабатывает мелочи, форма сама меняет направление.","body":"Большой дракон стал для Веры рубежной работой: первая масштабная фигура потребовала другого размаха, терпения и уверенности. Этот раздел будет пополняться его фотографиями по мере рождения.","quote":"Пока ты сидишь и прорабатываешь мелочи, работа берёт власть в свои лапы и начинает диктовать тебе сценарий.","image":"/media/residents/forest-dragon/studio.webp","published":true},{"id":"gift-ceremony","title":"Житель приезжает как маленькая церемония встречи","lead":"Коробка, наполнитель, открытка и Свиток Жителя делают встречу частью истории, а не просто доставкой.","body":"В подарочный набор могут входить Жители, открытка и маленькие знаки от Мастерской. Состав всегда зависит от конкретной работы и сезона.","quote":"У каждого Жителя есть путь — от замысла до встречи с Хранителем.","image":"/media/sets/winter-gift.webp","published":true}],"inquiries":[]}
+{
+  "settings": {
+    "brand": "Мастерская Веры",
+    "tagline": "Здесь рождаются Жители и находят своих Хранителей.",
+    "contactNote": "Чтобы забрать готового Жителя или обсудить будущего, оставьте сообщение. Вера ответит лично."
+  },
+  "collections": [
+    {
+      "id": "winter",
+      "slug": "winter-legends",
+      "name": "Зимние легенды",
+      "description": "Щелкунчики, мышиные короли и другие Жители, в которых живут зимние истории, музыка и ожидание чуда.",
+      "theme": "winter",
+      "image": "/media/residents/nutcracker/studio.webp",
+      "sceneImage": "/media/worlds/winter-scene.webp",
+      "cue": "Снег · еловая тень · тёплый свет",
+      "accent": "#b4cbe1"
+    },
+    {
+      "id": "forest",
+      "slug": "forest-secrets",
+      "name": "Тайны древнего леса",
+      "description": "Лесные драконы, грибы, гномы и существа, которые не любят шум, но знают много старых историй.",
+      "theme": "forest",
+      "image": "/media/residents/forest-dragon/studio.webp",
+      "sceneImage": "/media/worlds/forest-scene.webp",
+      "cue": "Мох · корни · живые огни",
+      "accent": "#8ba06a"
+    },
+    {
+      "id": "dragons",
+      "slug": "ancient-creatures",
+      "name": "Древние существа",
+      "description": "Чешуя, крылья, характер и своя легенда. Здесь живут большие и маленькие драконы, грифоны и авторские создания Веры.",
+      "theme": "dragons",
+      "image": "/media/residents/azimondias/final.webp",
+      "sceneImage": "/media/worlds/dragons-scene.webp",
+      "cue": "Камень · старые карты · дыхание огня",
+      "accent": "#bb845d"
+    },
+    {
+      "id": "russian",
+      "slug": "russian-tales",
+      "name": "Русские сказки",
+      "description": "Сирин, Змей Горыныч, Конёк-Горбунок, русалки и другие сказочные Жители в авторском прочтении Мастерской.",
+      "theme": "russian",
+      "image": "/media/residents/sirin/cinematic.avif",
+      "sceneImage": "/media/worlds/russian-scene.webp",
+      "cue": "Старый дуб · вязь · вечерняя сказка",
+      "accent": "#b95639"
+    },
+    {
+      "id": "home",
+      "slug": "home-legends",
+      "name": "Домашние легенды",
+      "description": "Не каждая легенда должна быть грозной: здесь появляются тихие, солнечные и очень домашние Жители.",
+      "theme": "home",
+      "image": "/media/residents/rocking-horse/hero.avif",
+      "sceneImage": "/media/worlds/home-scene.webp",
+      "cue": "Солнечное дерево · лён · тихий дом",
+      "accent": "#d5a346"
+    }
+  ],
+  "residents": [
+    {
+      "id": "azimondias",
+      "slug": "azimondias",
+      "name": "Азимондиас",
+      "collectionId": "dragons",
+      "availability": "archive",
+      "technique": "one-of-a-kind",
+      "type": "Синий дракон",
+      "character": "Любопытный, смелый и очень внимательный к книгам.",
+      "habitat": "Там, где на полках живут сказки, а за окном начинается зима.",
+      "excerpt": "Первый большой путь Мастерской — от проволочного каркаса до собственного взгляда.",
+      "story": "Азимондиас, или просто Зим, появился постепенно: сначала был каркас, потом форма, крылья, глаз и характер.",
+      "heroImage": "/media/residents/azimondias/final.webp",
+      "gallery": [
+        "/media/residents/azimondias/final.webp"
+      ],
+      "chronicle": {
+        "origin": "Начался с каркаса из фольги и проволоки, а затем стал учить Мастерскую слышать форму",
+        "character": "Смотрит внимательно и предпочитает сначала познакомиться, а уже потом лететь навстречу приключению",
+        "path": "Уже живёт у своего Хранителя.",
+        "keeper": "У своего Хранителя"
+      },
+      "focus": "73% center"
+    },
+    {
+      "id": "nutcracker-ernst",
+      "slug": "nutcracker-ernst",
+      "name": "Щелкунчик",
+      "collectionId": "winter",
+      "availability": "available",
+      "technique": "one-of-a-kind",
+      "type": "Зимний Житель",
+      "character": "Собранный, храбрый и немного театральный.",
+      "habitat": "Тёплый дом, в котором уже поставили ёлку и ждут праздника.",
+      "excerpt": "Зимняя история с ровной осанкой, мундиром и очень серьёзной задачей — беречь чудо.",
+      "story": "Щелкунчики Веры не повторяют друг друга: меняются выражение лица, детали формы, оттенки, роспись и маленькие следы ручной работы",
+      "heroImage": "/media/residents/nutcracker/studio.webp",
+      "gallery": [
+        "/media/residents/nutcracker/studio.webp"
+      ],
+      "chronicle": {
+        "origin": "Родился из зимней сказки и желания сделать праздничный образ живым, а не сувенирным",
+        "character": "Никогда не опаздывает к началу праздника и замечает даже тихое чудо",
+        "path": "Готов к встрече с новым Хранителем",
+        "keeper": "Можно приобрести"
+      },
+      "focus": "72% center"
+    },
+    {
+      "id": "girl-with-nutcracker",
+      "slug": "girl-with-nutcracker",
+      "name": "Девочка со Щелкунчиком",
+      "collectionId": "winter",
+      "availability": "available",
+      "technique": "one-of-a-kind",
+      "type": "Зимняя сказочная композиция",
+      "character": "Мягкая, заботливая и умеющая беречь маленькое чудо.",
+      "habitat": "Тёплая детская комната, вечерний свет и место рядом с любимыми праздничными историями.",
+      "excerpt": "Тихая зимняя сцена: девочка прижимает к себе Щелкунчика, будто уже знает, чем закончится сказка.",
+      "story": "Эта композиция соединяет два образа в одной ручной работе.",
+      "heroImage": "/media/residents/girl-with-nutcracker/hero.avif",
+      "gallery": [
+        "/media/residents/girl-with-nutcracker/hero.avif"
+      ],
+      "chronicle": {
+        "origin": "Родилась из зимней истории о храбрости, доверии и чуде, которое начинается в обычной комнате",
+        "character": "Не торопит сказку и держит своего маленького спутника очень бережно",
+        "path": "Готова к встрече с новым Хранителем",
+        "keeper": "Можно приобрести"
+      },
+      "focus": "70% center"
+    },
+    {
+      "id": "mouse-queen",
+      "slug": "mouse-queen",
+      "name": "Мышиная Королева",
+      "collectionId": "winter",
+      "availability": "available",
+      "technique": "one-of-a-kind",
+      "type": "Королевский Житель",
+      "character": "Величественная, наблюдательная и чуть-чуть готическая.",
+      "habitat": "Театральные кулисы, бархат и места, где шорох ткани важнее громких слов.",
+      "excerpt": "Три взгляда, чёрно-фиолетовое платье и корона — всё в ней говорит без спешки.",
+      "story": "Мышиная Королева — образ с театральным характером.",
+      "heroImage": "/media/residents/mouse-queen/hero.webp",
+      "gallery": [
+        "/media/residents/mouse-queen/hero.webp"
+      ],
+      "chronicle": {
+        "origin": "Собрана из образов старой сказки, театрального костюма и королевского упрямства",
+        "character": "Не правит громко — её власть слышна в шорохе ткани и спокойных взглядах",
+        "path": "Готова к встрече с новым Хранителем.",
+        "keeper": "Можно приобрести"
+      },
+      "creationDate": "Создана вручную",
+      "focus": "71% center"
+    },
+    {
+      "id": "mouse-king",
+      "slug": "mouse-king",
+      "name": "Мышиный Король",
+      "collectionId": "winter",
+      "availability": "available",
+      "technique": "one-of-a-kind",
+      "type": "Королевский Житель",
+      "character": "Немного дерзкий, но очень заботливый о своей свите.",
+      "habitat": "Зимняя коробка с подарками, где каждая мелочь уже часть церемонии встречи.",
+      "excerpt": "Корона, мундир и трое внимательных голов — королевство в ладони.",
+      "story": "Мышиный Король может быть частью подарочного набора или самостоятельным героем.",
+      "heroImage": "/media/residents/mouse-king/hero.webp",
+      "gallery": [
+        "/media/residents/mouse-king/hero.webp"
+      ],
+      "chronicle": {
+        "origin": "Появился там, где зимний подарок захотел стать маленьким спектаклем",
+        "character": "Собирает истории, а не земли",
+        "path": "Готов к встрече с новым Хранителем",
+        "keeper": "Можно приобрести"
+      },
+      "focus": "73% center"
+    },
+    {
+      "id": "gorynych-amber",
+      "slug": "gorynych-amber",
+      "name": "Трёхглавый дракон",
+      "collectionId": "dragons",
+      "availability": "available",
+      "technique": "one-of-a-kind",
+      "type": "Трёхглавый дракон",
+      "character": "Фактурный, подвижный и совсем не молчаливый.",
+      "habitat": "Камень, старые карты и тёплый свет мастерской.",
+      "excerpt": "Три головы, тёплая палитра и чешуя, которую хочется рассматривать близко.",
+      "story": "Трёхглавый дракон собран из тёплых оранжевых, бордовых и кремовых оттенков.",
+      "heroImage": "/media/residents/gorynych/amber-hero.webp",
+      "gallery": [
+        "/media/residents/gorynych/amber-hero.webp"
+      ],
+      "chronicle": {
+        "origin": "Родился из сложной фактуры, трёх разных выражений и ручной росписи",
+        "character": "Слышно ещё до того, как он открывает пасти",
+        "path": "Готов к встрече с новым Хранителем",
+        "keeper": "Можно приобрести"
+      },
+      "focus": "72% center"
+    },
+    {
+      "id": "gorynych-green",
+      "slug": "gorynych-green",
+      "name": "Змей Горыныч",
+      "collectionId": "russian",
+      "availability": "available",
+      "technique": "one-of-a-kind",
+      "type": "Сказочный трёхглавый дракон",
+      "character": "Царственный, упрямый и удивительно живой в каждом из трёх взглядов.",
+      "habitat": "Старая сказка у дубового дупла, где золото корон встречает лесную зелень.",
+      "excerpt": "Зелёный трёхглавый Горыныч с коронами, крыльями и яркой ручной росписью.",
+      "story": "Зелёный Змей Горыныч — отдельная готовая работа Веры.",
+      "heroImage": "/media/residents/gorynych-green/hero.webp",
+      "gallery": [
+        "/media/residents/gorynych-green/hero.webp"
+      ],
+      "chronicle": {
+        "origin": "Пришёл из русской сказочной традиции и получил собственный характер в ручной лепке Веры",
+        "character": "Три взгляда спорят между собой, но короны держат общий порядок",
+        "path": "Готов к встрече с новым Хранителем",
+        "keeper": "Можно приобрести"
+      },
+      "focus": "72% center"
+    },
+    {
+      "id": "forest-dragon",
+      "slug": "forest-dragon",
+      "name": "Лесной дракон",
+      "collectionId": "forest",
+      "availability": "available",
+      "technique": "one-of-a-kind",
+      "type": "Лесной Житель",
+      "character": "Терпеливый, внимательный и не слишком разговорчивый.",
+      "habitat": "Мшистые ущелья, тёплая кора и тихие полки с книгами.",
+      "excerpt": "Зелёный дракон с природной палитрой и множеством деталей, которые открываются при близком взгляде.",
+      "story": "Лесной дракон — пример того, как характер рождается из цвета и поверхности: зелёные переходы, шипы и живые фактуры ведут зрителя вокруг фигуры",
+      "heroImage": "/media/residents/forest-dragon/studio.webp",
+      "gallery": [
+        "/media/residents/forest-dragon/studio.webp"
+      ],
+      "chronicle": {
+        "origin": "Собран из лесных оттенков и внимательной работы с чешуёй",
+        "character": "Предпочитает сначала наблюдать, а потом решать, можно ли доверять путнику",
+        "path": "Готов к встрече с новым Хранителем",
+        "keeper": "Можно приобрести"
+      },
+      "focus": "73% center"
+    },
+    {
+      "id": "forest-mushrooms",
+      "slug": "forest-mushrooms",
+      "name": "Лесные грибы",
+      "collectionId": "forest",
+      "availability": "available",
+      "technique": "author-series",
+      "type": "Лесная миниатюра",
+      "character": "Тихие, разные и собранные будто после прогулки по настоящему лесу.",
+      "habitat": "Мох, корзинка, подарочная коробка и тёплая полка дома.",
+      "excerpt": "Мухоморы, лисички, белые и другие грибы — небольшие ручные миниатюры с живой фактурой.",
+      "story": "Грибочки Веры появляются по одному, парами и целыми лесными наборами.",
+      "heroImage": "/media/residents/mushrooms/hero.webp",
+      "gallery": [
+        "/media/residents/mushrooms/hero.webp"
+      ],
+      "chronicle": {
+        "origin": "Начались с наблюдений за настоящими грибами и любви к маленьким лесным деталям",
+        "character": "Лучше всего чувствуют себя компанией, но каждый сохраняет собственную форму",
+        "path": "Можно выбрать отдельные грибочки или собрать лесной набор",
+        "keeper": "Можно приобрести"
+      },
+      "focus": "72% center"
+    },
+    {
+      "id": "baby-dragon",
+      "slug": "baby-dragon",
+      "name": "Малыш-дракон",
+      "collectionId": "dragons",
+      "availability": "in-progress",
+      "technique": "one-of-a-kind",
+      "type": "Будущий Житель",
+      "character": "Ещё выбирает цвет, но взгляд уже появился.",
+      "habitat": "Пока — на рабочем столе Мастерской, рядом с инструментами и первыми эскизами.",
+      "excerpt": "Житель в рождении: форма уже говорит, а окончательная история ещё выбирает направление.",
+      "story": "Малыш-дракон показывает важный этап: работа ещё не расписана, но характер уже начинает проступать через взгляд, крылья и линию тела",
+      "heroImage": "/media/residents/baby-dragon/hero.webp",
+      "gallery": [
+        "/media/residents/baby-dragon/hero.webp"
+      ],
+      "chronicle": {
+        "origin": "Начался с мягкой формы и большого синего глаза",
+        "character": "Пока только учится смотреть на мир",
+        "path": "История ещё пишется в Мастерской",
+        "keeper": "Ищет своё имя"
+      },
+      "focus": "72% center"
+    },
+    {
+      "id": "soul-regan",
+      "slug": "soul-regan",
+      "name": "Соул Реган",
+      "collectionId": "dragons",
+      "availability": "in-progress",
+      "technique": "one-of-a-kind",
+      "type": "Белый дракон",
+      "character": "Сдержанный, высокий и немного чужой для привычных драконьих легенд.",
+      "habitat": "Каменный стол Мастерской, старые эскизы и тёплый свет над ещё не законченной историей.",
+      "excerpt": "Белый длинношеий дракон с зелёным взглядом и ветвистыми рогами — форма уже завершена, а цветовая легенда ещё выбирается.",
+      "story": "Соул Реган строится на вытянутом силуэте, длинной шее и необычных рогах, похожих на древние ветви.",
+      "heroImage": "/media/residents/soul-regan/hero.avif",
+      "gallery": [
+        "/media/residents/soul-regan/hero.avif"
+      ],
+      "chronicle": {
+        "origin": "Начался с высокого силуэта и рогов, которые задали всей работе неземной характер",
+        "character": "Наблюдает спокойно и не торопится раскрывать свою историю",
+        "path": "Форма завершена, впереди окончательная роспись.",
+        "keeper": "В работе"
+      },
+      "creationDate": "В работе",
+      "focus": "72% center"
+    },
+    {
+      "id": "chicken-sun",
+      "slug": "chicken-sun",
+      "name": "Курочка",
+      "collectionId": "home",
+      "availability": "available",
+      "technique": "one-of-a-kind",
+      "type": "Домашний Житель",
+      "character": "Солнечная, прямолинейная и очень домашняя.",
+      "habitat": "Тихий двор, подоконник и место рядом с теми, кому нужен тёплый знак дня.",
+      "excerpt": "Не всякая легенда должна рычать: некоторые просто выходят на свет и смотрят прямо.",
+      "story": "Курочка открывает более тихую линию Мастерской — маленьких домашних Жителей, в которых живут цвет, юмор и ощущение заботы",
+      "heroImage": "/media/residents/chicken/hero.webp",
+      "gallery": [
+        "/media/residents/chicken/hero.webp"
+      ],
+      "chronicle": {
+        "origin": "Появилась из желания оставить в доме маленький солнечный след",
+        "character": "Делает вид, что всё знает заранее",
+        "path": "Готова к встрече с новым Хранителем",
+        "keeper": "Можно приобрести"
+      },
+      "focus": "71% center"
+    },
+    {
+      "id": "rocking-horse",
+      "slug": "rocking-horse",
+      "name": "Солнечная лошадка-качалка",
+      "shortName": "Лошадка-качалка",
+      "collectionId": "home",
+      "availability": "available",
+      "technique": "one-of-a-kind",
+      "type": "Домашняя сказочная игрушка",
+      "character": "Светлая, терпеливая и всегда готовая унести в воображаемое путешествие.",
+      "habitat": "Солнечная комната, деревянная полка и место, где старые игрушки продолжают жить.",
+      "excerpt": "Белая лошадка с золотой гривой и яркой росписью — маленькая домашняя история о движении и детстве.",
+      "story": "Лошадка-качалка выполнена и расписана вручную.",
+      "heroImage": "/media/residents/rocking-horse/hero.avif",
+      "gallery": [
+        "/media/residents/rocking-horse/hero.avif"
+      ],
+      "chronicle": {
+        "origin": "Родилась из памяти о деревянных игрушках, солнечном окне и первых придуманных путешествиях",
+        "character": "Не спешит, но всегда знает, куда начинается дорога",
+        "path": "Готова к встрече с новым Хранителем",
+        "keeper": "Можно приобрести"
+      },
+      "focus": "71% center"
+    },
+    {
+      "id": "sirin",
+      "slug": "sirin",
+      "name": "Птица Сирин",
+      "shortName": "Сирин",
+      "collectionId": "russian",
+      "availability": "available",
+      "technique": "one-of-a-kind",
+      "type": "Сказочная птица",
+      "character": "Спокойная, гордая и внимательная к тому, что слышно только в тишине.",
+      "habitat": "Сумеречный лес, влажный мох и места, где между корнями мерцают старые огни.",
+      "excerpt": "Сказочная птица с человеческим лицом, бирюзовым оперением и песней, которую каждый слышит по-своему.",
+      "story": "Сирин — авторское прочтение древнего образа.",
+      "heroImage": "/media/residents/sirin/cinematic.avif",
+      "gallery": [
+        "/media/residents/sirin/cinematic.avif"
+      ],
+      "chronicle": {
+        "origin": "Родилась на границе птицы, человека и старой песни",
+        "character": "Не любит суеты и умеет превращать тишину в собственную музыку",
+        "path": "Готова к встрече с новым Хранителем",
+        "keeper": "Можно приобрести"
+      },
+      "focus": "66% center",
+      "mobileFocus": "60% center"
+    },
+    {
+      "id": "mermaid",
+      "slug": "mermaid",
+      "name": "Русалка",
+      "collectionId": "russian",
+      "availability": "in-progress",
+      "technique": "one-of-a-kind",
+      "type": "Сказочная Жительница",
+      "character": "Мечтательная, независимая и немного морская.",
+      "habitat": "Вода, камни, лунный свет и истории, которые лучше не рассказывать слишком громко.",
+      "excerpt": "Сказочный образ с авторской росписью и живым цветом.",
+      "story": "Русалка — один из будущих мостов к новой водной главе.",
+      "heroImage": "/media/residents/mermaid/hero.webp",
+      "gallery": [
+        "/media/residents/mermaid/hero.webp",
+        "/media/residents/mermaid/angle.webp"
+      ],
+      "chronicle": {
+        "origin": "Родилась из воды, цвета и желания рассказать новую сказку",
+        "character": "Слушает долго, отвечает редко",
+        "path": "Пока рождается в Мастерской",
+        "keeper": "В работе"
+      },
+      "showcase": false,
+      "creationDate": "Каркас — работа продолжается"
+    },
+    {
+      "id": "little-humpbacked-horse",
+      "slug": "little-humpbacked-horse",
+      "name": "Конёк-Горбунок",
+      "collectionId": "russian",
+      "availability": "available",
+      "technique": "one-of-a-kind",
+      "type": "Сказочный спутник",
+      "character": "Верный, быстрый и с хорошим чувством направления.",
+      "habitat": "Дальние дороги, огни в окнах и места, куда без сказки не добраться.",
+      "excerpt": "Небольшой спутник большого пути — авторская фигура, в которой важны силуэт, движение и характер.",
+      "story": "Конёк-Горбунок дополняет русскую линию Мастерской: узнаваемый сказочный спутник становится самостоятельным образом через ручную лепку, тёмную роспись, светлую гриву и стремительную позу",
+      "heroImage": "/media/residents/horse/cinematic.avif",
+      "gallery": [
+        "/media/residents/horse/cinematic.avif"
+      ],
+      "chronicle": {
+        "origin": "Родился из дороги, сказки и пластики быстрого движения",
+        "character": "Знает короткую дорогу, но выбирает красивую",
+        "path": "Готов к встрече с новым Хранителем",
+        "keeper": "Можно приобрести"
+      },
+      "focus": "71% center"
+    }
+  ],
+  "stories": [
+    {
+      "id": "big-dragon-threshold",
+      "title": "Когда работа берёт власть в свои лапы",
+      "lead": "Иногда Житель рождается не по плану: пока Вера прорабатывает мелочи, форма сама меняет направление.",
+      "body": "Большой дракон стал для Веры рубежной работой: первая масштабная фигура потребовала другого размаха, терпения и уверенности. Этот раздел будет пополняться его фотографиями по мере рождения.",
+      "quote": "Пока ты сидишь и прорабатываешь мелочи, работа берёт власть в свои лапы и начинает диктовать тебе сценарий.",
+      "image": "/media/residents/forest-dragon/studio.webp",
+      "published": true
+    },
+    {
+      "id": "gift-ceremony",
+      "title": "Житель приезжает как маленькая церемония встречи",
+      "lead": "Коробка, наполнитель, открытка и Свиток Жителя делают встречу частью истории, а не просто доставкой.",
+      "body": "В подарочный набор могут входить Жители, открытка и маленькие знаки от Мастерской. Состав всегда зависит от конкретной работы и сезона.",
+      "quote": "У каждого Жителя есть путь — от замысла до встречи с Хранителем.",
+      "image": "/media/sets/winter-gift.webp",
+      "published": true
+    }
+  ],
+  "inquiries": []
+}
