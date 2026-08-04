@@ -1,0 +1,83 @@
+name: Finalize Resident content
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'studio/data/content.worlds.json'
+      - 'studio/scripts/build-content.mjs'
+      - '.github/workflows/finalize-content.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: finalize-resident-content
+  cancel-in-progress: true
+
+jobs:
+  finalize-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Merge final images and statuses into seed
+        run: |
+          set -euo pipefail
+          node studio/scripts/build-content.mjs \
+            studio/data/content.seed.json \
+            studio/data/content.worlds.json \
+            studio/data/content.seed.final.json
+          mv studio/data/content.seed.final.json studio/data/content.seed.json
+          grep -q '/media/residents/sirin/cinematic.avif' studio/data/content.seed.json
+          grep -q '/media/residents/nutcracker/studio.webp' studio/data/content.seed.json
+          grep -q '"showcase": false' studio/data/content.seed.json
+
+      - name: Commit finalized seed to main
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- studio/data/content.seed.json; then
+            echo 'content.seed.json is already final'
+          else
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add studio/data/content.seed.json
+            git commit -m 'data: write final Resident worlds into content seed'
+            git push origin HEAD:main
+          fi
+
+      - name: Prepare final Pages artifact
+        run: |
+          set -euo pipefail
+          rm -rf _site
+          mkdir -p _site
+          cp -R studio/public/. _site/
+          cp studio/data/content.seed.json _site/content.json
+          rm -rf _site/admin
+          touch _site/.nojekyll
+          printf '{"commit":"%s","builtAt":"%s","content":"final"}\n' "$GITHUB_SHA" "$(date -u +%FT%TZ)" > _site/build-info.json
+          grep -q '/media/residents/sirin/cinematic.avif' _site/content.json
+          grep -q '/media/residents/nutcracker/studio.webp' _site/content.json
+          grep -q '"showcase": false' _site/content.json
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - name: Deploy final Pages site
+        id: deployment
+        uses: actions/deploy-pages@v4
