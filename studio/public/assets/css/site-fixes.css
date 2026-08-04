@@ -208,3 +208,8 @@
   .chronicle-hero__shade { height: 28rem; }
   .filters { padding-inline: .68rem; }
 }
+
+/* The Mermaid is only an armature; keep it out of the finished Residents showcase until the sculpture is ready. */
+.resident-card[data-resident="mermaid"],
+.world-resident[data-resident="mermaid"],
+.world-slider__rail button[hidden] { display: none !important; }
