@@ -95,15 +95,37 @@ function collectionCard(collection) {
   </a>`;
 }
 
+function enableAtmosphereMotion() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const stage = document.querySelector('[data-hero-stage]');
+  if (stage) {
+    stage.addEventListener('pointermove', (event) => {
+      const bounds = stage.getBoundingClientRect();
+      const x = ((event.clientX - bounds.left) / bounds.width - .5).toFixed(3);
+      const y = ((event.clientY - bounds.top) / bounds.height - .5).toFixed(3);
+      stage.style.setProperty('--pointer-x', x);
+      stage.style.setProperty('--pointer-y', y);
+    });
+    stage.addEventListener('pointerleave', () => {
+      stage.style.setProperty('--pointer-x', '0');
+      stage.style.setProperty('--pointer-y', '0');
+    });
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => entry.target.classList.toggle('is-visible', entry.isIntersecting));
+  }, { threshold: .14 });
+  document.querySelectorAll('[data-reveal]').forEach((element) => observer.observe(element));
+}
+
 function home() {
   const azimondias = byId(content.residents, 'azimondias') || content.residents[0];
   const giftStory = content.stories.find((story) => story.id === 'gift-ceremony') || content.stories[0];
   app.innerHTML = `<main id="main">
-    <section class="hero"><div class="hero__media"><img src="${esc(azimondias.heroImage)}" alt="${esc(azimondias.name)} — Житель Мастерской Веры" fetchpriority="high"></div><div class="hero__shade"></div><div class="hero__mist" aria-hidden="true"></div><div class="shell hero__content"><p class="eyebrow eyebrow--light">Авторская мастерская · ручная работа</p><h1>Здесь рождаются Жители и находят своих Хранителей</h1><p class="lede lede--light">Фигурки и персонажи Веры создаются вручную — от первого каркаса и формы до росписи, глаз, украшений и собственной истории.</p><div class="cluster"><a class="button button--wine" href="/residents.html">Найти Жителя</a><a class="button button--light" href="/create.html">Создать Жителя</a></div><p class="hero__note">Готовую работу можно забрать себе. Для будущего Жителя Вера сначала знакомится с идеей, а размер, сроки и стоимость согласует лично.</p></div></section>
+    <section class="hero hero--cinematic" data-hero-stage><div class="hero__media"><img src="${esc(azimondias.heroImage)}" alt="${esc(azimondias.name)} — Житель Мастерской Веры" fetchpriority="high"></div><div class="hero__shade"></div><div class="hero__mist" aria-hidden="true"></div><div class="hero__flare" aria-hidden="true"></div><div class="hero__constellation" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="shell hero__content"><p class="eyebrow eyebrow--light" data-reveal>Добро пожаловать, путник! ✦</p><h1 data-reveal>Здесь рождаются<br><em>Жители.</em></h1><p class="lede lede--light" data-reveal>Не просто фигурки — живые характеры из глины, цвета, деталей и собственных Хроник.</p><div class="cluster" data-reveal><a class="button button--wine" href="/residents.html">Встретить Жителей <span aria-hidden="true">↗</span></a><a class="button button--light" href="/create.html">Родить новую историю</a></div><p class="hero__note" data-reveal>Каждая работа создаётся вручную. Готовый Житель может найти Хранителя, а новая история — начаться с вашей идеи.</p></div><div class="hero__resident-mark" aria-hidden="true"><span>01</span><b>${esc(azimondias.shortName || azimondias.name)}</b><small>Древние существа</small></div><a class="hero__scroll" href="#worlds" aria-label="Перейти к Мирам"><span>Листать миры</span><i>↓</i></a></section>
 
-    <section class="section section--paper"><div class="shell intro-grid"><figure class="intro-grid__visual"><img src="/media/residents/azimondias/final.webp" alt="Азимондиас, синий дракон Веры" loading="lazy"></figure><div class="introduction"><p class="eyebrow">Не обычный магазин</p><h2>Сначала появляется характер. Потом — имя, история и путь к дому.</h2><p class="lede">У Жителя может быть драконья чешуя, корона, крылья или тихий домашний характер. Но в основе всегда остаётся авторская ручная работа Веры.</p><div class="facts"><div class="fact"><b>Руками</b><span>лепка, роспись, детали и финальное покрытие</span></div><div class="fact"><b>Без копий</b><span>оригиналы не повторяются один в один</span></div><div class="fact"><b>С историей</b><span>Свиток и Хроника продолжают встречу</span></div></div></div></div></section>
+    <section class="section section--paper manifesto"><div class="shell intro-grid" data-reveal><figure class="intro-grid__visual"><img src="/media/residents/azimondias/final.webp" alt="Азимондиас, синий дракон Веры" loading="lazy"><span class="image-caption">Азимондиас · мир Древних существ</span></figure><div class="introduction"><p class="eyebrow">Не обычный магазин</p><h2>Сначала появляется характер. Потом — имя, история и путь к дому.</h2><p class="lede">У Жителя может быть драконья чешуя, корона, крылья или тихий домашний характер. Но в основе всегда остаётся авторская ручная работа Веры.</p><div class="facts"><div class="fact"><b>Руками</b><span>лепка, роспись, детали и финальное покрытие</span></div><div class="fact"><b>Без копий</b><span>оригиналы не повторяются один в один</span></div><div class="fact"><b>С историей</b><span>Свиток и Хроника продолжают встречу</span></div></div></div></div></section>
 
-    <section class="section section--night"><div class="shell"><header class="section-head"><div><p class="eyebrow eyebrow--light">Миры Мастерской</p><h2>У каждой коллекции свой воздух, цвет и характер</h2></div><a class="text-link text-link--light" href="/collections.html">Все коллекции →</a></header><div class="collection-grid">${content.collections.slice(0, 4).map(collectionCard).join('')}</div></div></section>
+    <section id="worlds" class="section section--night worlds-stage"><div class="shell"><header class="section-head" data-reveal><div><p class="eyebrow eyebrow--light">Миры Мастерской</p><h2>У каждой коллекции — свой воздух, свет и характер.</h2></div><a class="text-link text-link--light" href="/collections.html">Открыть атлас →</a></header><div class="worlds-stage__line" aria-hidden="true"><span>Выбери портал</span><i></i><span>Иди за историей</span></div><div class="collection-grid collection-grid--portals">${content.collections.map(collectionCard).join('')}</div></div></section>
 
     <section class="section"><div class="shell"><header class="section-head"><div><p class="eyebrow">Хроники Мастерской</p><h2>Жители, которых уже можно встретить</h2></div><a class="text-link" href="/residents.html">Смотреть всех →</a></header><div class="resident-grid">${content.residents.slice(0, 4).map(residentCard).join('')}</div></div></section>
 
@@ -112,6 +134,7 @@ function home() {
     <section class="section section--paper"><div class="shell"><header class="section-head"><div><p class="eyebrow">Честно о технике</p><h2>Сегодня все Жители создаются вручную</h2></div></header><div class="tech-grid"><article class="tech-card"><span class="tech-card__index">01</span><h3>Оригиналы</h3><p>Полностью слепленные вручную Жители — единственные в своём роде. Точно повторить такую форму нельзя.</p></article><article class="tech-card"><span class="tech-card__index">02</span><h3>Будущие серии</h3><p>Позже у некоторых образов могут появиться авторские основы. Это не массовое производство: каждую отливку Вера будет обрабатывать, расписывать и дополнять вручную.</p></article><article class="tech-card"><span class="tech-card__index">03</span><h3>Своя история</h3><p>Даже при общей форме у Жителей будут разный цвет, взгляд, детали и характер. Тысяч одинаковых заготовок здесь не появится.</p></article></div></div></section>
   </main>`;
   document.title = 'Мастерская Веры — авторские Жители ручной работы';
+  enableAtmosphereMotion();
 }
 
 function residents() {
