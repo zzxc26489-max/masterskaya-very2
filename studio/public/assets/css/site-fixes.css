@@ -1,0 +1,210 @@
+/* Visual upgrade: every Resident is shown inside a cinematic world. */
+:root { --resident-world-focus: 72% center; }
+
+/* Preserve generated detail and avoid browser-side softening. */
+.resident-card__image img,
+.world-resident__photo img,
+.resident-detail__image img,
+.chronicle-hero__scene {
+  filter: none !important;
+  image-rendering: auto;
+  object-position: var(--resident-focus, var(--resident-world-focus));
+}
+
+/* Resident cards now present the complete world instead of a tall phone crop. */
+.resident-card {
+  border-color: rgb(183 138 79 / .34);
+  box-shadow: 0 1.5rem 4rem rgb(8 5 3 / .22);
+}
+.resident-card__image {
+  aspect-ratio: 16 / 10;
+  background: #0e0b09;
+}
+.resident-card__image img {
+  transform: none !important;
+  object-fit: cover;
+}
+.resident-card__image::after {
+  background: linear-gradient(0deg, rgb(12 8 6 / .76), transparent 44%);
+}
+.resident-card__body {
+  min-height: 16rem;
+}
+
+/* Filters stay in their own row and never float across a Resident image on phones. */
+.filter-dock {
+  width: 100%;
+  transform: none !important;
+}
+.filters {
+  max-width: 100%;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x proximity;
+}
+.filter-button {
+  scroll-snap-align: start;
+  white-space: nowrap;
+  border-radius: .2rem;
+}
+
+/* Individual Resident page: world image as the main hero, copy on the left. */
+.chronicle-hero {
+  min-height: min(52rem, calc(100svh - 5.2rem));
+  align-items: center;
+  padding: clamp(5rem, 9vw, 9rem) 0;
+  background: #0d0a08;
+}
+.chronicle-hero__scene {
+  object-fit: cover;
+  object-position: var(--hero-focus, 72% center);
+  transform: scale(1.002);
+}
+.chronicle-hero__shade {
+  background:
+    linear-gradient(90deg, rgb(7 6 5 / .98) 0%, rgb(7 6 5 / .9) 27%, rgb(7 6 5 / .42) 55%, rgb(7 6 5 / .05) 82%),
+    linear-gradient(0deg, rgb(7 6 5 / .5), transparent 48%);
+}
+.chronicle-hero > .shell {
+  position: relative;
+  z-index: 5;
+}
+.chronicle-hero > .shell > * {
+  max-width: min(36rem, 45vw);
+}
+.chronicle-hero h1 {
+  margin-bottom: 1.1rem;
+  color: #fff0d9;
+  text-shadow: 0 .35rem 2rem rgb(0 0 0 / .4);
+}
+.chronicle-hero .lede {
+  color: rgb(255 239 216 / .82);
+}
+.chronicle-hero__status { margin-bottom: 1.2rem; }
+.chronicle-hero__actions { margin-top: 1.7rem; }
+
+/* The phone-background image is no longer repeated below the hero. */
+.resident-detail {
+  grid-template-columns: minmax(0, 52rem);
+  justify-content: center;
+}
+.resident-detail__image { display: none; }
+.resident-detail__copy {
+  padding: clamp(1rem, 3vw, 2.5rem) 0;
+}
+.resident-detail__copy > .status,
+.resident-detail__copy > .cluster { display: none; }
+.resident-detail__copy h2 { margin-top: 0; }
+
+/* One high-quality world image is preferable to a gallery of phone backgrounds. */
+.gallery { grid-template-columns: minmax(0, 1fr); }
+.gallery button,
+.gallery__video {
+  max-width: 72rem;
+  width: 100%;
+  margin-inline: auto;
+}
+.gallery img,
+.gallery__video video {
+  aspect-ratio: 16 / 9;
+  object-position: var(--resident-focus, 72% center);
+}
+
+/* Single-world screen: keep backgrounds inside the section so they cannot cover the footer. */
+.world-stage__scene,
+.world-stage__shade,
+.world-stage > .atmosphere {
+  position: absolute !important;
+  inset: 0 !important;
+  height: 100% !important;
+}
+.world-stage { min-height: auto; }
+.world-slider { min-height: 56rem; }
+.world-resident__photo {
+  clip-path: none;
+  border: 1px solid rgb(255 238 211 / .2);
+}
+.world-resident__photo img { object-position: var(--resident-focus, 72% center); }
+
+/* Footer must always be a clean final layer. */
+[data-site-footer],
+.site-footer {
+  position: relative;
+  z-index: 70;
+  isolation: isolate;
+}
+.site-footer { overflow: hidden; }
+.scroll-top { z-index: 90; }
+
+@media (max-width: 64rem) {
+  .resident-card__image { aspect-ratio: 3 / 2; }
+  .chronicle-hero > .shell > * { max-width: min(32rem, 52vw); }
+}
+
+@media (max-width: 48rem) {
+  /* The filter row becomes part of normal document flow. */
+  .filter-dock {
+    position: relative !important;
+    top: auto !important;
+    z-index: 10;
+    border-top: 1px solid var(--line);
+  }
+  .filters {
+    width: 100%;
+    margin: 0;
+    padding: .75rem .7rem;
+  }
+
+  .resident-card__image {
+    aspect-ratio: 4 / 5;
+  }
+  .resident-card__image img {
+    object-position: var(--resident-focus-mobile, var(--resident-focus, 72% center));
+  }
+  .resident-card__body { min-height: auto; }
+
+  /* On a phone the image is a centered, independent frame; text follows below it. */
+  .chronicle-hero {
+    display: block;
+    min-height: 0;
+    padding: 30rem 0 3rem;
+    background: #0d0a08;
+  }
+  .chronicle-hero__scene,
+  .chronicle-hero__shade {
+    top: 0;
+    bottom: auto;
+    height: 31rem;
+  }
+  .chronicle-hero__scene {
+    object-position: var(--hero-focus-mobile, var(--hero-focus, 72% center));
+  }
+  .chronicle-hero__shade {
+    background:
+      linear-gradient(0deg, #0d0a08 0%, rgb(13 10 8 / .8) 12%, transparent 43%),
+      linear-gradient(90deg, rgb(5 4 3 / .16), transparent 50%, rgb(5 4 3 / .16));
+  }
+  .chronicle-hero > .shell > * { max-width: none; }
+  .chronicle-hero h1 { font-size: clamp(3.2rem, 15vw, 5.2rem); }
+  .chronicle-hero .lede { font-size: 1rem; }
+  .chronicle-hero__actions .button { width: 100%; }
+
+  .section.section--paper:has(.resident-detail) { padding-top: 2.5rem; }
+  .gallery img,
+  .gallery__video video {
+    aspect-ratio: 4 / 5;
+    object-position: var(--resident-focus-mobile, var(--resident-focus, 72% center));
+  }
+
+  .world-slider { min-height: 58rem; }
+  .world-resident__photo img {
+    object-position: var(--resident-focus-mobile, var(--resident-focus, 72% center));
+  }
+  .footer-grid { position: relative; z-index: 2; }
+}
+
+@media (max-width: 34rem) {
+  .chronicle-hero { padding-top: 27rem; }
+  .chronicle-hero__scene,
+  .chronicle-hero__shade { height: 28rem; }
+  .filters { padding-inline: .68rem; }
+}
