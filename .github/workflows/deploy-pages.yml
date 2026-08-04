@@ -54,8 +54,8 @@ jobs:
           test -f _site/assets/css/site-fixes.css
           test -f _site/assets/js/site-enhancements.js
           test -f _site/content.json
-          grep -q 'site-fixes.css?v=20260804b' _site/residents.html
-          grep -q 'site-enhancements.js?v=20260804b' _site/chronicle.html
+          grep -q 'site-fixes.css?v=20260805' _site/residents.html
+          grep -q 'site-enhancements.js?v=20260805' _site/chronicle.html
           grep -q '/media/residents/sirin/cinematic.avif' _site/content.json
           grep -q '/media/residents/nutcracker/studio.webp' _site/content.json
           grep -q '"showcase": false' _site/content.json
