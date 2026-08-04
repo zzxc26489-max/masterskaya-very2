@@ -109,6 +109,17 @@ h3 { font-size: clamp(1.5rem, 2.3vw, 2.2rem); }
 .hero__scroll { position: absolute; z-index: 2; bottom: 1.2rem; left: 50%; display: grid; justify-items: center; gap: .35rem; color: rgb(251 234 211 / .76); font-size: .59rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; transform: translateX(-50%); }
 .hero__scroll i { display: grid; place-items: center; width: 1.65rem; height: 1.65rem; border: 1px solid rgb(244 209 142 / .35); border-radius: 50%; color: var(--gold-light); font-style: normal; animation: scroll-bob 2s ease-in-out infinite; }
 
+/* Home: the atelier is the entrance to every world, so its image remains neutral and collective. */
+.hero--atelier { min-height: min(52rem, calc(100svh - 5.1rem)); }
+.hero--atelier .hero__media img { object-position: center 50%; filter: saturate(.78) contrast(1.04) brightness(.8); }
+.hero--atelier .hero__shade { background: linear-gradient(90deg, rgb(10 8 7 / .97) 0%, rgb(10 8 7 / .88) 31%, rgb(10 8 7 / .42) 57%, rgb(10 8 7 / .08) 78%), linear-gradient(0deg, rgb(10 8 7 / .68), transparent 54%); }
+.hero--atelier .hero__mist { height: 34%; opacity: .36; }
+.hero--atelier .hero__content { max-width: 34rem; padding: clamp(5.5rem, 12vh, 8.5rem) 0 clamp(4.2rem, 8vw, 6.4rem); }
+.hero--atelier h1 { margin-bottom: 1rem; font-size: clamp(4.35rem, 7vw, 7.6rem); letter-spacing: -.06em; }
+.hero--atelier h1 em { color: var(--gold-light); font-weight: 500; }
+.hero--atelier .lede { max-width: 32rem; }
+.hero--atelier .hero__note { max-width: 31rem; margin-top: 1.15rem; }
+
 .section-head { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: clamp(2rem, 4vw, 3.5rem); }
 .section-head h2 { max-width: 48rem; }
 .intro-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(2rem, 5vw, 6rem); align-items: center; }
@@ -169,7 +180,7 @@ h3 { font-size: clamp(1.5rem, 2.3vw, 2.2rem); }
 .story-strip { display: grid; grid-template-columns: 1.1fr .9fr; gap: 0; overflow: hidden; border: 1px solid var(--line-on-dark); border-radius: var(--radius); background: #221712; }
 .story-strip__image { min-height: 28rem; }
 .story-strip__image img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.72); }
-.story-strip__copy { display: grid; align-content: center; padding: clamp(2rem, 5vw, 5rem); }
+.story-strip__copy { display: grid; align-content: center; padding: clamp(2rem, 5vw, 5rem); color: #f7ebdb; }
 .story-strip__copy h2 { margin-bottom: 1rem; }
 .story-strip__copy p { margin-bottom: 1.5rem; color: #d6c4ad; }
 
@@ -285,6 +296,7 @@ h3 { font-size: clamp(1.5rem, 2.3vw, 2.2rem); }
 .contact-card { padding: clamp(1.5rem, 4vw, 3rem); border: 1px solid var(--line); background: var(--paper-2); box-shadow: var(--shadow); }
 .contact-card h2 { margin-bottom: .8rem; }
 .contact-card p { max-width: 35rem; margin-bottom: 1.2rem; color: var(--muted); }
+.contact-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin: 1.35rem 0 1.5rem; }
 .contact-details { display: grid; gap: .8rem; margin-top: 1.5rem; }
 .contact-details a { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .9rem 0; border-top: 1px solid var(--line); font-weight: 700; }
 .contact-details span { color: var(--wine); font-size: .8rem; }
@@ -303,7 +315,8 @@ h3 { font-size: clamp(1.5rem, 2.3vw, 2.2rem); }
 @keyframes scroll-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(.35rem); } }
 
 @media (max-width: 74rem) {
-  .header-inner { grid-template-columns: auto 1fr auto; }
+  .header-inner { grid-template-columns: minmax(0, 1fr) auto; }
+  .header-actions { margin-left: auto; }
   .main-nav { position: fixed; inset: 5.1rem 0 auto; display: grid; justify-items: start; gap: 0; max-height: calc(100svh - 5.1rem); padding: 1rem 1.25rem 2rem; border-bottom: 1px solid var(--line-on-dark); background: #19100d; transform: translateY(-120%); transition: transform .25s var(--ease); box-shadow: 0 22px 40px rgb(0 0 0 / .28); }
   .main-nav.is-open { transform: none; }
   .main-nav a { width: 100%; min-height: 3.2rem; }
@@ -322,6 +335,11 @@ h3 { font-size: clamp(1.5rem, 2.3vw, 2.2rem); }
   .brand__mark { font-size: 1.15rem; }
   .main-nav { inset: 4.5rem 0 auto; }
   .hero { min-height: 42rem; }
+  .hero--atelier { min-height: max(42rem, calc(100svh - 4.5rem)); }
+  .hero--atelier .hero__content { max-width: 100%; padding: 5.25rem 0 3.1rem; }
+  .hero--atelier h1 { font-size: clamp(3.9rem, 18vw, 5.5rem); }
+  .hero--atelier .hero__media img { object-position: 61% 50%; }
+  .hero--atelier .hero__shade { background: linear-gradient(90deg, rgb(10 8 7 / .95), rgb(10 8 7 / .62) 60%, rgb(10 8 7 / .22)), linear-gradient(0deg, rgb(10 8 7 / .75), transparent 63%); }
   .hero--cinematic { min-height: 46rem; }
   .hero__content { padding-top: 9rem; }
   .hero__media img { object-position: 61% 40%; }
