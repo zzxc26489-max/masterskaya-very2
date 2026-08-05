@@ -11,7 +11,7 @@
       "name": "Зимние легенды",
       "description": "Щелкунчики, мышиные короли и другие Жители, в которых живут зимние истории, музыка и ожидание чуда.",
       "theme": "winter",
-      "image": "/media/residents/nutcracker/studio.webp",
+      "image": "/media/world-residents/nutcracker-ernst.webp?v=20260805f",
       "sceneImage": "/media/worlds/winter-scene.webp",
       "cue": "Снег · еловая тень · тёплый свет",
       "accent": "#b4cbe1"
@@ -22,7 +22,7 @@
       "name": "Тайны древнего леса",
       "description": "Лесные драконы, грибы, гномы и существа, которые не любят шум, но знают много старых историй.",
       "theme": "forest",
-      "image": "/media/residents/forest-dragon/studio.webp",
+      "image": "/media/world-residents/forest-dragon.webp?v=20260805f",
       "sceneImage": "/media/worlds/forest-scene.webp",
       "cue": "Мох · корни · живые огни",
       "accent": "#8ba06a"
@@ -98,7 +98,7 @@
       "habitat": "Тёплый дом, в котором уже поставили ёлку и ждут праздника.",
       "excerpt": "Зимняя история с ровной осанкой, мундиром и очень серьёзной задачей — беречь чудо.",
       "story": "Щелкунчики Веры не повторяют друг друга: меняются выражение лица, детали формы, оттенки, роспись и маленькие следы ручной работы",
-      "heroImage": "/media/residents/nutcracker/studio.webp",
+      "heroImage": "/media/world-residents/nutcracker-ernst.webp?v=20260805f",
       "gallery": [
         "/media/residents/nutcracker/studio.webp"
       ],
@@ -108,7 +108,8 @@
         "path": "Готов к встрече с новым Хранителем",
         "keeper": "Можно приобрести"
       },
-      "focus": "72% center"
+      "focus": "center",
+      "mobileFocus": "center"
     },
     {
       "id": "girl-with-nutcracker",
@@ -243,7 +244,7 @@
       "habitat": "Мшистые ущелья, тёплая кора и тихие полки с книгами.",
       "excerpt": "Зелёный дракон с природной палитрой и множеством деталей, которые открываются при близком взгляде.",
       "story": "Лесной дракон — пример того, как характер рождается из цвета и поверхности: зелёные переходы, шипы и живые фактуры ведут зрителя вокруг фигуры",
-      "heroImage": "/media/residents/forest-dragon/studio.webp",
+      "heroImage": "/media/world-residents/forest-dragon.webp?v=20260805f",
       "gallery": [
         "/media/residents/forest-dragon/studio.webp"
       ],
@@ -253,7 +254,8 @@
         "path": "Готов к встрече с новым Хранителем",
         "keeper": "Можно приобрести"
       },
-      "focus": "73% center"
+      "focus": "center",
+      "mobileFocus": "center"
     },
     {
       "id": "forest-mushrooms",
@@ -291,7 +293,7 @@
       "habitat": "Пока — на рабочем столе Мастерской, рядом с инструментами и первыми эскизами.",
       "excerpt": "Житель в рождении: форма уже говорит, а окончательная история ещё выбирает направление.",
       "story": "Малыш-дракон показывает важный этап: работа ещё не расписана, но характер уже начинает проступать через взгляд, крылья и линию тела",
-      "heroImage": "/media/residents/baby-dragon/hero.webp",
+      "heroImage": "/media/world-residents/baby-dragon.webp?v=20260805f",
       "gallery": [
         "/media/residents/baby-dragon/hero.webp"
       ],
@@ -301,7 +303,8 @@
         "path": "История ещё пишется в Мастерской",
         "keeper": "Ищет своё имя"
       },
-      "focus": "72% center"
+      "focus": "center",
+      "mobileFocus": "center"
     },
     {
       "id": "soul-regan",
