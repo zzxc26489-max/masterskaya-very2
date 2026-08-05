@@ -75,11 +75,14 @@ jobs:
           test -s _site/media/world-residents/baby-dragon.webp
           test ! -f _site/assets/js/nutcracker-world-data.js
           test ! -f _site/assets/js/forest-dragon-world-data.js
-          grep -q 'site-fixes.css?v=20260805e' _site/residents.html
-          grep -q 'site-enhancements.js?v=20260805e' _site/chronicle.html
-          grep -q '/media/world-residents/nutcracker-ernst.webp' _site/content.json
-          grep -q '/media/world-residents/forest-dragon.webp' _site/content.json
-          grep -q '/media/world-residents/baby-dragon.webp' _site/content.json
+          grep -q 'site-fixes.css?v=20260805f' _site/residents.html
+          grep -q 'site-enhancements.js?v=20260805f' _site/chronicle.html
+          grep -q 'const staticBase' _site/assets/js/site-enhancements.js
+          ! grep -q 'const staticRoot' _site/assets/js/site-enhancements.js
+          grep -q '/media/world-residents/nutcracker-ernst.webp?v=20260805f' _site/content.json
+          grep -q '/media/world-residents/forest-dragon.webp?v=20260805f' _site/content.json
+          grep -q '/media/world-residents/baby-dragon.webp?v=20260805f' _site/content.json
+          grep -q '/media/residents/nutcracker/studio.webp' _site/content.json
           grep -q '"showcase": false' _site/content.json
 
       - name: Configure Pages

@@ -1,11 +1,11 @@
 {
   "collections": {
     "winter": {
-      "image": "/media/world-residents/nutcracker-ernst.webp",
+      "image": "/media/world-residents/nutcracker-ernst.webp?v=20260805f",
       "sceneImage": "/media/worlds/winter-scene.webp"
     },
     "forest": {
-      "image": "/media/world-residents/forest-dragon.webp",
+      "image": "/media/world-residents/forest-dragon.webp?v=20260805f",
       "sceneImage": "/media/worlds/forest-scene.webp"
     },
     "dragons": {
@@ -24,25 +24,21 @@
   "residents": {
     "azimondias": {
       "heroImage": "/media/residents/azimondias/final.webp",
-      "gallery": [],
       "focus": "73% center"
     },
     "nutcracker-ernst": {
-      "heroImage": "/media/world-residents/nutcracker-ernst.webp",
-      "gallery": [],
+      "heroImage": "/media/world-residents/nutcracker-ernst.webp?v=20260805f",
       "focus": "center",
       "mobileFocus": "center"
     },
     "girl-with-nutcracker": {
       "heroImage": "/media/residents/girl-with-nutcracker/hero.avif",
-      "gallery": [],
       "focus": "70% center"
     },
     "mouse-queen": {
       "availability": "available",
       "creationDate": "Создана вручную",
       "heroImage": "/media/residents/mouse-queen/hero.webp",
-      "gallery": [],
       "focus": "71% center",
       "chronicle": {
         "path": "Готова к встрече с новым Хранителем.",
@@ -51,33 +47,27 @@
     },
     "mouse-king": {
       "heroImage": "/media/residents/mouse-king/hero.webp",
-      "gallery": [],
       "focus": "73% center"
     },
     "gorynych-amber": {
       "heroImage": "/media/residents/gorynych/amber-hero.webp",
-      "gallery": [],
       "focus": "72% center"
     },
     "gorynych-green": {
       "heroImage": "/media/residents/gorynych-green/hero.webp",
-      "gallery": [],
       "focus": "72% center"
     },
     "forest-dragon": {
-      "heroImage": "/media/world-residents/forest-dragon.webp",
-      "gallery": [],
+      "heroImage": "/media/world-residents/forest-dragon.webp?v=20260805f",
       "focus": "center",
       "mobileFocus": "center"
     },
     "forest-mushrooms": {
       "heroImage": "/media/residents/mushrooms/hero.webp",
-      "gallery": [],
       "focus": "72% center"
     },
     "baby-dragon": {
-      "heroImage": "/media/world-residents/baby-dragon.webp",
-      "gallery": [],
+      "heroImage": "/media/world-residents/baby-dragon.webp?v=20260805f",
       "focus": "center",
       "mobileFocus": "center"
     },
@@ -85,7 +75,6 @@
       "availability": "in-progress",
       "creationDate": "В работе",
       "heroImage": "/media/residents/soul-regan/hero.avif",
-      "gallery": [],
       "focus": "72% center",
       "chronicle": {
         "path": "Форма завершена, впереди окончательная роспись.",
@@ -94,29 +83,24 @@
     },
     "chicken-sun": {
       "heroImage": "/media/residents/chicken/hero.webp",
-      "gallery": [],
       "focus": "71% center"
     },
     "rocking-horse": {
       "heroImage": "/media/residents/rocking-horse/hero.avif",
-      "gallery": [],
       "focus": "71% center"
     },
     "sirin": {
       "heroImage": "/media/residents/sirin/cinematic.avif",
-      "gallery": [],
       "focus": "66% center",
       "mobileFocus": "60% center"
     },
     "mermaid": {
       "showcase": false,
       "availability": "in-progress",
-      "creationDate": "Каркас — работа продолжается",
-      "gallery": []
+      "creationDate": "Каркас — работа продолжается"
     },
     "little-humpbacked-horse": {
       "heroImage": "/media/residents/horse/cinematic.avif",
-      "gallery": [],
       "focus": "71% center"
     }
   }
