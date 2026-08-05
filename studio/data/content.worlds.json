@@ -1,11 +1,11 @@
 {
   "collections": {
     "winter": {
-      "image": "/media/world-residents/nutcracker-ernst.webp?v=20260805f",
+      "image": "/media/residents/nutcracker/studio.webp?v=20260805g",
       "sceneImage": "/media/worlds/winter-scene.webp"
     },
     "forest": {
-      "image": "/media/world-residents/forest-dragon.webp?v=20260805f",
+      "image": "/media/residents/forest-dragon/studio.webp?v=20260805g",
       "sceneImage": "/media/worlds/forest-scene.webp"
     },
     "dragons": {
@@ -27,7 +27,7 @@
       "focus": "73% center"
     },
     "nutcracker-ernst": {
-      "heroImage": "/media/world-residents/nutcracker-ernst.webp?v=20260805f",
+      "heroImage": "/media/residents/nutcracker/studio.webp?v=20260805g",
       "focus": "center",
       "mobileFocus": "center"
     },
@@ -58,7 +58,7 @@
       "focus": "72% center"
     },
     "forest-dragon": {
-      "heroImage": "/media/world-residents/forest-dragon.webp?v=20260805f",
+      "heroImage": "/media/residents/forest-dragon/studio.webp?v=20260805g",
       "focus": "center",
       "mobileFocus": "center"
     },
@@ -67,7 +67,7 @@
       "focus": "72% center"
     },
     "baby-dragon": {
-      "heroImage": "/media/world-residents/baby-dragon.webp?v=20260805f",
+      "heroImage": "/media/residents/baby-dragon/hero.webp?v=20260805g",
       "focus": "center",
       "mobileFocus": "center"
     },
