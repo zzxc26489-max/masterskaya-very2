@@ -1,0 +1,1 @@
+Site photos are served directly from this media directory. Generated runtime image assembly is not required.
