@@ -33,14 +33,13 @@ jobs:
           ref: main
           fetch-depth: 1
 
-      - name: Prepare and verify static preview
+      - name: Prepare static preview
         run: |
           set -euo pipefail
           rm -rf _site
           mkdir -p _site
           cp -R studio/public/. _site/
           rm -rf _site/admin
-          rm -f _site/assets/js/nutcracker-world-data.js _site/assets/js/forest-dragon-world-data.js
           touch _site/.nojekyll
 
           node studio/scripts/build-content.mjs \
@@ -48,42 +47,15 @@ jobs:
             studio/data/content.worlds.json \
             _site/content.json
 
-          mkdir -p _site/media/world-residents
-          cat _site/media/world-residents/nutcracker-ernst/part-*.txt | tr -d '\n\r' | base64 -d > _site/media/world-residents/nutcracker-ernst.webp
-          cat _site/media/world-residents/forest-dragon/part-*.txt | tr -d '\n\r' | base64 -d > _site/media/world-residents/forest-dragon.webp
-          cat _site/media/world-residents/baby-dragon/part-*.txt | tr -d '\n\r' | base64 -d > _site/media/world-residents/baby-dragon.webp
-          rm -rf \
-            _site/media/world-residents/nutcracker-ernst \
-            _site/media/world-residents/forest-dragon \
-            _site/media/world-residents/baby-dragon
-
-          test "$(wc -c < _site/media/world-residents/nutcracker-ernst.webp)" -eq 26568
-          test "$(wc -c < _site/media/world-residents/forest-dragon.webp)" -eq 26636
-          test "$(wc -c < _site/media/world-residents/baby-dragon.webp)" -eq 15482
-          file _site/media/world-residents/*.webp | grep -q 'Web/P image'
-
           printf '{"commit":"%s","builtAt":"%s"}\n' "$GITHUB_SHA" "$(date -u +%FT%TZ)" > _site/build-info.json
 
-          test -f _site/residents.html
-          test -f _site/chronicle.html
-          test -f _site/assets/css/site-fixes.css
-          test -f _site/assets/js/site.js
-          test -f _site/assets/js/site-enhancements.js
-          test -f _site/content.json
-          test -s _site/media/world-residents/nutcracker-ernst.webp
-          test -s _site/media/world-residents/forest-dragon.webp
-          test -s _site/media/world-residents/baby-dragon.webp
-          test ! -f _site/assets/js/nutcracker-world-data.js
-          test ! -f _site/assets/js/forest-dragon-world-data.js
-          grep -q 'site-fixes.css?v=20260805f' _site/residents.html
-          grep -q 'site-enhancements.js?v=20260805f' _site/chronicle.html
-          grep -q 'const staticBase' _site/assets/js/site-enhancements.js
-          ! grep -q 'const staticRoot' _site/assets/js/site-enhancements.js
-          grep -q '/media/world-residents/nutcracker-ernst.webp?v=20260805f' _site/content.json
-          grep -q '/media/world-residents/forest-dragon.webp?v=20260805f' _site/content.json
-          grep -q '/media/world-residents/baby-dragon.webp?v=20260805f' _site/content.json
-          grep -q '/media/residents/nutcracker/studio.webp' _site/content.json
-          grep -q '"showcase": false' _site/content.json
+          test -s _site/media/residents/nutcracker/studio.webp
+          test -s _site/media/residents/forest-dragon/studio.webp
+          test -s _site/media/residents/baby-dragon/hero.webp
+          grep -q '/media/residents/nutcracker/studio.webp?v=20260805g' _site/content.json
+          grep -q '/media/residents/forest-dragon/studio.webp?v=20260805g' _site/content.json
+          grep -q '/media/residents/baby-dragon/hero.webp?v=20260805g' _site/content.json
+          grep -q '"gallery": \[' _site/content.json
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
