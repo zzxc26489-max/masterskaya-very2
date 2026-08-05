@@ -1,12 +1,13 @@
 const pageName = document.body.dataset.page || 'home';
 const staticPreview = window.location.hostname.endsWith('.github.io');
-const staticRoot = staticPreview
-  ? `/${window.location.pathname.split('/').filter(Boolean)[0] || ''}`.replace(/\/$/, '')
-  : '';
 const mobileQuery = window.matchMedia('(max-width: 48rem)');
 const contentUrl = staticPreview ? new URL('content.json', window.location.href).href : '/api/content';
+const staticBase = staticPreview ? new URL('.', contentUrl) : null;
 const normalize = (value = '') => String(value).trim().toLocaleLowerCase('ru-RU');
-const mediaUrl = (value = '') => value?.startsWith('/') && staticPreview ? `${staticRoot}${value}` : value;
+const mediaUrl = (value = '') => {
+  if (!value?.startsWith('/') || !staticPreview) return value;
+  return new URL(value.slice(1), staticBase).href;
+};
 
 function residentMap(data) {
   const map = new Map();
