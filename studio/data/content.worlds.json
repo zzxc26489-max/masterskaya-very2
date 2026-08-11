@@ -36,13 +36,13 @@
       "focus": "70% center"
     },
     "mouse-queen": {
-      "availability": "available",
-      "creationDate": "Создана вручную",
+      "availability": "in-progress",
+      "creationDate": "В работе",
       "heroImage": "/media/residents/mouse-queen/hero.webp",
       "focus": "71% center",
       "chronicle": {
-        "path": "Готова к встрече с новым Хранителем.",
-        "keeper": "Можно приобрести"
+        "path": "Пока рождается в Мастерской.",
+        "keeper": "В работе"
       }
     },
     "mouse-king": {
