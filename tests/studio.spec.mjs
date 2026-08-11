@@ -3,7 +3,7 @@ import path from 'node:path';
 import { expect, test } from '@playwright/test';
 
 const screenshots = path.resolve('artifacts/studio-screenshots');
-const publicPages = ['/', '/residents.html', '/collections.html', '/collection.html?world=winter-legends', '/process.html', '/create.html', '/chronicle.html?resident=azimondias', '/about.html', '/contact.html'];
+const publicPages = ['/', '/residents.html', '/collections.html', '/collection.html?world=winter-legends', '/collection.html?world=forest-secrets', '/collection.html?world=russian-tales', '/process.html', '/create.html', '/chronicle.html?resident=azimondias', '/about.html', '/contact.html'];
 
 test.beforeAll(async () => {
   await fs.mkdir(screenshots, { recursive: true });
@@ -33,6 +33,16 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
     expect(await babyChoice.count()).toBe(1);
     await babyChoice.click();
     await expect(page.locator('[data-preview-title]')).toHaveText('Малыш-дракон');
+    await page.goto('/collection.html?world=russian-tales', { waitUntil: 'networkidle' });
+    await expect(page.getByRole('heading', { name: 'Русские сказки' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Змей Горыныч II' })).toBeVisible();
+    await expect(page.getByText('Азимондиас', { exact: true })).toHaveCount(0);
+    const activeScene = page.locator('[data-world-slide].is-active .world-resident__scene img');
+    const firstScene = await activeScene.getAttribute('src');
+    await page.locator('[data-world-next]').click();
+    await expect(page.locator('[data-world-current]')).toHaveText('02');
+    await expect.poll(() => activeScene.getAttribute('src')).not.toBe(firstScene);
+    await expect(page.locator('.site-footer')).toBeVisible();
     if (viewport.width === 390) {
       const menu = page.locator('[data-menu-toggle]');
       expect(await menu.count()).toBe(1);

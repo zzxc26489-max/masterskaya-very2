@@ -176,7 +176,7 @@ function residentCard(resident) {
   const world = collectionFor(resident);
   return `<article class="resident-card theme-${esc(world.theme)}" data-collection="${esc(resident.collectionId)}" data-status="${esc(resident.availability)}">
     <a class="resident-card__image" href="/chronicle.html?resident=${encodeURIComponent(resident.slug)}">
-      <img src="${esc(resident.heroImage)}" alt="${esc(resident.name)}" loading="lazy">
+      <img src="${esc(resident.sceneImage || resident.heroImage)}" alt="${esc(resident.name)} в мире «${esc(world.name)}»" loading="lazy">
       <span class="resident-card__world">${esc(world.name)}</span>
     </a>
     <div class="resident-card__body">
@@ -189,9 +189,11 @@ function residentCard(resident) {
 }
 
 function worldCard(collection, index = 0) {
-  const count = content.residents.filter((resident) => resident.collectionId === collection.id).length;
+  const residentsInWorld = content.residents.filter((resident) => resident.collectionId === collection.id);
+  const count = residentsInWorld.length;
+  const stageResident = residentsInWorld.find((resident) => resident.sceneImage) || residentsInWorld[0];
   return `<article class="world-chapter theme-${esc(collection.theme)}" data-reveal>
-    <img class="world-chapter__scene" src="${esc(collection.sceneImage || collection.image)}" alt="" loading="lazy">
+    <img class="world-chapter__scene" src="${esc(stageResident?.sceneImage || collection.sceneImage || collection.image)}" alt="" loading="lazy">
     <div class="world-chapter__shade"></div>
     ${atmosphereMarkup(collection.theme)}
     <a class="world-chapter__link" href="/collection.html?world=${encodeURIComponent(collection.slug)}" aria-label="Открыть мир «${esc(collection.name)}»"></a>
@@ -201,12 +203,9 @@ function worldCard(collection, index = 0) {
       <h3>${esc(collection.name)}</h3>
       <p>${esc(collection.description)}</p>
       <span class="world-chapter__cue">${esc(collection.cue || '')}</span>
+      <span class="world-chapter__count">${count} ${count === 1 ? 'Житель' : count < 5 ? 'Жителя' : 'Жителей'}</span>
       <span class="text-link text-link--light">Войти в мир <b aria-hidden="true">↗</b></span>
     </div>
-    <figure class="world-chapter__resident">
-      <img src="${esc(collection.image)}" alt="${esc(collection.name)} — работа Веры" loading="lazy">
-      <figcaption>${count} ${count === 1 ? 'Житель' : count < 5 ? 'Жителя' : 'Жителей'}</figcaption>
-    </figure>
   </article>`;
 }
 
@@ -379,10 +378,11 @@ function collections() {
 
 function worldResidentSlide(resident, index) {
   const [label, className] = statusCopy(resident.availability);
+  const world = collectionFor(resident);
   return `<article class="world-resident ${index === 0 ? 'is-active' : ''}" data-world-slide data-index="${index}" aria-hidden="${index === 0 ? 'false' : 'true'}">
-    <figure class="world-resident__photo">
-      <img src="${esc(resident.heroImage)}" alt="${esc(resident.name)}" ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}>
-      <span>Настоящая работа Веры</span>
+    <figure class="world-resident__scene">
+      <img src="${esc(resident.sceneImage || resident.heroImage)}" alt="${esc(resident.name)} в мире «${esc(world.name)}»" ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}>
+      <span>Настоящая работа Веры · сцена Мира</span>
     </figure>
     <div class="world-resident__copy">
       <div class="world-resident__meta"><span class="status ${className}">${label}</span><span>0${index + 1}</span></div>
@@ -422,7 +422,7 @@ function collectionPage() {
           <button type="button" data-world-next aria-label="Следующий Житель">→</button>
         </div>
         <div class="world-slider__rail" role="tablist" aria-label="Выбор Жителя">
-          ${residentsInWorld.map((resident, index) => `<button class="${index === 0 ? 'is-active' : ''}" type="button" data-world-go="${index}" role="tab" aria-selected="${index === 0 ? 'true' : 'false'}"><img src="${esc(resident.heroImage)}" alt=""><span>${esc(resident.shortName || resident.name)}</span></button>`).join('')}
+          ${residentsInWorld.map((resident, index) => `<button class="${index === 0 ? 'is-active' : ''}" type="button" data-world-go="${index}" role="tab" aria-selected="${index === 0 ? 'true' : 'false'}"><img src="${esc(resident.sceneImage || resident.heroImage)}" alt=""><span>${esc(resident.shortName || resident.name)}</span></button>`).join('')}
         </div>
       </div>` : `<div class="shell empty-state empty-state--dark">Первые Жители этого Мира скоро появятся.</div>`}
     </section>
@@ -443,7 +443,7 @@ function bindWorldSlider() {
 
   slides.slice(1).forEach((slide) => {
     const image = new Image();
-    image.src = slide.querySelector('img').src;
+    image.src = slide.querySelector('.world-resident__scene img').src;
   });
 
   const show = (next, direction = 1) => {
@@ -489,21 +489,29 @@ function bindWorldSlider() {
 function process() {
   const azimondias = byId(content.residents, 'azimondias') || content.residents[0];
   const threshold = content.stories.find((story) => story.id === 'big-dragon-threshold') || content.stories[0];
+  const stages = [
+    ['01', 'Проволока', 'Проволочная линия задаёт позу, шею, хвост и будущие крылья.', '/media/process/01-wire.webp'],
+    ['02', 'Фольга', 'Фольга набирает лёгкий внутренний объём, не утяжеляя фигурку.', '/media/process/02-foil.webp'],
+    ['03', 'Первые слои глины', 'Полимерная глина ложится на основу и собирает первые массы тела.', '/media/process/03-first-clay.webp'],
+    ['04', 'Узнаваемый силуэт', 'Появляются голова, линия спины, лапы и движение будущего Жителя.', '/media/process/04-silhouette.webp'],
+    ['05', 'Характер и взгляд', 'Глаз, морда и мелкие формы превращают конструкцию в персонажа.', '/media/process/05-character.webp'],
+    ['06', 'Готовая лепка', 'До цвета уже завершены чешуя, крылья, когти и вся пластика поверхности.', '/media/process/06-unpainted.webp'],
+    ['07', 'Первая роспись', 'Первые синие мазки намечают глубину, свет и будущую палитру.', '/media/process/07-first-paint.webp'],
+    ['08', 'Готовый Азимондиас', 'Многослойная роспись завершает образ — после неё Житель отправился к Хранителю.', '/media/process/08-finished.webp']
+  ];
   app.innerHTML = `<main id="main">
-    <section class="page-hero page-hero--process"><div class="shell"><p class="eyebrow eyebrow--light">От каркаса до характера</p><h1>Как создаётся Житель</h1><p class="lede lede--light">Настоящий путь Азимондиаса: проволока, фольга, форма, первый взгляд и ручная роспись.</p></div></section>
-    <section class="section section--paper"><div class="shell process-layout">
-      <div class="process-gallery">
-        <figure class="process-shot process-shot--large"><img src="${esc(azimondias.heroImage)}" alt="Готовый Азимондиас"><figcaption>04 · Готовый Житель</figcaption></figure>
-        <figure class="process-shot"><img src="/media/residents/azimondias/armature.webp" alt="Каркас Азимондиаса"><figcaption>01 · Каркас</figcaption></figure>
-        <figure class="process-shot"><img src="/media/residents/azimondias/sculpture.webp" alt="Скульптура Азимондиаса"><figcaption>03 · Форма</figcaption></figure>
-      </div>
-      <div class="process-copy"><p class="eyebrow">Рождение формы</p><h2>Настоящая ручная работа, шаг за шагом</h2><p class="lede">${esc(azimondias.story)}</p>
-        <ol class="timeline"><li><b>01</b><div><strong>Искра и каркас</strong><span>Идея получает опору из проволоки и фольги.</span></div></li><li><b>02</b><div><strong>Лепка</strong><span>Глина собирает силуэт, пластику и детали.</span></div></li><li><b>03</b><div><strong>Роспись</strong><span>Цвет, глаза и фактура пробуждают характер.</span></div></li><li><b>04</b><div><strong>Встреча</strong><span>Готовый Житель отправляется к Хранителю.</span></div></li></ol>
-      </div>
+    <section class="page-hero page-hero--process"><div class="shell"><p class="eyebrow eyebrow--light">От проволоки до характера</p><h1>Как создаётся Житель</h1><p class="lede lede--light">Не разрозненный коллаж, а настоящий путь Азимондиаса — восемь последовательных этапов ручной работы.</p></div></section>
+    <section class="section section--paper process-chronicle"><div class="shell">
+      <header class="process-chronicle__head"><div><p class="eyebrow">Рождение формы</p><h2>Азимондиас.<br>Шаг за шагом.</h2></div><p class="lede">${esc(azimondias.story)}</p></header>
+      <ol class="process-sequence">${stages.map(([number, title, description, image], index) => `<li class="process-stage ${index % 2 ? 'process-stage--reverse' : ''}" data-reveal>
+        <figure class="process-stage__image"><img src="${image}" alt="${esc(title)} — этап создания Азимондиаса" loading="lazy"><figcaption>${number} / 08</figcaption></figure>
+        <div class="process-stage__copy"><span>${number}</span><p class="eyebrow">Этап создания</p><h3>${esc(title)}</h3><p>${esc(description)}</p></div>
+      </li>`).join('')}</ol>
     </div></section>
     <section class="section section--night"><div class="shell quote-panel"><p class="eyebrow eyebrow--light">Голос Мастера</p><blockquote>«${esc(threshold.quote)}»</blockquote><cite>Вера — о первой большой драконьей работе</cite></div></section>
   </main>`;
   document.title = 'Как создаётся Житель — Мастерская Веры';
+  enableAtmosphereMotion();
 }
 
 function createResident() {
@@ -550,7 +558,7 @@ function chronicle() {
 
   app.innerHTML = `<main id="main" class="theme-${esc(collection.theme)}">
     <section class="chronicle-hero">
-      <img class="chronicle-hero__scene" src="${esc(collection.sceneImage || collection.image)}" alt="">
+      <img class="chronicle-hero__scene" src="${esc(resident.sceneImage || collection.sceneImage || collection.image)}" alt="${esc(resident.name)} в мире «${esc(collection.name)}»">
       <div class="chronicle-hero__shade"></div>${atmosphereMarkup(collection.theme)}
       <div class="shell"><p class="eyebrow eyebrow--light">Хроника Жителя · ${esc(collection.name)}</p><h1>${esc(resident.name)}</h1><p class="lede lede--light">${esc(resident.excerpt)}</p></div>
     </section>

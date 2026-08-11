@@ -66,6 +66,7 @@
       "id": "azimondias",
       "slug": "azimondias",
       "name": "Азимондиас",
+      "shortName": "Азимондиас",
       "collectionId": "dragons",
       "availability": "archive",
       "technique": "one-of-a-kind",
@@ -75,6 +76,7 @@
       "excerpt": "Первый большой путь Мастерской — от проволочного каркаса до собственного взгляда.",
       "story": "Азимондиас, или просто Зим, появился постепенно: сначала был каркас, потом форма, крылья, глаз и характер.",
       "heroImage": "/media/residents/azimondias/final.webp",
+      "sceneImage": "/media/scenes/azimondias.webp",
       "gallery": [
         "/media/residents/azimondias/final.webp"
       ],
@@ -90,6 +92,7 @@
       "id": "nutcracker-ernst",
       "slug": "nutcracker-ernst",
       "name": "Щелкунчик",
+      "shortName": "Щелкунчик",
       "collectionId": "winter",
       "availability": "available",
       "technique": "one-of-a-kind",
@@ -99,6 +102,7 @@
       "excerpt": "Зимняя история с ровной осанкой, мундиром и очень серьёзной задачей — беречь чудо.",
       "story": "Щелкунчики Веры не повторяют друг друга: меняются выражение лица, детали формы, оттенки, роспись и маленькие следы ручной работы",
       "heroImage": "/media/residents/nutcracker/studio.webp?v=20260805g",
+      "sceneImage": "/media/scenes/nutcracker-ernst.webp",
       "gallery": [
         "/media/residents/nutcracker/studio.webp"
       ],
@@ -124,6 +128,7 @@
       "excerpt": "Тихая зимняя сцена: девочка прижимает к себе Щелкунчика, будто уже знает, чем закончится сказка.",
       "story": "Эта композиция соединяет два образа в одной ручной работе.",
       "heroImage": "/media/residents/girl-with-nutcracker/hero.avif",
+      "sceneImage": "/media/residents/girl-with-nutcracker/hero.avif",
       "gallery": [
         "/media/residents/girl-with-nutcracker/hero.avif"
       ],
@@ -139,8 +144,9 @@
       "id": "mouse-queen",
       "slug": "mouse-queen",
       "name": "Мышиная Королева",
+      "shortName": "Мышиная Королева",
       "collectionId": "winter",
-      "availability": "available",
+      "availability": "in-progress",
       "technique": "one-of-a-kind",
       "type": "Королевский Житель",
       "character": "Величественная, наблюдательная и чуть-чуть готическая.",
@@ -148,22 +154,24 @@
       "excerpt": "Три взгляда, чёрно-фиолетовое платье и корона — всё в ней говорит без спешки.",
       "story": "Мышиная Королева — образ с театральным характером.",
       "heroImage": "/media/residents/mouse-queen/hero.webp",
+      "sceneImage": "/media/scenes/mouse-queen.webp",
       "gallery": [
         "/media/residents/mouse-queen/hero.webp"
       ],
       "chronicle": {
         "origin": "Собрана из образов старой сказки, театрального костюма и королевского упрямства",
         "character": "Не правит громко — её власть слышна в шорохе ткани и спокойных взглядах",
-        "path": "Готова к встрече с новым Хранителем.",
-        "keeper": "Можно приобрести"
+        "path": "Пока рождается в Мастерской.",
+        "keeper": "В работе"
       },
-      "creationDate": "Создана вручную",
+      "creationDate": "В работе",
       "focus": "71% center"
     },
     {
       "id": "mouse-king",
       "slug": "mouse-king",
       "name": "Мышиный Король",
+      "shortName": "Мышиный Король",
       "collectionId": "winter",
       "availability": "available",
       "technique": "one-of-a-kind",
@@ -173,6 +181,7 @@
       "excerpt": "Корона, мундир и трое внимательных голов — королевство в ладони.",
       "story": "Мышиный Король может быть частью подарочного набора или самостоятельным героем.",
       "heroImage": "/media/residents/mouse-king/hero.webp",
+      "sceneImage": "/media/scenes/mouse-king.webp",
       "gallery": [
         "/media/residents/mouse-king/hero.webp"
       ],
@@ -187,21 +196,23 @@
     {
       "id": "gorynych-amber",
       "slug": "gorynych-amber",
-      "name": "Трёхглавый дракон",
-      "collectionId": "dragons",
+      "name": "Змей Горыныч II",
+      "shortName": "Змей Горыныч II",
+      "collectionId": "russian",
       "availability": "available",
       "technique": "one-of-a-kind",
-      "type": "Трёхглавый дракон",
+      "type": "Вторая версия Змея Горыныча",
       "character": "Фактурный, подвижный и совсем не молчаливый.",
-      "habitat": "Камень, старые карты и тёплый свет мастерской.",
-      "excerpt": "Три головы, тёплая палитра и чешуя, которую хочется рассматривать близко.",
-      "story": "Трёхглавый дракон собран из тёплых оранжевых, бордовых и кремовых оттенков.",
+      "habitat": "Старая сказка у дубовых корней, в тёплом свете лесных огней.",
+      "excerpt": "Вторая версия Змея Горыныча после зелёного — в тёплой огненной палитре и с собственной пластикой.",
+      "story": "Это вторая авторская версия Змея Горыныча, созданная после зелёного. Оранжевые, бордовые и кремовые оттенки, рельеф, крылья и чешуя выполнены и расписаны вручную.",
       "heroImage": "/media/residents/gorynych/amber-hero.webp",
+      "sceneImage": "/media/scenes/gorynych-amber.webp",
       "gallery": [
         "/media/residents/gorynych/amber-hero.webp"
       ],
       "chronicle": {
-        "origin": "Родился из сложной фактуры, трёх разных выражений и ручной росписи",
+        "origin": "Появился после зелёного Горыныча как вторая версия знакомого сказочного образа.",
         "character": "Слышно ещё до того, как он открывает пасти",
         "path": "Готов к встрече с новым Хранителем",
         "keeper": "Можно приобрести"
@@ -212,15 +223,17 @@
       "id": "gorynych-green",
       "slug": "gorynych-green",
       "name": "Змей Горыныч",
+      "shortName": "Змей Горыныч",
       "collectionId": "russian",
       "availability": "available",
       "technique": "one-of-a-kind",
-      "type": "Сказочный трёхглавый дракон",
+      "type": "Первая версия Змея Горыныча",
       "character": "Царственный, упрямый и удивительно живой в каждом из трёх взглядов.",
       "habitat": "Старая сказка у дубового дупла, где золото корон встречает лесную зелень.",
       "excerpt": "Зелёный трёхглавый Горыныч с коронами, крыльями и яркой ручной росписью.",
       "story": "Зелёный Змей Горыныч — отдельная готовая работа Веры.",
       "heroImage": "/media/residents/gorynych-green/hero.webp",
+      "sceneImage": "/media/scenes/gorynych-green.webp",
       "gallery": [
         "/media/residents/gorynych-green/hero.webp"
       ],
@@ -236,6 +249,7 @@
       "id": "forest-dragon",
       "slug": "forest-dragon",
       "name": "Лесной дракон",
+      "shortName": "Лесной дракон",
       "collectionId": "forest",
       "availability": "available",
       "technique": "one-of-a-kind",
@@ -245,6 +259,7 @@
       "excerpt": "Зелёный дракон с природной палитрой и множеством деталей, которые открываются при близком взгляде.",
       "story": "Лесной дракон — пример того, как характер рождается из цвета и поверхности: зелёные переходы, шипы и живые фактуры ведут зрителя вокруг фигуры",
       "heroImage": "/media/residents/forest-dragon/studio.webp?v=20260805g",
+      "sceneImage": "/media/scenes/forest-dragon.webp",
       "gallery": [
         "/media/residents/forest-dragon/studio.webp"
       ],
@@ -261,6 +276,7 @@
       "id": "forest-mushrooms",
       "slug": "forest-mushrooms",
       "name": "Лесные грибы",
+      "shortName": "Лесные грибы",
       "collectionId": "forest",
       "availability": "available",
       "technique": "author-series",
@@ -270,6 +286,7 @@
       "excerpt": "Мухоморы, лисички, белые и другие грибы — небольшие ручные миниатюры с живой фактурой.",
       "story": "Грибочки Веры появляются по одному, парами и целыми лесными наборами.",
       "heroImage": "/media/residents/mushrooms/hero.webp",
+      "sceneImage": "/media/scenes/forest-mushrooms.webp",
       "gallery": [
         "/media/residents/mushrooms/hero.webp"
       ],
@@ -285,6 +302,7 @@
       "id": "baby-dragon",
       "slug": "baby-dragon",
       "name": "Малыш-дракон",
+      "shortName": "Малыш-дракон",
       "collectionId": "dragons",
       "availability": "in-progress",
       "technique": "one-of-a-kind",
@@ -294,6 +312,7 @@
       "excerpt": "Житель в рождении: форма уже говорит, а окончательная история ещё выбирает направление.",
       "story": "Малыш-дракон показывает важный этап: работа ещё не расписана, но характер уже начинает проступать через взгляд, крылья и линию тела",
       "heroImage": "/media/residents/baby-dragon/hero.webp?v=20260805g",
+      "sceneImage": "/media/scenes/baby-dragon.webp",
       "gallery": [
         "/media/residents/baby-dragon/hero.webp"
       ],
@@ -319,6 +338,7 @@
       "excerpt": "Белый длинношеий дракон с зелёным взглядом и ветвистыми рогами — форма уже завершена, а цветовая легенда ещё выбирается.",
       "story": "Соул Реган строится на вытянутом силуэте, длинной шее и необычных рогах, похожих на древние ветви.",
       "heroImage": "/media/residents/soul-regan/hero.avif",
+      "sceneImage": "/media/scenes/soul-regan.webp",
       "gallery": [
         "/media/residents/soul-regan/hero.avif"
       ],
@@ -335,6 +355,7 @@
       "id": "chicken-sun",
       "slug": "chicken-sun",
       "name": "Курочка",
+      "shortName": "Курочка",
       "collectionId": "home",
       "availability": "available",
       "technique": "one-of-a-kind",
@@ -344,6 +365,7 @@
       "excerpt": "Не всякая легенда должна рычать: некоторые просто выходят на свет и смотрят прямо.",
       "story": "Курочка открывает более тихую линию Мастерской — маленьких домашних Жителей, в которых живут цвет, юмор и ощущение заботы",
       "heroImage": "/media/residents/chicken/hero.webp",
+      "sceneImage": "/media/scenes/chicken-sun.webp",
       "gallery": [
         "/media/residents/chicken/hero.webp"
       ],
@@ -369,6 +391,7 @@
       "excerpt": "Белая лошадка с золотой гривой и яркой росписью — маленькая домашняя история о движении и детстве.",
       "story": "Лошадка-качалка выполнена и расписана вручную.",
       "heroImage": "/media/residents/rocking-horse/hero.avif",
+      "sceneImage": "/media/scenes/rocking-horse.webp",
       "gallery": [
         "/media/residents/rocking-horse/hero.avif"
       ],
@@ -394,6 +417,7 @@
       "excerpt": "Сказочная птица с человеческим лицом, бирюзовым оперением и песней, которую каждый слышит по-своему.",
       "story": "Сирин — авторское прочтение древнего образа.",
       "heroImage": "/media/residents/sirin/cinematic.avif",
+      "sceneImage": "/media/scenes/sirin.webp",
       "gallery": [
         "/media/residents/sirin/cinematic.avif"
       ],
@@ -410,15 +434,17 @@
       "id": "mermaid",
       "slug": "mermaid",
       "name": "Русалка",
+      "shortName": "Русалка",
       "collectionId": "russian",
       "availability": "in-progress",
       "technique": "one-of-a-kind",
-      "type": "Сказочная Жительница",
+      "type": "Будущая сказочная Жительница",
       "character": "Мечтательная, независимая и немного морская.",
       "habitat": "Вода, камни, лунный свет и истории, которые лучше не рассказывать слишком громко.",
-      "excerpt": "Сказочный образ с авторской росписью и живым цветом.",
-      "story": "Русалка — один из будущих мостов к новой водной главе.",
+      "excerpt": "Каркас уже рассказывает о движении хвоста и будущей водной истории.",
+      "story": "Русалка пока рождается: проволока, фольга и первые формы постепенно собираются в будущий образ.",
       "heroImage": "/media/residents/mermaid/hero.webp",
+      "sceneImage": "/media/scenes/mermaid.webp",
       "gallery": [
         "/media/residents/mermaid/hero.webp",
         "/media/residents/mermaid/angle.webp"
@@ -436,6 +462,7 @@
       "id": "little-humpbacked-horse",
       "slug": "little-humpbacked-horse",
       "name": "Конёк-Горбунок",
+      "shortName": "Конёк-Горбунок",
       "collectionId": "russian",
       "availability": "available",
       "technique": "one-of-a-kind",
@@ -445,6 +472,7 @@
       "excerpt": "Небольшой спутник большого пути — авторская фигура, в которой важны силуэт, движение и характер.",
       "story": "Конёк-Горбунок дополняет русскую линию Мастерской: узнаваемый сказочный спутник становится самостоятельным образом через ручную лепку, тёмную роспись, светлую гриву и стремительную позу",
       "heroImage": "/media/residents/horse/cinematic.avif",
+      "sceneImage": "/media/scenes/little-humpbacked-horse.webp",
       "gallery": [
         "/media/residents/horse/cinematic.avif"
       ],
