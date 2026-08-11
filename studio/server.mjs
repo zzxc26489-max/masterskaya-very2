@@ -11,6 +11,7 @@ const dataDir = path.join(__dirname, "data");
 const seedPath = path.join(dataDir, "content.seed.json");
 const localPath = path.join(dataDir, "content.local.json");
 const isProduction = process.env.NODE_ENV === "production";
+const useLocalContent = process.env.STUDIO_CONTENT_MODE !== "seed";
 const port = Number(process.env.PORT || 4173);
 const adminPassword = process.env.ADMIN_PASSWORD || (isProduction ? "" : "vera-demo");
 const sessionSecret = process.env.SESSION_SECRET || (isProduction ? "" : "local-studio-secret-change-before-production");
@@ -28,18 +29,22 @@ async function readJson(file) {
 }
 
 async function loadContent() {
-  try {
-    return await readJson(localPath);
-  } catch (error) {
-    if (error.code !== "ENOENT") throw error;
-    const seed = await readJson(seedPath);
-    await persist(seed);
-    return seed;
+  if (useLocalContent) {
+    try {
+      return await readJson(localPath);
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+    }
   }
+  const seed = await readJson(seedPath);
+  if (useLocalContent) await persist(seed);
+  else content = seed;
+  return seed;
 }
 
 function persist(next) {
   content = next;
+  if (!useLocalContent) return Promise.resolve();
   saveQueue = saveQueue.then(async () => {
     await fs.mkdir(dataDir, { recursive: true });
     const temporary = `${localPath}.${process.pid}.tmp`;

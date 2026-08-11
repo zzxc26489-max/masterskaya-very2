@@ -189,7 +189,9 @@ function residentCard(resident) {
 }
 
 function worldCard(collection, index = 0) {
-  const residentsInWorld = content.residents.filter((resident) => resident.collectionId === collection.id);
+  const residentsInWorld = content.residents
+    .filter((resident) => resident.collectionId === collection.id)
+    .sort((left, right) => (left.worldOrder ?? 99) - (right.worldOrder ?? 99));
   const count = residentsInWorld.length;
   const stageResident = residentsInWorld.find((resident) => resident.sceneImage) || residentsInWorld[0];
   return `<article class="world-chapter theme-${esc(collection.theme)}" data-reveal>
@@ -317,7 +319,9 @@ function home() {
 }
 
 function residentWorldSection(collection) {
-  const residentsInWorld = content.residents.filter((resident) => resident.collectionId === collection.id);
+  const residentsInWorld = content.residents
+    .filter((resident) => resident.collectionId === collection.id)
+    .sort((left, right) => (left.worldOrder ?? 99) - (right.worldOrder ?? 99));
   return `<section class="residents-world theme-${esc(collection.theme)}" data-world-residents data-collection="${esc(collection.id)}">
     <img class="residents-world__scene" src="${esc(collection.sceneImage || collection.image)}" alt="" loading="lazy">
     <div class="residents-world__shade"></div>
@@ -400,7 +404,9 @@ function worldResidentSlide(resident, index) {
 
 function collectionPage() {
   const collection = byId(content.collections, query('world')) || content.collections[0];
-  const residentsInWorld = content.residents.filter((resident) => resident.collectionId === collection.id);
+  const residentsInWorld = content.residents
+    .filter((resident) => resident.collectionId === collection.id)
+    .sort((left, right) => (left.worldOrder ?? 99) - (right.worldOrder ?? 99));
   document.body.classList.add(`theme-${collection.theme}`);
 
   app.innerHTML = `<main id="main">

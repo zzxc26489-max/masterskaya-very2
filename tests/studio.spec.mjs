@@ -35,12 +35,13 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
     await expect(page.locator('[data-preview-title]')).toHaveText('Малыш-дракон');
     await page.goto('/collection.html?world=russian-tales', { waitUntil: 'networkidle' });
     await expect(page.getByRole('heading', { name: 'Русские сказки' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Змей Горыныч II' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Змей Горыныч' })).toBeVisible();
     await expect(page.getByText('Азимондиас', { exact: true })).toHaveCount(0);
     const activeScene = page.locator('[data-world-slide].is-active .world-resident__scene img');
     const firstScene = await activeScene.getAttribute('src');
     await page.locator('[data-world-next]').click();
     await expect(page.locator('[data-world-current]')).toHaveText('02');
+    await expect(page.getByRole('heading', { name: 'Змей Горыныч II' })).toBeVisible();
     await expect.poll(() => activeScene.getAttribute('src')).not.toBe(firstScene);
     await expect(page.locator('.site-footer')).toBeVisible();
     if (viewport.width === 390) {

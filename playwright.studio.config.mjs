@@ -16,7 +16,7 @@ export default defineConfig({
     trace: 'retain-on-failure'
   },
   webServer: {
-    command: 'node studio/server.mjs',
+    command: 'STUDIO_CONTENT_MODE=seed node studio/server.mjs',
     url: 'http://127.0.0.1:4173/api/content',
     reuseExistingServer: false,
     timeout: 120_000
