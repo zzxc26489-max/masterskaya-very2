@@ -455,6 +455,9 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
 .fact { padding: 1rem 0; border-top: 1px solid var(--line); }
 .fact b { display: block; margin-bottom: .4rem; font: 500 1.3rem/1.1 var(--display); }
 .fact span { display: block; color: var(--muted); font-size: .76rem; line-height: 1.5; }
+.facts--wide { grid-template-columns: repeat(2, 1fr); }
+.facts--light .fact { border-top-color: var(--line-dark); }
+.facts--light .fact span { color: var(--paper-deep); }
 
 .section-head {
   display: flex;
@@ -809,6 +812,16 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
 .status--in-progress { background: #eadbb6; color: #6d5422; }
 .status--reserved { background: #edd9ca; color: #70442d; }
 .status--archive { background: #ded9d3; color: #4f4943; }
+.resident-card__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem .8rem;
+}
+.resident-card__meta .price {
+  font: 700 .85rem var(--body);
+  color: var(--wine);
+}
 
 /* Residents by world */
 .page-hero {
@@ -1424,6 +1437,7 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
 .contact-card--dark { background: #201511; color: #f8ead5; }
 .contact-card--dark h2 { color: #fff0dc; }
 .contact-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.5rem; }
+.contact-channel { margin-top: 1.2rem; font-size: .85rem; }
 .contact-list { padding: 0; margin: 0; list-style: none; }
 .contact-list li {
   display: grid;

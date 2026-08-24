@@ -45,6 +45,11 @@ function statusCopy(status) {
   }[status] || ['Хроника Мастерской', ''];
 }
 
+function priceLabel(resident) {
+  const price = Number(resident?.price);
+  return price > 0 ? `${price.toLocaleString('ru-RU')} ₽` : 'Цена по запросу';
+}
+
 function techniqueCopy(technique) {
   return technique === 'author-series' ? 'Авторская ручная серия' : 'Единственный в своём роде';
 }
@@ -133,6 +138,7 @@ function setShell(active) {
     <div class="footer-contact">
       <p>Связаться с Верой</p>
       <a href="https://t.me/vera120700" target="_blank" rel="noreferrer">Telegram · @vera120700</a>
+      <a href="https://t.me/masterskayaver" target="_blank" rel="noreferrer">Telegram-канал · Мастерская Веры</a>
       <a href="https://www.instagram.com/vera.romanycheva.23" target="_blank" rel="noreferrer">Instagram</a>
     </div>
   </div></footer><button class="scroll-top" type="button" data-scroll-top aria-label="Наверх">↑</button>`;
@@ -180,7 +186,7 @@ function residentCard(resident) {
       <span class="resident-card__world">${esc(world.name)}</span>
     </a>
     <div class="resident-card__body">
-      <span class="status ${className}">${label}</span>
+      <div class="resident-card__meta"><span class="status ${className}">${label}</span>${['available', 'in-progress'].includes(resident.availability) ? `<span class="price">${priceLabel(resident)}</span>` : ''}</div>
       <h3>${esc(resident.shortName || resident.name)}</h3>
       <p>${esc(resident.excerpt)}</p>
       <div class="cluster">${residentActions(resident, true)}</div>
@@ -571,7 +577,7 @@ function chronicle() {
     <section class="section section--paper"><div class="shell resident-detail">
       <figure class="resident-detail__image"><img src="${esc(resident.heroImage)}" alt="${esc(resident.name)}"></figure>
       <div class="resident-detail__copy"><span class="status ${className}">${status}</span><h2>${esc(resident.name)}</h2><p class="lede">${esc(resident.story)}</p>
-        <dl class="meta-list"><div><dt>Мир</dt><dd>${esc(collection.name)}</dd></div><div><dt>Работа</dt><dd>${esc(techniqueCopy(resident.technique))}</dd></div><div><dt>Характер</dt><dd>${esc(resident.character)}</dd></div><div><dt>Где обитает</dt><dd>${esc(resident.habitat)}</dd></div></dl>
+        <dl class="meta-list"><div><dt>Мир</dt><dd>${esc(collection.name)}</dd></div>${['available', 'in-progress'].includes(resident.availability) ? `<div><dt>Стоимость</dt><dd>${esc(priceLabel(resident))}</dd></div>` : ''}<div><dt>Работа</dt><dd>${esc(techniqueCopy(resident.technique))}</dd></div><div><dt>Характер</dt><dd>${esc(resident.character)}</dd></div><div><dt>Где обитает</dt><dd>${esc(resident.habitat)}</dd></div></dl>
         <div class="cluster">${primaryAction}<a class="button button--line" href="/residents.html">Все Жители</a></div>
       </div>
     </div></section>
@@ -598,11 +604,21 @@ function contact() {
   app.innerHTML = `<main id="main">
     <section class="page-hero page-hero--contact"><div class="shell"><p class="eyebrow eyebrow--light">Связь с Мастерской</p><h1>Написать Вере</h1><p class="lede lede--light">О готовой работе, будущем Жителе или доставке — без посредников.</p></div></section>
     <section class="section section--paper"><div class="shell contact-grid">
-      <div class="contact-card"><p class="eyebrow">Telegram</p><h2>Самый быстрый способ связаться</h2><p>${resident ? `Вы спрашиваете о работе «${esc(resident.name)}». Сообщение уже будет подготовлено.` : 'Вера лично ответит на вопросы о наличии, стоимости, сроках и индивидуальной работе.'}</p><div class="contact-actions"><a class="button button--wine" href="https://t.me/vera120700?text=${telegramText}" target="_blank" rel="noreferrer">Открыть Telegram</a><a class="button button--line" href="https://www.instagram.com/vera.romanycheva.23" target="_blank" rel="noreferrer">Instagram</a></div></div>
+      <div class="contact-card"><p class="eyebrow">Telegram</p><h2>Самый быстрый способ связаться</h2><p>${resident ? `Вы спрашиваете о работе «${esc(resident.name)}». Сообщение уже будет подготовлено.` : 'Вера лично ответит на вопросы о наличии, стоимости, сроках и индивидуальной работе.'}</p><div class="contact-actions"><a class="button button--wine" href="https://t.me/vera120700?text=${telegramText}" target="_blank" rel="noreferrer">Открыть Telegram</a><a class="button button--line" href="https://www.instagram.com/vera.romanycheva.23" target="_blank" rel="noreferrer">Instagram</a></div><p class="contact-channel">Смотреть готовые работы и процесс: <a class="text-link" href="https://t.me/masterskayaver" target="_blank" rel="noreferrer">t.me/masterskayaver →</a></p></div>
       <div class="contact-card contact-card--dark"><p class="eyebrow eyebrow--light">Что можно уточнить</p><ul class="contact-list"><li><span>01</span>Есть ли Житель в наличии</li><li><span>02</span>Стоимость и доставка</li><li><span>03</span>Идея индивидуальной работы</li><li><span>04</span>Подарочный набор</li></ul></div>
+    </div></section>
+    <section class="section section--night"><div class="shell">
+      <header class="section-head section-head--light" data-reveal><div><p class="eyebrow eyebrow--light">Прежде чем писать</p><h2>Доставка и оплата</h2></div></header>
+      <div class="facts facts--wide facts--light" data-reveal>
+        <div class="fact"><b>География</b><span>По всей России и, по возможности, в любую точку мира — Вера подскажет, дойдёт ли посылка именно до вас.</span></div>
+        <div class="fact"><b>Доставка</b><span>Стоимость и способ отправки оплачивает заказчик — обсуждается вместе с Верой после выбора Жителя.</span></div>
+        <div class="fact"><b>Сроки и стоимость</b><span>Зависят от размера работы, региона и способа доставки — точные цифры Вера называет индивидуально.</span></div>
+        <div class="fact"><b>Оплата</b><span>Перевод на карту, наличные при личной встрече или безопасная сделка через Авито-доставку.</span></div>
+      </div>
     </div></section>
   </main>`;
   document.title = 'Связаться с Верой — Мастерская Веры';
+  enableAtmosphereMotion();
 }
 
 function bindLightbox() {
