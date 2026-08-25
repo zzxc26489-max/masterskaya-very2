@@ -1022,15 +1022,26 @@ function contact() {
 function bindLightbox() {
   const lightbox = document.createElement('div');
   lightbox.className = 'lightbox';
-  lightbox.innerHTML = '<button type="button" aria-label="Закрыть фотографию">×</button><img alt="Увеличенная фотография Жителя">';
+  // The <img> is created without a src and only gets one on open, so it is
+  // never a src-less broken image sitting in the document.
+  lightbox.innerHTML = '<button type="button" aria-label="Закрыть фотографию">×</button>';
+  const picture = document.createElement('img');
+  picture.alt = 'Увеличенная фотография Жителя';
+  lightbox.append(picture);
   document.body.append(lightbox);
-  const close = () => lightbox.classList.remove('is-open');
+
+  const close = () => {
+    lightbox.classList.remove('is-open');
+    document.body.classList.remove('menu-open');
+  };
   lightbox.addEventListener('click', (event) => {
     if (event.target === lightbox || event.target.matches('button')) close();
   });
   document.querySelectorAll('[data-lightbox]').forEach((button) => button.addEventListener('click', () => {
-    lightbox.querySelector('img').src = button.dataset.lightbox;
+    picture.src = button.dataset.lightbox;
     lightbox.classList.add('is-open');
+    // Stop the page behind the overlay from scrolling under it.
+    document.body.classList.add('menu-open');
   }));
   window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') close();

@@ -2059,6 +2059,11 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   .lexicon-grid { grid-template-columns: 1fr; }
   .world-stage__facts { gap: .45rem; }
   .world-badge { font-size: .68rem; padding: .45rem .75rem; }
+  /* Thin the ambience on phones: half the particles read the same but cost
+     far less battery on a weaker GPU. */
+  .world-air i:nth-child(2n),
+  .atmosphere i:nth-child(2n) { display: none; }
+  .world-air__ornament .ornament { width: 120vw; height: 120vw; }
 }
 
 @media (prefers-reduced-motion: reduce) {
