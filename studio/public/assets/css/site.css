@@ -113,23 +113,24 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   justify-content: center;
   gap: .55rem;
   min-height: 3.25rem;
-  padding: .8rem 1.3rem;
+  padding: .85rem 1.6rem;
   border: 1px solid transparent;
-  border-radius: .22rem;
-  font-size: .69rem;
-  font-weight: 700;
-  letter-spacing: .09em;
-  line-height: 1.2;
-  text-transform: uppercase;
+  /* Soft, rounded and in sentence case: this is a workshop, not a bank. */
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 600;
+  letter-spacing: .01em;
+  line-height: 1.25;
   cursor: pointer;
-  transition: transform .25s var(--ease), background-color .25s, color .25s, border-color .25s;
+  transition: transform .25s var(--ease), background-color .25s, color .25s, border-color .25s, box-shadow .25s;
 }
 .button:hover { transform: translateY(-3px); }
 .button--wine {
   background: var(--wine);
   color: #fff8e9;
-  box-shadow: 0 1rem 2.8rem rgb(77 16 20 / .24);
+  box-shadow: 0 .7rem 1.8rem rgb(77 16 20 / .22);
 }
+.button--wine:hover { box-shadow: 0 1rem 2.4rem rgb(77 16 20 / .3); }
 .button--wine:hover { background: #8e3034; }
 .button--light {
   border-color: var(--line-dark);
@@ -148,9 +149,10 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   color: var(--ink);
 }
 .button--compact {
-  min-height: 2.55rem;
-  padding: .56rem .82rem;
-  font-size: .62rem;
+  /* 2.75rem = 44px: the smallest reliable touch target. */
+  min-height: 2.75rem;
+  padding: .6rem 1.15rem;
+  font-size: .8rem;
 }
 .text-link {
   display: inline-flex;
@@ -206,6 +208,14 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   color: var(--gold-light);
   font-size: 1.3rem;
   filter: drop-shadow(0 0 .7rem rgb(232 201 143 / .4));
+}
+/* The logo lives here and only here — small, beside the name. */
+.brand__logo {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgb(232 201 143 / .38);
 }
 .brand__name { font: 500 1.2rem/1 var(--display); }
 .main-nav {
@@ -455,6 +465,9 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
 .fact { padding: 1rem 0; border-top: 1px solid var(--line); }
 .fact b { display: block; margin-bottom: .4rem; font: 500 1.3rem/1.1 var(--display); }
 .fact span { display: block; color: var(--muted); font-size: .76rem; line-height: 1.5; }
+.facts--wide { grid-template-columns: repeat(2, 1fr); }
+.facts--light .fact { border-top-color: var(--line-dark); }
+.facts--light .fact span { color: var(--paper-deep); }
 
 .section-head {
   display: flex;
@@ -498,9 +511,10 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   min-height: clamp(34rem, 43vw, 44rem);
   overflow: hidden;
   border: 1px solid var(--line-dark);
+  border-radius: 1.4rem;
   background: #17110e;
   color: #fff0dc;
-  box-shadow: 0 2rem 5rem rgb(0 0 0 / .2);
+  box-shadow: 0 1.4rem 4rem rgb(0 0 0 / .18);
 }
 .world-chapter:first-child {
   grid-column: 1 / -1;
@@ -625,6 +639,14 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
 }
 
 /* Atmospheric layers */
+/* ---------------------------------------------------------------------------
+   World ambience
+   Two layers share the same particle markup:
+   `.atmosphere`  — sparse, laid over a single photo
+   `.world-air`   — the full-page air of a world, fixed behind all content
+   Each world also carries its own ornament plate and colour wash so entering
+   one feels like walking somewhere else.
+--------------------------------------------------------------------------- */
 .atmosphere {
   position: absolute;
   z-index: 1;
@@ -632,89 +654,273 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   overflow: hidden;
   pointer-events: none;
 }
-.atmosphere--forest i {
+
+.world-air {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.world-air__wash,
+.world-air__particles,
+.world-air__vignette { position: absolute; inset: 0; }
+.world-air__ornament {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.world-air__ornament .ornament {
+  width: min(94vh, 60rem);
+  height: min(94vh, 60rem);
+  opacity: .07;
+}
+.world-air__vignette {
+  background: radial-gradient(ellipse at 50% 42%, transparent 34%, rgb(9 7 6 / .5) 100%);
+}
+/* Page content rides above the world air. */
+.world-page #app,
+.world-page .site-header,
+.world-page .site-footer { position: relative; z-index: 1; }
+
+/* -- forest: fireflies wandering through an old wood ----------------------- */
+.atmosphere--forest i,
+.world-air--forest i {
   position: absolute;
   top: var(--y);
   left: var(--x);
-  width: calc(5px * var(--scale));
-  height: calc(5px * var(--scale));
+  width: calc(4.5px * var(--scale));
+  height: calc(4.5px * var(--scale));
   border-radius: 50%;
-  background: #f4e999;
-  box-shadow: 0 0 .55rem .13rem rgb(228 234 127 / .72);
-  opacity: .25;
-  animation: firefly-a var(--d) var(--delay) ease-in-out infinite;
+  background: #f6efa4;
+  box-shadow: 0 0 calc(.7rem * var(--scale)) calc(.12rem * var(--scale)) rgb(226 232 132 / .55);
+  opacity: 0;
+  animation: firefly-drift var(--d) var(--delay) ease-in-out infinite;
 }
-.atmosphere--forest i:nth-child(3n + 2) { animation-name: firefly-b; }
-.atmosphere--forest i:nth-child(3n + 3) { animation-name: firefly-c; }
-.atmosphere--winter i {
+.world-air--forest .world-air__wash {
+  background:
+    radial-gradient(ellipse at 22% 18%, rgb(96 122 62 / .2), transparent 58%),
+    radial-gradient(ellipse at 82% 74%, rgb(58 82 44 / .24), transparent 62%);
+}
+.world-air--forest .ornament { color: #b9d089; }
+
+/* -- winter: snow over a frost-blue hush ----------------------------------- */
+.atmosphere--winter i,
+.world-air--winter i {
   position: absolute;
-  top: -8%;
+  top: -6%;
   left: var(--x);
   width: var(--size);
   height: var(--size);
   border-radius: 50%;
-  background: rgb(255 255 255 / .82);
-  box-shadow: 0 0 .35rem rgb(196 223 247 / .6);
-  animation: snow-fall var(--d) var(--delay) linear infinite;
+  background: #fff;
+  box-shadow: 0 0 .3rem rgb(206 230 250 / .7);
+  opacity: var(--o);
+  animation: snow-drift var(--d) var(--delay) linear infinite;
 }
-.atmosphere--winter i:nth-child(2n) { animation-name: snow-fall-alt; opacity: .55; }
-.atmosphere--dragons i {
+.world-air--winter .world-air__wash {
+  background:
+    radial-gradient(ellipse at 30% 12%, rgb(120 158 196 / .22), transparent 58%),
+    radial-gradient(ellipse at 74% 82%, rgb(58 84 118 / .2), transparent 62%);
+}
+.world-air--winter .ornament { color: #cfe4f6; }
+.world-air--winter .world-air__vignette {
+  background: radial-gradient(ellipse at 50% 40%, transparent 36%, rgb(10 16 24 / .48) 100%);
+}
+
+/* -- dragons: smoke banks and embers over old stone ------------------------ */
+.atmosphere--dragons u,
+.world-air--dragons u {
   position: absolute;
-  bottom: -14%;
-  width: 64%;
-  height: 45%;
+  top: var(--y);
+  left: var(--x);
+  width: var(--size);
+  height: calc(var(--size) * .62);
   border-radius: 50%;
-  background: radial-gradient(ellipse, rgb(211 205 191 / .2), transparent 67%);
-  filter: blur(28px);
-  animation: stone-mist 15s ease-in-out infinite alternate;
+  background: radial-gradient(ellipse, rgb(206 198 182 / .17), transparent 68%);
+  filter: blur(30px);
+  animation: smoke-bank var(--d) var(--delay) ease-in-out infinite alternate;
 }
-.atmosphere--dragons i:first-child { left: -12%; }
-.atmosphere--dragons i:nth-child(2) { right: -16%; animation-delay: -7s; }
-.atmosphere--dragons b {
+.atmosphere--dragons i,
+.world-air--dragons i {
   position: absolute;
-  right: 7%;
-  bottom: 2%;
-  width: 18%;
-  height: 13%;
-  background: radial-gradient(ellipse, rgb(221 91 39 / .2), transparent 70%);
-  filter: blur(20px);
-  animation: ember-pulse 4.5s ease-in-out infinite alternate;
-}
-.atmosphere--russian i {
-  position: absolute;
-  right: 2.3rem;
-  bottom: 2.3rem;
-  width: 11rem;
-  height: 11rem;
-  border: 1px solid rgb(224 174 105 / .3);
-  transform: rotate(45deg);
-}
-.atmosphere--russian i::before,
-.atmosphere--russian i::after {
-  content: '';
-  position: absolute;
-  inset: 20%;
-  border: 1px solid rgb(224 174 105 / .25);
-}
-.atmosphere--russian i::after { inset: 38%; background: rgb(224 174 105 / .12); }
-.atmosphere--russian b {
-  position: absolute;
-  inset: 1.4rem;
-  border: 1px solid rgb(224 174 105 / .12);
-  mask-image: linear-gradient(90deg, #000, transparent 35%, transparent 65%, #000);
-}
-.atmosphere--home i {
-  position: absolute;
-  width: 4px;
-  height: 4px;
+  bottom: -4%;
+  left: var(--x);
+  width: calc(3.4px * var(--scale));
+  height: calc(3.4px * var(--scale));
   border-radius: 50%;
-  background: rgb(255 224 162 / .6);
-  filter: blur(.5px);
-  animation: dust-float 8s ease-in-out infinite alternate;
+  background: #f0a462;
+  box-shadow: 0 0 calc(.6rem * var(--scale)) rgb(226 118 48 / .6);
+  opacity: 0;
+  animation: ember-rise var(--d) var(--delay) ease-out infinite;
 }
-.atmosphere--home i:nth-child(1) { top: 24%; left: 18%; }
-.atmosphere--home i:nth-child(2) { top: 53%; left: 47%; animation-delay: -3s; }
-.atmosphere--home i:nth-child(3) { top: 31%; right: 12%; animation-delay: -6s; }
+.world-air--dragons .world-air__wash {
+  background:
+    radial-gradient(ellipse at 26% 74%, rgb(150 78 38 / .2), transparent 58%),
+    radial-gradient(ellipse at 78% 22%, rgb(94 84 74 / .24), transparent 62%);
+}
+.world-air--dragons .ornament { color: #d8ab77; }
+
+/* -- russian: sparks under woven ornament and Gzhel brushwork -------------- */
+.atmosphere--russian i,
+.world-air--russian i {
+  position: absolute;
+  bottom: -4%;
+  left: var(--x);
+  width: calc(3.2px * var(--scale));
+  height: calc(3.2px * var(--scale));
+  border-radius: 50%;
+  background: #ffcf87;
+  box-shadow: 0 0 calc(.55rem * var(--scale)) rgb(226 150 60 / .55);
+  opacity: 0;
+  animation: ember-rise var(--d) var(--delay) ease-out infinite;
+}
+.world-air--russian .world-air__wash {
+  background:
+    radial-gradient(ellipse at 24% 22%, rgb(164 74 48 / .2), transparent 56%),
+    radial-gradient(ellipse at 78% 78%, rgb(58 86 140 / .18), transparent 60%);
+}
+/* Gzhel cobalt on the ornament, warm firelight in the air around it. */
+.world-air--russian .ornament { color: #9dc3e8; opacity: .09; }
+
+/* -- home: dust turning in an afternoon shaft ------------------------------ */
+.atmosphere--home i,
+.world-air--home i {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: calc(3px * var(--scale));
+  height: calc(3px * var(--scale));
+  border-radius: 50%;
+  background: rgb(255 230 176 / .85);
+  filter: blur(.4px);
+  opacity: 0;
+  animation: mote-turn var(--d) var(--delay) ease-in-out infinite;
+}
+.world-air--home .world-air__wash {
+  background:
+    radial-gradient(ellipse at 74% 14%, rgb(226 176 88 / .22), transparent 58%),
+    radial-gradient(ellipse at 20% 80%, rgb(158 122 68 / .18), transparent 62%);
+}
+.world-air--home .ornament { color: #f0cd8c; }
+.world-air--home .world-air__vignette {
+  background: radial-gradient(ellipse at 60% 34%, transparent 40%, rgb(28 18 10 / .42) 100%);
+}
+
+/* ---------------------------------------------------------------------------
+   Lexicon — decodes the workshop's own words for a first-time visitor, so the
+   poetry never costs them comprehension.
+--------------------------------------------------------------------------- */
+.lexicon-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2rem;
+}
+.lexicon-card {
+  padding: 1.7rem 1.6rem;
+  border: 1px solid var(--line);
+  border-radius: 1.2rem;
+  background: #fdf8ee;
+  box-shadow: 0 .8rem 2.4rem rgb(42 25 14 / .05);
+}
+.lexicon-card b {
+  display: block;
+  margin-bottom: .7rem;
+  color: var(--wine);
+  font: 500 1.45rem/1.1 var(--display);
+}
+.lexicon-card span {
+  display: block;
+  color: var(--ink-soft);
+  font-size: .88rem;
+  line-height: 1.62;
+}
+
+/* ---------------------------------------------------------------------------
+   Worth — the case for the price, in four plain claims.
+--------------------------------------------------------------------------- */
+.worth-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.3rem;
+}
+.worth-card {
+  position: relative;
+  padding: 2rem 2rem 1.9rem;
+  border: 1px solid var(--line);
+  border-radius: 1.3rem;
+  background: linear-gradient(160deg, #fdf8ee, #f6ebd8);
+}
+.worth-card__num {
+  display: block;
+  margin-bottom: .9rem;
+  color: var(--gold);
+  font: 500 1.5rem/1 var(--display);
+  letter-spacing: .04em;
+}
+.worth-card b {
+  display: block;
+  margin-bottom: .7rem;
+  font: 500 1.6rem/1.2 var(--display);
+  color: var(--ink);
+}
+.worth-card p {
+  color: var(--ink-soft);
+  font-size: .92rem;
+  line-height: 1.68;
+}
+
+.story-strip__note {
+  margin-top: 1rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--gold);
+  color: rgb(255 239 218 / .78);
+  font-size: .92rem;
+  line-height: 1.65;
+}
+
+/* ---------------------------------------------------------------------------
+   Final call — the last, softest ask on the page.
+--------------------------------------------------------------------------- */
+.final-call__panel {
+  padding: clamp(2.4rem, 5vw, 4rem);
+  border: 1px solid var(--line);
+  border-radius: 1.6rem;
+  background: linear-gradient(165deg, #fdf8ee, #f2e3ca);
+  box-shadow: 0 1.4rem 4rem rgb(42 25 14 / .08);
+  text-align: center;
+}
+.final-call__panel h2 { margin-bottom: 1rem; }
+.final-call__panel > p:not(.eyebrow) {
+  max-width: 42rem;
+  margin: 0 auto 2rem;
+  color: var(--ink-soft);
+  line-height: 1.72;
+}
+.final-call__panel .cluster { justify-content: center; }
+
+/* ---------------------------------------------------------------------------
+   Next step — closes a resident's page with somewhere to go, so a sold-out
+   figure still leads to a commission or to one that is free.
+--------------------------------------------------------------------------- */
+.next-step__panel {
+  padding: clamp(2rem, 4.5vw, 3.4rem);
+  border: 1px solid var(--line);
+  border-radius: 1.5rem;
+  background: linear-gradient(165deg, #fdf8ee, #f2e3ca);
+  text-align: center;
+}
+.next-step__panel h2 { margin-bottom: .9rem; }
+.next-step__panel > p:not(.eyebrow) {
+  max-width: 42rem;
+  margin: 0 auto 1.8rem;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+.next-step__panel .cluster { justify-content: center; }
+.next-step__suggestions { margin-top: clamp(2.5rem, 5vw, 4rem); }
+.next-step__suggestions .eyebrow { margin-bottom: 1.4rem; }
 
 /* Residents cards */
 .residents-featured { background: var(--paper); overflow: hidden; }
@@ -733,9 +939,10 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   min-width: 0;
   overflow: hidden;
   border: 1px solid var(--line);
+  border-radius: 1.2rem;
   background: var(--paper-light);
   color: var(--ink);
-  box-shadow: 0 1rem 3rem rgb(48 28 15 / .1);
+  box-shadow: 0 .9rem 2.6rem rgb(48 28 15 / .09);
   scroll-snap-align: start;
 }
 .resident-card__image {
@@ -800,15 +1007,24 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   border-radius: 999px;
   background: #e3d5bd;
   color: #5d4430;
-  font-size: .57rem;
-  font-weight: 700;
-  letter-spacing: .07em;
-  text-transform: uppercase;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .01em;
 }
 .status--available { background: #dbe5d4; color: #315039; }
 .status--in-progress { background: #eadbb6; color: #6d5422; }
 .status--reserved { background: #edd9ca; color: #70442d; }
 .status--archive { background: #ded9d3; color: #4f4943; }
+.resident-card__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem .8rem;
+}
+.resident-card__meta .price {
+  font: 700 .85rem var(--body);
+  color: var(--wine);
+}
 
 /* Residents by world */
 .page-hero {
@@ -856,15 +1072,18 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
 .filters::-webkit-scrollbar { display: none; }
 .filter-button {
   flex: 0 0 auto;
-  min-height: 2.65rem;
-  padding: .55rem .9rem;
+  min-height: 2.75rem;
+  padding: .55rem 1.15rem;
   border: 1px solid var(--line);
+  border-radius: 999px;
   background: transparent;
   color: var(--ink);
-  font-size: .64rem;
-  font-weight: 700;
+  font-size: .82rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: border-color .2s, background-color .2s, color .2s;
 }
+.filter-button:hover { border-color: var(--wine); color: var(--wine); }
 .filter-button[aria-pressed='true'] { border-color: var(--wine); background: var(--wine); color: #fff7e8; }
 .residents-world {
   position: relative;
@@ -926,6 +1145,92 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   background: #0f0c0a;
   color: #fff0dc;
 }
+
+/* On a world page the sections sit on the world's own air rather than on a
+   flat fill, so each world reads as a different place. The page itself goes
+   dark so the ambience behind the content stays visible. */
+.world-page { background: #0f0c0a; }
+.world-page .world-character,
+.world-page .world-residents-section,
+.world-page .world-invite {
+  background: transparent;
+  color: #f6ead6;
+  padding: clamp(3rem, 5.5vw, 5rem) 0;
+}
+.world-page .world-residents-section { padding-top: clamp(1rem, 2vw, 2rem); }
+.world-page .world-character h2,
+.world-page .world-residents-section h2 { color: #fff2df; }
+.world-page .site-footer { background: rgb(12 9 8 / .92); }
+
+.world-stage__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  margin-top: 2rem;
+}
+.world-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: .5rem .9rem;
+  border: 1px solid rgb(255 238 211 / .28);
+  border-radius: 999px;
+  background: rgb(20 14 11 / .5);
+  color: rgb(255 240 220 / .9);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  backdrop-filter: blur(6px);
+}
+.world-badge--free {
+  border-color: rgb(178 214 160 / .5);
+  background: rgb(52 78 48 / .45);
+  color: #dcecd0;
+}
+.world-badge--air { color: var(--world-accent, #e8c98f); border-color: currentColor; }
+
+.world-traits {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.4rem;
+}
+.world-trait {
+  padding: 1.5rem 1.6rem;
+  border: 1px solid rgb(255 238 211 / .16);
+  border-radius: 1.1rem;
+  background: rgb(22 16 13 / .5);
+  backdrop-filter: blur(8px);
+}
+.world-trait b {
+  display: block;
+  margin-bottom: .6rem;
+  color: var(--world-accent, #e8c98f);
+  font: 600 .7rem/1.3 var(--body);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.world-trait span {
+  display: block;
+  color: rgb(246 234 214 / .84);
+  font-size: .92rem;
+  line-height: 1.6;
+}
+
+.world-invite__panel {
+  padding: clamp(2.2rem, 5vw, 3.6rem);
+  border: 1px solid rgb(255 238 211 / .18);
+  border-radius: 1.4rem;
+  background: rgb(22 16 13 / .62);
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+.world-invite__panel h2 { margin-bottom: 1rem; color: #fff2df; }
+.world-invite__panel > p:not(.eyebrow) {
+  max-width: 40rem;
+  margin: 0 auto 1.9rem;
+  color: rgb(246 234 214 / .8);
+  line-height: 1.7;
+}
+.world-invite__panel .cluster { justify-content: center; }
 .world-stage__scene,
 .world-stage__shade {
   position: absolute;
@@ -1424,6 +1729,7 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
 .contact-card--dark { background: #201511; color: #f8ead5; }
 .contact-card--dark h2 { color: #fff0dc; }
 .contact-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.5rem; }
+.contact-channel { margin-top: 1.2rem; font-size: .85rem; }
 .contact-list { padding: 0; margin: 0; list-style: none; }
 .contact-list li {
   display: grid;
@@ -1457,37 +1763,35 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
 }
 [data-reveal].is-visible { opacity: 1; transform: none; }
 
-@keyframes firefly-a {
-  0% { transform: translate3d(-10px, 7px, 0) scale(.75); opacity: .12; }
-  37% { transform: translate3d(5px, -9px, 0) scale(1.15); opacity: .9; }
-  72% { transform: translate3d(14px, 4px, 0) scale(.82); opacity: .32; }
-  100% { transform: translate3d(-3px, -13px, 0) scale(1); opacity: .7; }
+/* Each particle carries its own drift vector (--dx/--dy), so a shared keyframe
+   still produces paths that never repeat between neighbours. */
+@keyframes firefly-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(.7); opacity: 0; }
+  18%  { opacity: var(--glow); }
+  50%  { transform: translate3d(var(--dx), var(--dy), 0) scale(1.15); opacity: calc(var(--glow) * 1.25); }
+  76%  { opacity: calc(var(--glow) * .35); }
+  100% { transform: translate3d(calc(var(--dx) * .35), calc(var(--dy) * 1.5), 0) scale(.8); opacity: 0; }
 }
-@keyframes firefly-b {
-  0% { transform: translate3d(8px, -3px, 0) scale(.8); opacity: .2; }
-  45% { transform: translate3d(-13px, -11px, 0) scale(1.22); opacity: .82; }
-  100% { transform: translate3d(4px, 12px, 0) scale(.7); opacity: .15; }
+@keyframes snow-drift {
+  0%   { transform: translate3d(0, -6vh, 0) rotate(0); }
+  50%  { transform: translate3d(var(--sway), 52vh, 0) rotate(180deg); }
+  100% { transform: translate3d(0, 110vh, 0) rotate(360deg); }
 }
-@keyframes firefly-c {
-  0% { transform: translate3d(0, 12px, 0) scale(1); opacity: .55; }
-  34% { transform: translate3d(13px, 2px, 0) scale(.72); opacity: .16; }
-  78% { transform: translate3d(-8px, -14px, 0) scale(1.25); opacity: .88; }
-  100% { transform: translate3d(-2px, -4px, 0) scale(.9); opacity: .38; }
+@keyframes smoke-bank {
+  from { transform: translate3d(-4%, 2%, 0) scale(1); opacity: .34; }
+  to   { transform: translate3d(7%, -3%, 0) scale(1.18); opacity: .7; }
 }
-@keyframes snow-fall {
-  from { transform: translate3d(-12px, -8vh, 0) rotate(0); }
-  to { transform: translate3d(28px, 112vh, 0) rotate(240deg); }
+@keyframes ember-rise {
+  0%   { transform: translate3d(0, 0, 0) scale(.8); opacity: 0; }
+  14%  { opacity: .85; }
+  100% { transform: translate3d(var(--dx), -78vh, 0) scale(.4); opacity: 0; }
 }
-@keyframes snow-fall-alt {
-  from { transform: translate3d(18px, -8vh, 0) rotate(0); }
-  to { transform: translate3d(-30px, 112vh, 0) rotate(-260deg); }
+@keyframes mote-turn {
+  0%   { transform: translate3d(0, 0, 0) scale(.85); opacity: 0; }
+  22%  { opacity: .6; }
+  60%  { transform: translate3d(var(--dx), var(--dy), 0) scale(1.1); opacity: .75; }
+  100% { transform: translate3d(calc(var(--dx) * 1.4), calc(var(--dy) * 1.8), 0) scale(.7); opacity: 0; }
 }
-@keyframes stone-mist {
-  from { transform: translate3d(-5%, 2%, 0) scale(1); opacity: .3; }
-  to { transform: translate3d(8%, -4%, 0) scale(1.15); opacity: .72; }
-}
-@keyframes ember-pulse { from { opacity: .18; transform: scale(.85); } to { opacity: .65; transform: scale(1.18); } }
-@keyframes dust-float { from { transform: translate3d(-8px, 10px, 0); opacity: .15; } to { transform: translate3d(13px, -16px, 0); opacity: .7; } }
 @keyframes scroll-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(.35rem); } }
 @keyframes scene-next {
   from { opacity: .35; transform: translate3d(2.2%, 0, 0) scale(1.075); filter: blur(7px) saturate(.72); }
@@ -1672,7 +1976,10 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   .world-stage > .atmosphere { inset: 0; }
   .world-stage__intro { min-height: 25rem; padding: 3rem 0 2rem; }
   .world-back { margin-bottom: 1.5rem; }
-  .world-stage__intro h1 { font-size: clamp(3.8rem, 16vw, 6.4rem); }
+  .world-stage__intro h1 { font-size: clamp(2.6rem, 11vw, 5rem); }
+  .world-traits { grid-template-columns: 1fr; gap: .9rem; }
+  .lexicon-grid { grid-template-columns: repeat(2, 1fr); }
+  .worth-grid { grid-template-columns: 1fr; }
   .world-stage__intro > p:last-child { font-size: .88rem; }
   .world-slider { padding-bottom: 3rem; }
   .world-slider__slides { min-height: 52rem; }
@@ -1749,6 +2056,14 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   .process-stage__image { min-height: 27rem; }
   .option-grid { grid-template-columns: 1fr; }
   .contact-actions { display: grid; grid-template-columns: 1fr; }
+  .lexicon-grid { grid-template-columns: 1fr; }
+  .world-stage__facts { gap: .45rem; }
+  .world-badge { font-size: .68rem; padding: .45rem .75rem; }
+  /* Thin the ambience on phones: half the particles read the same but cost
+     far less battery on a weaker GPU. */
+  .world-air i:nth-child(2n),
+  .atmosphere i:nth-child(2n) { display: none; }
+  .world-air__ornament .ornament { width: 120vw; height: 120vw; }
 }
 
 @media (prefers-reduced-motion: reduce) {

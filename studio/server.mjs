@@ -116,6 +116,12 @@ function safeSlug(value) {
   return safeText(value, 70).toLowerCase().replace(/[^a-z0-9а-яё-]+/gi, "-").replace(/^-+|-+$/g, "");
 }
 
+function safePrice(value, previous = null) {
+  if (value === "" || value === null || value === undefined) return previous;
+  const number = Number(value);
+  return Number.isFinite(number) && number >= 0 ? Math.round(number) : previous;
+}
+
 function normaliseResident(payload, previous = {}) {
   const allowedAvailability = ["available", "in-progress", "archive", "reserved"];
   const allowedTechnique = ["one-of-a-kind", "author-series"];
@@ -130,6 +136,7 @@ function normaliseResident(payload, previous = {}) {
     collectionId: safeText(payload.collectionId || previous.collectionId, 80),
     availability,
     technique,
+    price: safePrice(payload.price, previous.price ?? null),
     type: safeText(payload.type || previous.type, 120),
     character: safeText(payload.character || previous.character, 300),
     habitat: safeText(payload.habitat || previous.habitat, 300),

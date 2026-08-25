@@ -45,6 +45,11 @@ function statusCopy(status) {
   }[status] || ['Хроника Мастерской', ''];
 }
 
+function priceLabel(resident) {
+  const price = Number(resident?.price);
+  return price > 0 ? `${price.toLocaleString('ru-RU')} ₽` : 'Цена по запросу';
+}
+
 function techniqueCopy(technique) {
   return technique === 'author-series' ? 'Авторская ручная серия' : 'Единственный в своём роде';
 }
@@ -62,32 +67,251 @@ function purchaseLink(resident) {
   return `https://t.me/vera120700?text=${encodeURIComponent(message)}`;
 }
 
-function atmosphereMarkup(theme) {
+// What separates one world from another, in plain words a first-time visitor
+// can act on: what lives here, how it feels, and who it suits as a gift.
+const WORLD_TRAITS = {
+  winter: {
+    mood: 'Ожидание праздника',
+    lives: 'Щелкунчики, мышиные короли и зимние сцены',
+    palette: 'Синий бархат, снег и золото мундиров',
+    gift: 'На Новый год и Рождество — тем, кто любит праздник',
+    air: 'Здесь идёт снег'
+  },
+  forest: {
+    mood: 'Тишина и внимательный взгляд',
+    lives: 'Лесные драконы, грибы и молчаливые существа',
+    palette: 'Мох, тёплая кора и живые огни',
+    gift: 'Тем, кто любит лес, книги и тихие вечера',
+    air: 'Здесь в темноте летают светлячки'
+  },
+  dragons: {
+    mood: 'Древность и спокойная сила',
+    lives: 'Драконы, грифоны и авторские создания Веры',
+    palette: 'Чешуя, старый камень и дыхание огня',
+    gift: 'Тем, у кого есть своя легенда',
+    air: 'Здесь стелется дым и поднимаются угли'
+  },
+  russian: {
+    mood: 'Вечерняя сказка у огня',
+    lives: 'Сирин, Змей Горыныч, Конёк-Горбунок и русалки',
+    palette: 'Золото корон, гжельская синь и вязь',
+    gift: 'Тем, кто вырос на этих сказках',
+    air: 'Здесь по фону идёт славянский узор'
+  },
+  home: {
+    mood: 'Тихий солнечный день',
+    lives: 'Курочка, лошадка-качалка и другие домашние Жители',
+    palette: 'Лён, солнечное дерево и тёплый свет',
+    gift: 'На новоселье и просто для уюта в доме',
+    air: 'Здесь в солнечном луче кружится пыль'
+  }
+};
+
+function worldTraits(theme) {
+  return WORLD_TRAITS[theme] || WORLD_TRAITS.dragons;
+}
+
+function residentWord(count) {
+  const tail = count % 100;
+  if (tail >= 11 && tail <= 14) return 'Жителей';
+  const last = count % 10;
+  if (last === 1) return 'Житель';
+  if (last >= 2 && last <= 4) return 'Жителя';
+  return 'Жителей';
+}
+
+// Deterministic pseudo-random so particle drifts look scattered rather than
+// striped, but stay identical between renders (no layout jitter on re-render).
+function scatter(seed) {
+  let value = seed * 9301 + 49297;
+  return () => {
+    value = (value * 9301 + 49297) % 233280;
+    return value / 233280;
+  };
+}
+
+// Particles for a world's ambience. `density` scales the count: the page-wide
+// layer carries more than the small copy laid over a single photo.
+function atmosphereParticles(theme, density = 1) {
+  const random = scatter(theme.length * 17 + 3);
+  const round = (value, digits = 2) => Number(value.toFixed(digits));
+
   if (theme === 'forest') {
-    const points = [
-      [8, 22, 6, .2, .75], [18, 64, 8, 2.3, .5], [29, 34, 7, 4.7, .9],
-      [41, 76, 10, 1.1, .65], [54, 18, 8, 3.4, .52], [61, 57, 6, 5.3, .8],
-      [72, 31, 9, .9, .62], [81, 69, 7, 4.1, .72], [91, 43, 10, 2.8, .55]
-    ];
-    return `<div class="atmosphere atmosphere--forest" aria-hidden="true">${points.map(([x, y, d, delay, scale]) => `<i style="--x:${x}%;--y:${y}%;--d:${d}s;--delay:-${delay}s;--scale:${scale}"></i>`).join('')}</div>`;
-  }
-  if (theme === 'winter') {
-    const flakes = Array.from({ length: 24 }, (_, index) => {
-      const x = (index * 37 + 11) % 100;
-      const d = 8 + (index % 7) * 1.7;
-      const delay = (index * 1.37) % 11;
-      const size = 2 + (index % 4);
-      return `<i style="--x:${x}%;--d:${d}s;--delay:-${delay}s;--size:${size}px"></i>`;
+    // Fireflies wander on their own paths — each gets its own drift vector so
+    // no two trace the same arc.
+    return Array.from({ length: Math.round(18 * density) }, () => {
+      const x = round(random() * 100);
+      const y = round(random() * 100);
+      const driftX = round(-26 + random() * 52);
+      const driftY = round(-22 + random() * 44);
+      const duration = round(9 + random() * 13);
+      const delay = round(random() * 18);
+      const scale = round(.45 + random() * .85);
+      const glow = round(.32 + random() * .5);
+      return `<i style="--x:${x}%;--y:${y}%;--dx:${driftX}px;--dy:${driftY}px;--d:${duration}s;--delay:-${delay}s;--scale:${scale};--glow:${glow}"></i>`;
     }).join('');
-    return `<div class="atmosphere atmosphere--winter" aria-hidden="true">${flakes}</div>`;
   }
+
+  if (theme === 'winter') {
+    return Array.from({ length: Math.round(38 * density) }, () => {
+      const x = round(random() * 100);
+      const sway = round(14 + random() * 40);
+      const duration = round(11 + random() * 15);
+      const delay = round(random() * 26);
+      const size = round(1.6 + random() * 3.4, 1);
+      const opacity = round(.3 + random() * .55);
+      return `<i style="--x:${x}%;--sway:${sway}px;--d:${duration}s;--delay:-${delay}s;--size:${size}px;--o:${opacity}"></i>`;
+    }).join('');
+  }
+
   if (theme === 'dragons') {
-    return '<div class="atmosphere atmosphere--dragons" aria-hidden="true"><i></i><i></i><b></b></div>';
+    // Drifting smoke banks plus embers rising from below.
+    const smoke = Array.from({ length: Math.round(4 * density) }, () => {
+      const x = round(random() * 100);
+      const y = round(40 + random() * 60);
+      const size = round(30 + random() * 34);
+      const duration = round(22 + random() * 16);
+      const delay = round(random() * 30);
+      return `<u style="--x:${x}%;--y:${y}%;--size:${size}%;--d:${duration}s;--delay:-${delay}s"></u>`;
+    }).join('');
+    const embers = Array.from({ length: Math.round(11 * density) }, () => {
+      const x = round(random() * 100);
+      const drift = round(-30 + random() * 60);
+      const duration = round(9 + random() * 11);
+      const delay = round(random() * 20);
+      const scale = round(.5 + random() * .8);
+      return `<i style="--x:${x}%;--dx:${drift}px;--d:${duration}s;--delay:-${delay}s;--scale:${scale}"></i>`;
+    }).join('');
+    return smoke + embers;
   }
+
   if (theme === 'russian') {
-    return '<div class="atmosphere atmosphere--russian" aria-hidden="true"><i></i><b></b></div>';
+    // Warm sparks lifting off an evening fire, under the woven ornament.
+    return Array.from({ length: Math.round(12 * density) }, () => {
+      const x = round(random() * 100);
+      const drift = round(-24 + random() * 48);
+      const duration = round(11 + random() * 13);
+      const delay = round(random() * 22);
+      const scale = round(.45 + random() * .7);
+      return `<i style="--x:${x}%;--dx:${drift}px;--d:${duration}s;--delay:-${delay}s;--scale:${scale}"></i>`;
+    }).join('');
   }
-  return '<div class="atmosphere atmosphere--home" aria-hidden="true"><i></i><i></i><i></i></div>';
+
+  // home — dust motes turning slowly in a shaft of afternoon sun
+  return Array.from({ length: Math.round(14 * density) }, () => {
+    const x = round(random() * 100);
+    const y = round(random() * 100);
+    const driftX = round(-18 + random() * 36);
+    const driftY = round(-30 + random() * 24);
+    const duration = round(14 + random() * 16);
+    const delay = round(random() * 24);
+    const scale = round(.5 + random() * .9);
+    return `<i style="--x:${x}%;--y:${y}%;--dx:${driftX}px;--dy:${driftY}px;--d:${duration}s;--delay:-${delay}s;--scale:${scale}"></i>`;
+  }).join('');
+}
+
+// Ornament plates drawn as inline SVG so each world carries a motif of its own
+// rather than the same generic frame.
+function worldOrnament(theme) {
+  if (theme === 'russian') {
+    // Gzhel-inspired cobalt brushwork over a Slavic woven diamond ground.
+    return `<svg class="ornament ornament--russian" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+      <defs>
+        <pattern id="slav-weave" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M0 20 L20 0 L40 20 L20 40 Z" fill="none" stroke="currentColor" stroke-width="1"/>
+          <path d="M20 14 L26 20 L20 26 L14 20 Z" fill="currentColor" opacity=".45"/>
+          <path d="M0 0 L8 8 M40 0 L32 8 M0 40 L8 32 M40 40 L32 32" stroke="currentColor" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="240" height="240" fill="url(#slav-weave)" opacity=".5"/>
+      <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M120 44 C150 62 158 96 138 120 C158 144 150 178 120 196 C90 178 82 144 102 120 C82 96 90 62 120 44 Z" opacity=".7"/>
+        <path d="M120 78 C134 90 136 108 126 120 C136 132 134 150 120 162 C106 150 104 132 114 120 C104 108 106 90 120 78 Z" opacity=".55"/>
+        <circle cx="120" cy="120" r="9" opacity=".8"/>
+      </g>
+    </svg>`;
+  }
+
+  if (theme === 'winter') {
+    // Frost crystal — six-fold, the way a real snowflake branches.
+    return `<svg class="ornament ornament--winter" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+      <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" transform="translate(120 120)">
+        ${Array.from({ length: 6 }, (_, index) => `<g transform="rotate(${index * 60})">
+          <path d="M0 0 L0 -96"/>
+          <path d="M0 -34 L-15 -49 M0 -34 L15 -49"/>
+          <path d="M0 -58 L-12 -70 M0 -58 L12 -70"/>
+          <path d="M0 -80 L-9 -90 M0 -80 L9 -90"/>
+        </g>`).join('')}
+      </g>
+    </svg>`;
+  }
+
+  if (theme === 'dragons') {
+    // Scale-mail ground with a heraldic wing arc.
+    return `<svg class="ornament ornament--dragons" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+      <defs>
+        <pattern id="dragon-scale" width="32" height="26" patternUnits="userSpaceOnUse">
+          <path d="M-16 0 A16 16 0 0 0 16 0 M16 0 A16 16 0 0 0 48 0 M0 13 A16 16 0 0 0 32 13" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        </pattern>
+      </defs>
+      <rect width="240" height="240" fill="url(#dragon-scale)" opacity=".45"/>
+      <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".65">
+        <path d="M52 158 C74 108 108 82 150 78 M150 78 C132 96 124 118 126 142"/>
+        <path d="M150 78 L176 66 L168 92 L190 88"/>
+      </g>
+    </svg>`;
+  }
+
+  if (theme === 'forest') {
+    // Fern fronds and spores — the quiet growth of an old wood.
+    return `<svg class="ornament ornament--forest" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+      <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+        <path d="M120 210 C120 150 116 96 138 52" opacity=".7"/>
+        ${Array.from({ length: 9 }, (_, index) => {
+          const y = 196 - index * 17;
+          const spread = 16 + index * 3.4;
+          const lift = index * 1.8;
+          return `<path d="M${120 + index * 1.6} ${y} C${120 - spread * .4} ${y - 6 - lift} ${120 - spread} ${y - 10 - lift} ${120 - spread - 6} ${y - 20 - lift}" opacity=".5"/>
+                  <path d="M${120 + index * 1.6} ${y} C${120 + spread * .5} ${y - 6 - lift} ${120 + spread} ${y - 10 - lift} ${120 + spread + 6} ${y - 20 - lift}" opacity=".5"/>`;
+        }).join('')}
+      </g>
+      <g fill="currentColor" opacity=".45">
+        <circle cx="62" cy="70" r="3"/><circle cx="86" cy="44" r="2"/><circle cx="176" cy="128" r="2.6"/>
+        <circle cx="198" cy="92" r="2"/><circle cx="52" cy="126" r="2.2"/>
+      </g>
+    </svg>`;
+  }
+
+  // home — a sun over a simple woven linen ground
+  return `<svg class="ornament ornament--home" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+    <defs>
+      <pattern id="linen-weave" width="12" height="12" patternUnits="userSpaceOnUse">
+        <path d="M0 6 H12 M6 0 V12" stroke="currentColor" stroke-width=".8" opacity=".5"/>
+      </pattern>
+    </defs>
+    <rect width="240" height="240" fill="url(#linen-weave)" opacity=".4"/>
+    <g transform="translate(120 120)" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round">
+      <circle r="40" opacity=".75"/>
+      ${Array.from({ length: 16 }, (_, index) => `<path d="M0 -52 L0 -66" transform="rotate(${index * 22.5})" opacity=".6"/>`).join('')}
+    </g>
+  </svg>`;
+}
+
+// The small ambience laid over a single photo — kept sparse so it reads as part
+// of the picture instead of a veil across the subject.
+function atmosphereMarkup(theme) {
+  return `<div class="atmosphere atmosphere--${esc(theme)}" aria-hidden="true">${atmosphereParticles(theme, .55)}</div>`;
+}
+
+// The full-page ambience: this is what makes a world feel like a place you
+// walked into rather than a page you opened.
+function worldAtmosphere(theme) {
+  return `<div class="world-air world-air--${esc(theme)}" aria-hidden="true">
+    <div class="world-air__wash"></div>
+    <div class="world-air__ornament">${worldOrnament(theme)}</div>
+    <div class="world-air__particles">${atmosphereParticles(theme, 1)}</div>
+    <div class="world-air__vignette"></div>
+  </div>`;
 }
 
 function setShell(active) {
@@ -105,7 +329,7 @@ function setShell(active) {
   header.innerHTML = `<a class="skip-link" href="#main">Перейти к содержанию</a>
     <div class="site-header"><div class="header-inner">
       <a class="brand" href="/" aria-label="Мастерская Веры — главная">
-        <span class="brand__mark" aria-hidden="true">✦</span>
+        <img class="brand__logo" src="/media/brand/logo-mark.webp" alt="" width="96" height="96">
         <span class="brand__name">Мастерская Веры</span>
       </a>
       <nav class="main-nav" id="main-nav" aria-label="Основная навигация">
@@ -133,6 +357,7 @@ function setShell(active) {
     <div class="footer-contact">
       <p>Связаться с Верой</p>
       <a href="https://t.me/vera120700" target="_blank" rel="noreferrer">Telegram · @vera120700</a>
+      <a href="https://t.me/masterskayaver" target="_blank" rel="noreferrer">Telegram-канал · Мастерская Веры</a>
       <a href="https://www.instagram.com/vera.romanycheva.23" target="_blank" rel="noreferrer">Instagram</a>
     </div>
   </div></footer><button class="scroll-top" type="button" data-scroll-top aria-label="Наверх">↑</button>`;
@@ -180,7 +405,7 @@ function residentCard(resident) {
       <span class="resident-card__world">${esc(world.name)}</span>
     </a>
     <div class="resident-card__body">
-      <span class="status ${className}">${label}</span>
+      <div class="resident-card__meta"><span class="status ${className}">${label}</span>${['available', 'in-progress'].includes(resident.availability) ? `<span class="price">${priceLabel(resident)}</span>` : ''}</div>
       <h3>${esc(resident.shortName || resident.name)}</h3>
       <p>${esc(resident.excerpt)}</p>
       <div class="cluster">${residentActions(resident, true)}</div>
@@ -213,10 +438,30 @@ function worldCard(collection, index = 0) {
 
 function enableAtmosphereMotion() {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Reveal once and stop watching: re-hiding a block after the reader has
+  // scrolled past it makes content flicker away on the way back up.
+  // The 300px bottom margin starts the fade before a block enters view, so it
+  // has already arrived by the time it is on screen — and a fast scroll can
+  // never outrun it and leave a blank panel behind.
+  const reveal = (element) => {
+    element.classList.add('is-visible');
+    observer.unobserve(element);
+  };
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => entry.target.classList.toggle('is-visible', entry.isIntersecting));
-  }, { threshold: .12 });
-  document.querySelectorAll('[data-reveal]').forEach((element) => observer.observe(element));
+    entries.forEach((entry) => entry.isIntersecting && reveal(entry.target));
+  }, { threshold: 0, rootMargin: '0px 0px 300px 0px' });
+
+  const revealable = [...document.querySelectorAll('[data-reveal]')];
+  revealable.forEach((element) => {
+    // Anything already at or above the fold shows straight away — no fade in
+    // from nothing on first paint.
+    if (element.getBoundingClientRect().top < window.innerHeight) element.classList.add('is-visible');
+    else observer.observe(element);
+  });
+  // Safety net: reveal blocks are hidden by CSS until observed, so if the
+  // observer never fires (odd viewport, stalled layout) show them anyway
+  // rather than leaving the page blank.
+  window.setTimeout(() => revealable.forEach((element) => element.classList.add('is-visible')), 1800);
   if (reduced) return;
 
   document.querySelectorAll('[data-parallax]').forEach((stage) => {
@@ -247,20 +492,49 @@ function home() {
         <div class="home-hero__copy">
           <p class="eyebrow eyebrow--light" data-reveal>Добро пожаловать, путник ✦</p>
           <h1 data-reveal>Не просто фигурки.<br><em>Жители с историей.</em></h1>
-          <p class="lede lede--light" data-reveal>Вера вручную создаёт драконов, сказочных персонажей и маленькие лесные чудеса. У каждого — свой характер, единственный экземпляр и путь к дому.</p>
+          <p class="lede lede--light" data-reveal>Вера лепит и расписывает вручную драконов, сказочных героев и маленькие лесные чудеса. Каждая фигурка существует в одном экземпляре — второй такой не будет ни у кого.</p>
           <div class="cluster" data-reveal>
-            <a class="button button--wine" href="/residents.html">Смотреть Жителей <span aria-hidden="true">↗</span></a>
-            <a class="button button--light" href="#worlds">Открыть Миры</a>
+            <a class="button button--wine" href="/residents.html">Смотреть работы <span aria-hidden="true">↗</span></a>
+            <a class="button button--light" href="#worlds">Заглянуть в Миры</a>
           </div>
         </div>
         <aside class="home-hero__folio" data-reveal>
-          <p>Сейчас в Мастерской</p>
+          <p>Сейчас можно забрать домой</p>
           <strong>${availableCount}</strong>
-          <span>готовых работ можно приобрести</span>
+          <span>готовых работ ждут своего человека</span>
           <a href="https://t.me/vera120700" target="_blank" rel="noreferrer">Спросить Веру →</a>
         </aside>
       </div>
-      <a class="hero-scroll" href="#worlds"><span>Листать к Мирам</span><i>↓</i></a>
+      <a class="hero-scroll" href="#lexicon"><span>Листать дальше</span><i>↓</i></a>
+    </section>
+
+    <section id="lexicon" class="section section--paper lexicon">
+      <div class="shell">
+        <header class="section-head" data-reveal>
+          <div>
+            <p class="eyebrow">Пара слов, прежде чем идти дальше</p>
+            <h2>Здесь у вещей свои имена</h2>
+          </div>
+        </header>
+        <div class="lexicon-grid" data-reveal>
+          <div class="lexicon-card">
+            <b>Житель</b>
+            <span>Так Вера называет свои фигурки. У каждой есть имя, характер и своя история — поэтому не «товар», а Житель.</span>
+          </div>
+          <div class="lexicon-card">
+            <b>Мир</b>
+            <span>Тематическая семья Жителей: зимние сказки, древний лес, драконы, русские сказки, домашние истории. У каждого Мира свой воздух.</span>
+          </div>
+          <div class="lexicon-card">
+            <b>Хранитель</b>
+            <span>Человек, у которого Житель поселился. Фигурка одна на свете, поэтому её не «покупают», а забирают к себе.</span>
+          </div>
+          <div class="lexicon-card">
+            <b>Хроника</b>
+            <span>Страница Жителя: как он появился, какой у него характер и куда ведёт его история. Там же — фотографии и цена.</span>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="section section--paper manifesto">
@@ -302,14 +576,60 @@ function home() {
       </div>
     </section>
 
+    <section class="section section--paper worth">
+      <div class="shell">
+        <header class="section-head" data-reveal>
+          <div>
+            <p class="eyebrow">Почему это дороже сувенира</p>
+            <h2>Одна пара рук, один экземпляр, ни одной копии</h2>
+          </div>
+        </header>
+        <div class="worth-grid" data-reveal>
+          <div class="worth-card">
+            <span class="worth-card__num">01</span>
+            <b>Второго такого нет</b>
+            <p>Вера не делает копий. Даже когда образ повторяется — Щелкунчик, Горыныч — меняются лицо, оттенки и детали. Ваш Житель существует в единственном экземпляре.</p>
+          </div>
+          <div class="worth-card">
+            <span class="worth-card__num">02</span>
+            <b>От каркаса до последнего мазка</b>
+            <p>Проволока, фольга, полимерная глина, запекание, многослойная роспись. Никакого литья и конвейера — всё проходит через руки Веры.</p>
+          </div>
+          <div class="worth-card">
+            <span class="worth-card__num">03</span>
+            <b>Работа на недели, а не на часы</b>
+            <p>Крупная фигурка рождается неделями: форма, сушка, роспись слой за слоем. Это то, за что платят — время мастера и внимание к мелочам.</p>
+          </div>
+          <div class="worth-card">
+            <span class="worth-card__num">04</span>
+            <b>С вами говорит сама Вера</b>
+            <p>Без менеджеров и посредников. Вера сама отвечает, сама советует, сама упаковывает и отправляет.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section section--deep">
       <div class="shell story-strip" data-reveal>
         <figure class="story-strip__image"><img src="${esc(giftStory.image)}" alt="Подарочный набор Мастерской Веры" loading="lazy"></figure>
         <div class="story-strip__copy">
-          <p class="eyebrow eyebrow--light">Путь к Хранителю</p>
+          <p class="eyebrow eyebrow--light">Если выбираете подарок</p>
           <h2>${esc(giftStory.title)}</h2>
           <p>${esc(giftStory.lead)}</p>
-          <div class="cluster"><a class="button button--wine" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Написать Вере</a><a class="button button--light" href="/process.html">Как создаются</a></div>
+          <p class="story-strip__note">Такой подарок трудно повторить: человек получает вещь, которая существует в одном экземпляре, вместе с её историей.</p>
+          <div class="cluster"><a class="button button--wine" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Спросить о подарке</a><a class="button button--light" href="/process.html">Посмотреть, как создаются</a></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--paper final-call">
+      <div class="shell final-call__panel" data-reveal>
+        <p class="eyebrow">Стать Хранителем</p>
+        <h2>Понравился кто-то из Жителей?</h2>
+        <p>Напишите Вере — она подскажет, свободен ли он, сколько стоит и как доедет до вас. А если ни один не отозвался, расскажите свою идею: Вера создаёт Жителей и на заказ.</p>
+        <div class="cluster">
+          <a class="button button--wine" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Написать Вере в Telegram</a>
+          <a class="button button--line" href="/residents.html">Посмотреть всех Жителей</a>
         </div>
       </div>
     </section>
@@ -407,7 +727,10 @@ function collectionPage() {
   const residentsInWorld = content.residents
     .filter((resident) => resident.collectionId === collection.id)
     .sort((left, right) => (left.worldOrder ?? 99) - (right.worldOrder ?? 99));
-  document.body.classList.add(`theme-${collection.theme}`);
+  const traits = worldTraits(collection.theme);
+  const available = residentsInWorld.filter((resident) => resident.availability === 'available');
+  document.body.classList.add(`theme-${collection.theme}`, 'world-page');
+  document.body.insertAdjacentHTML('afterbegin', worldAtmosphere(collection.theme));
 
   app.innerHTML = `<main id="main">
     <section class="world-stage theme-${esc(collection.theme)}" style="--world-accent:${esc(collection.accent)}" data-parallax>
@@ -419,8 +742,41 @@ function collectionPage() {
         <p class="eyebrow eyebrow--light">${esc(collection.cue || 'Мир Мастерской')}</p>
         <h1>${esc(collection.name)}</h1>
         <p>${esc(collection.description)}</p>
+        <div class="world-stage__facts">
+          <span class="world-badge">${residentsInWorld.length} ${residentWord(residentsInWorld.length)}</span>
+          ${available.length ? `<span class="world-badge world-badge--free">${available.length} можно забрать домой</span>` : ''}
+          <span class="world-badge world-badge--air">${esc(traits.air)}</span>
+        </div>
       </div>
-      ${residentsInWorld.length ? `<div class="shell world-slider" data-world-slider tabindex="0" aria-label="Жители мира «${esc(collection.name)}»">
+    </section>
+
+    <section class="section world-character">
+      <div class="shell">
+        <header class="section-head section-head--light" data-reveal>
+          <div>
+            <p class="eyebrow eyebrow--light">Чем этот Мир не похож на другие</p>
+            <h2>${esc(traits.mood)}</h2>
+          </div>
+        </header>
+        <div class="world-traits" data-reveal>
+          <div class="world-trait"><b>Кто здесь живёт</b><span>${esc(traits.lives)}</span></div>
+          <div class="world-trait"><b>Цвета Мира</b><span>${esc(traits.palette)}</span></div>
+          <div class="world-trait"><b>Кому подойдёт в подарок</b><span>${esc(traits.gift)}</span></div>
+        </div>
+      </div>
+    </section>
+
+    ${residentsInWorld.length ? `<section class="section world-residents-section">
+      <div class="shell">
+        <header class="section-head section-head--light" data-reveal>
+          <div>
+            <p class="eyebrow eyebrow--light">Жители этого Мира</p>
+            <h2>Каждый сделан вручную в одном экземпляре</h2>
+          </div>
+          <a class="text-link text-link--light" href="/residents.html">Все работы Веры →</a>
+        </header>
+      </div>
+      <div class="shell world-slider" data-world-slider tabindex="0" aria-label="Жители мира «${esc(collection.name)}»">
         <div class="world-slider__slides">${residentsInWorld.map(worldResidentSlide).join('')}</div>
         <div class="world-slider__controls">
           <button type="button" data-world-prev aria-label="Предыдущий Житель">←</button>
@@ -430,7 +786,19 @@ function collectionPage() {
         <div class="world-slider__rail" role="tablist" aria-label="Выбор Жителя">
           ${residentsInWorld.map((resident, index) => `<button class="${index === 0 ? 'is-active' : ''}" type="button" data-world-go="${index}" role="tab" aria-selected="${index === 0 ? 'true' : 'false'}"><img src="${esc(resident.sceneImage || resident.heroImage)}" alt=""><span>${esc(resident.shortName || resident.name)}</span></button>`).join('')}
         </div>
-      </div>` : `<div class="shell empty-state empty-state--dark">Первые Жители этого Мира скоро появятся.</div>`}
+      </div>
+    </section>` : `<section class="section"><div class="shell empty-state empty-state--dark">Первые Жители этого Мира скоро появятся. Напишите Вере — она расскажет, кто здесь готовится.</div></section>`}
+
+    <section class="section world-invite">
+      <div class="shell world-invite__panel" data-reveal>
+        <p class="eyebrow eyebrow--light">${esc(collection.name)}</p>
+        <h2>Понравился кто-то из этого Мира?</h2>
+        <p>Напишите Вере — она расскажет о размере, сроках и стоимости, поможет выбрать или придумает нового Жителя специально для вас.</p>
+        <div class="cluster">
+          <a class="button button--wine" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Написать Вере</a>
+          <a class="button button--light" href="/collections.html">Посмотреть другие Миры</a>
+        </div>
+      </div>
     </section>
   </main>`;
   document.title = `${collection.name} — Мастерская Веры`;
@@ -571,15 +939,60 @@ function chronicle() {
     <section class="section section--paper"><div class="shell resident-detail">
       <figure class="resident-detail__image"><img src="${esc(resident.heroImage)}" alt="${esc(resident.name)}"></figure>
       <div class="resident-detail__copy"><span class="status ${className}">${status}</span><h2>${esc(resident.name)}</h2><p class="lede">${esc(resident.story)}</p>
-        <dl class="meta-list"><div><dt>Мир</dt><dd>${esc(collection.name)}</dd></div><div><dt>Работа</dt><dd>${esc(techniqueCopy(resident.technique))}</dd></div><div><dt>Характер</dt><dd>${esc(resident.character)}</dd></div><div><dt>Где обитает</dt><dd>${esc(resident.habitat)}</dd></div></dl>
+        <dl class="meta-list"><div><dt>Мир</dt><dd>${esc(collection.name)}</dd></div>${['available', 'in-progress'].includes(resident.availability) ? `<div><dt>Стоимость</dt><dd>${esc(priceLabel(resident))}</dd></div>` : ''}<div><dt>Работа</dt><dd>${esc(techniqueCopy(resident.technique))}</dd></div><div><dt>Характер</dt><dd>${esc(resident.character)}</dd></div><div><dt>Где обитает</dt><dd>${esc(resident.habitat)}</dd></div></dl>
         <div class="cluster">${primaryAction}<a class="button button--line" href="/residents.html">Все Жители</a></div>
       </div>
     </div></section>
     <section class="section"><div class="shell"><header class="section-head"><div><p class="eyebrow">Свиток Жителя</p><h2>Хроника в трёх частях</h2></div></header><div class="chronicle-grid"><div><p class="eyebrow">Истоки</p><h3>Откуда пришёл</h3><p>${esc(resident.chronicle?.origin)}</p></div><div><p class="eyebrow">Характер</p><h3>Какой он</h3><p>${esc(resident.chronicle?.character)}</p></div><div><p class="eyebrow">Путь</p><h3>Куда ведёт история</h3><p>${esc(resident.chronicle?.path)}</p></div></div></div></section>
     <section class="section section--night"><div class="shell"><header class="section-head section-head--light"><div><p class="eyebrow eyebrow--light">Настоящие фотографии</p><h2>Рассмотреть ближе</h2></div></header><div class="gallery">${resident.gallery.map((media, index) => isVideo(media) ? `<div class="gallery__video">${galleryMedia(media, `${resident.name} — видео ${index + 1}`)}</div>` : `<button type="button" data-lightbox="${esc(media)}" aria-label="Открыть фото ${index + 1}">${galleryMedia(media, `${resident.name} — фотография ${index + 1}`)}</button>`).join('')}</div></div></section>
+    ${chronicleNextStep(resident, collection)}
   </main>`;
   document.title = `${resident.name} — Хроника Мастерской Веры`;
   bindLightbox();
+  enableAtmosphereMotion();
+}
+
+// A resident's page must never be a dead end. A sold or reserved one still
+// leads somewhere: to the ones that are free, or to a commission.
+function chronicleNextStep(resident, collection) {
+  const free = content.residents.filter((item) => item.availability === 'available' && item.id !== resident.id);
+  const suggestions = [
+    ...free.filter((item) => item.collectionId === resident.collectionId),
+    ...free.filter((item) => item.collectionId !== resident.collectionId)
+  ].slice(0, 3);
+
+  const taken = resident.availability === 'archive' || resident.availability === 'reserved';
+  const heading = taken
+    ? 'Этот Житель уже нашёл свой дом'
+    : resident.availability === 'in-progress'
+      ? 'Этот Житель ещё рождается'
+      : `Забрать «${resident.shortName || resident.name}» к себе`;
+  const copy = taken
+    ? 'Повторить его один в один нельзя — каждая работа создаётся в единственном экземпляре. Но Вера может слепить для вас нового Жителя в том же духе, а ещё вот кто свободен прямо сейчас.'
+    : resident.availability === 'in-progress'
+      ? 'Работа ещё в Мастерской. Напишите Вере — она расскажет, на каком он этапе, когда будет готов и сколько будет стоить.'
+      : 'Напишите Вере — она подтвердит, что он свободен, назовёт стоимость и расскажет, как он доедет до вас.';
+
+  const action = taken
+    ? `<a class="button button--wine" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Заказать похожего</a><a class="button button--line" href="/residents.html">Кто свободен сейчас</a>`
+    : resident.availability === 'in-progress'
+      ? `<a class="button button--wine" href="/contact.html?resident=${encodeURIComponent(resident.slug)}">Спросить о работе</a><a class="button button--line" href="/collection.html?world=${encodeURIComponent(collection.slug || '')}">Другие из этого Мира</a>`
+      : `<a class="button button--wine" href="${esc(purchaseLink(resident))}" target="_blank" rel="noreferrer">Написать Вере</a><a class="button button--line" href="/collection.html?world=${encodeURIComponent(collection.slug || '')}">Другие из этого Мира</a>`;
+
+  return `<section class="section section--paper next-step">
+    <div class="shell">
+      <div class="next-step__panel" data-reveal>
+        <p class="eyebrow">Что дальше</p>
+        <h2>${esc(heading)}</h2>
+        <p>${esc(copy)}</p>
+        <div class="cluster">${action}</div>
+      </div>
+      ${taken && suggestions.length ? `<div class="next-step__suggestions" data-reveal>
+        <p class="eyebrow">Свободны прямо сейчас</p>
+        <div class="resident-carousel">${suggestions.map(residentCard).join('')}</div>
+      </div>` : ''}
+    </div>
+  </section>`;
 }
 
 function about() {
@@ -598,25 +1011,53 @@ function contact() {
   app.innerHTML = `<main id="main">
     <section class="page-hero page-hero--contact"><div class="shell"><p class="eyebrow eyebrow--light">Связь с Мастерской</p><h1>Написать Вере</h1><p class="lede lede--light">О готовой работе, будущем Жителе или доставке — без посредников.</p></div></section>
     <section class="section section--paper"><div class="shell contact-grid">
-      <div class="contact-card"><p class="eyebrow">Telegram</p><h2>Самый быстрый способ связаться</h2><p>${resident ? `Вы спрашиваете о работе «${esc(resident.name)}». Сообщение уже будет подготовлено.` : 'Вера лично ответит на вопросы о наличии, стоимости, сроках и индивидуальной работе.'}</p><div class="contact-actions"><a class="button button--wine" href="https://t.me/vera120700?text=${telegramText}" target="_blank" rel="noreferrer">Открыть Telegram</a><a class="button button--line" href="https://www.instagram.com/vera.romanycheva.23" target="_blank" rel="noreferrer">Instagram</a></div></div>
+      <div class="contact-card"><p class="eyebrow">Telegram</p><h2>Самый быстрый способ связаться</h2><p>${resident ? `Вы спрашиваете о работе «${esc(resident.name)}». Сообщение уже будет подготовлено.` : 'Вера лично ответит на вопросы о наличии, стоимости, сроках и индивидуальной работе.'}</p><div class="contact-actions"><a class="button button--wine" href="https://t.me/vera120700?text=${telegramText}" target="_blank" rel="noreferrer">Открыть Telegram</a><a class="button button--line" href="https://www.instagram.com/vera.romanycheva.23" target="_blank" rel="noreferrer">Instagram</a></div><p class="contact-channel">Смотреть готовые работы и процесс: <a class="text-link" href="https://t.me/masterskayaver" target="_blank" rel="noreferrer">t.me/masterskayaver →</a></p></div>
       <div class="contact-card contact-card--dark"><p class="eyebrow eyebrow--light">Что можно уточнить</p><ul class="contact-list"><li><span>01</span>Есть ли Житель в наличии</li><li><span>02</span>Стоимость и доставка</li><li><span>03</span>Идея индивидуальной работы</li><li><span>04</span>Подарочный набор</li></ul></div>
+    </div></section>
+    <section class="section section--night"><div class="shell">
+      <header class="section-head section-head--light" data-reveal><div><p class="eyebrow eyebrow--light">Прежде чем писать</p><h2>Доставка и оплата</h2></div></header>
+      <div class="facts facts--wide facts--light" data-reveal>
+        <div class="fact"><b>География</b><span>По всей России и, по возможности, в любую точку мира — Вера подскажет, дойдёт ли посылка именно до вас.</span></div>
+        <div class="fact"><b>Доставка</b><span>Стоимость и способ отправки оплачивает заказчик — обсуждается вместе с Верой после выбора Жителя.</span></div>
+        <div class="fact"><b>Сроки и стоимость</b><span>Зависят от размера работы, региона и способа доставки — точные цифры Вера называет индивидуально.</span></div>
+        <div class="fact"><b>Оплата</b><span>Перевод на карту, наличные при личной встрече или безопасная сделка через Авито-доставку.</span></div>
+      </div>
     </div></section>
   </main>`;
   document.title = 'Связаться с Верой — Мастерская Веры';
+  enableAtmosphereMotion();
 }
 
 function bindLightbox() {
   const lightbox = document.createElement('div');
   lightbox.className = 'lightbox';
-  lightbox.innerHTML = '<button type="button" aria-label="Закрыть фотографию">×</button><img alt="Увеличенная фотография Жителя">';
+  lightbox.innerHTML = '<button type="button" aria-label="Закрыть фотографию">×</button>';
   document.body.append(lightbox);
-  const close = () => lightbox.classList.remove('is-open');
+
+  // The <img> is built on first open, so no src-less image ever sits in the
+  // document waiting to be used.
+  let picture = null;
+  const picture_ = () => {
+    if (!picture) {
+      picture = document.createElement('img');
+      picture.alt = 'Увеличенная фотография Жителя';
+      lightbox.append(picture);
+    }
+    return picture;
+  };
+
+  const close = () => {
+    lightbox.classList.remove('is-open');
+    document.body.classList.remove('menu-open');
+  };
   lightbox.addEventListener('click', (event) => {
     if (event.target === lightbox || event.target.matches('button')) close();
   });
   document.querySelectorAll('[data-lightbox]').forEach((button) => button.addEventListener('click', () => {
-    lightbox.querySelector('img').src = button.dataset.lightbox;
+    picture_().src = button.dataset.lightbox;
     lightbox.classList.add('is-open');
+    // Stop the page behind the overlay from scrolling under it.
+    document.body.classList.add('menu-open');
   }));
   window.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') close();
