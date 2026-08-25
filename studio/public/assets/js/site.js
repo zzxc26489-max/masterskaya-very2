@@ -1068,11 +1068,23 @@ function notFound() {
   app.innerHTML = '<main id="main"><section class="section"><div class="shell"><p class="eyebrow">Страница не найдена</p><h1>Здесь пока нет Хроники</h1><p class="lede">Вернитесь на главную или откройте атлас Миров.</p><p class="cluster cluster--top"><a class="button button--wine" href="/">На главную</a></p></div></section></main>';
 }
 
+// Try the live API first (the real Express server); on any static host —
+// GitHub Pages, Beget, a future domain — that 404s, so fall back to the
+// content.json snapshot the build step generates. This way the frontend
+// doesn't need to know in advance which kind of host it's running on.
+async function loadContent() {
+  try {
+    const response = await fetch('/api/content');
+    if (response.ok) return await response.json();
+  } catch { /* no server here — fall through to the static snapshot */ }
+  const response = await fetch('content.json');
+  if (!response.ok) throw new Error('Контент недоступен');
+  return await response.json();
+}
+
 async function boot() {
   try {
-    const response = await fetch(isStaticPreview ? 'content.json' : '/api/content');
-    if (!response.ok) throw new Error('Контент недоступен');
-    content = await response.json();
+    content = await loadContent();
     const active = page === 'collection' || page === 'collections'
       ? 'collections'
       : page === 'chronicle'

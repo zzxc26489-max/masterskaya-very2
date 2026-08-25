@@ -1,13 +1,26 @@
 const pageName = document.body.dataset.page || 'home';
+// GitHub Pages project sites live under /<repo>/, so root-relative media
+// paths need that prefix stitched back in. Any other static host (Beget, a
+// real domain later) serves from its own root, where '/media/...' already
+// resolves — no rewriting needed there.
 const staticPreview = window.location.hostname.endsWith('.github.io');
 const mobileQuery = window.matchMedia('(max-width: 48rem)');
-const contentUrl = staticPreview ? new URL('content.json', window.location.href).href : '/api/content';
-const staticBase = staticPreview ? new URL('.', contentUrl) : null;
+const staticBase = staticPreview ? new URL('content.json', window.location.href) : null;
 const normalize = (value = '') => String(value).trim().toLocaleLowerCase('ru-RU');
 const mediaUrl = (value = '') => {
   if (!value?.startsWith('/') || !staticPreview) return value;
   return new URL(value.slice(1), staticBase).href;
 };
+
+// Same fallback as the main app: prefer the live API, drop to the static
+// snapshot when there is no server to ask.
+async function fetchContent() {
+  try {
+    const response = await fetch('/api/content', { cache: 'no-store' });
+    if (response.ok) return response;
+  } catch { /* no server here — fall through */ }
+  return fetch('content.json', { cache: 'no-store' });
+}
 
 function residentMap(data) {
   const map = new Map();
@@ -115,7 +128,7 @@ function upgrade(data) {
 }
 
 async function run() {
-  const response = await fetch(contentUrl, { cache: 'no-store' });
+  const response = await fetchContent();
   if (!response.ok) throw new Error(`Content request failed: ${response.status}`);
   const data = await response.json();
   const apply = () => document.querySelector('#app main') ? (upgrade(data), true) : false;
