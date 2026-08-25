@@ -440,19 +440,28 @@ function enableAtmosphereMotion() {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // Reveal once and stop watching: re-hiding a block after the reader has
   // scrolled past it makes content flicker away on the way back up.
+  // The 300px bottom margin starts the fade before a block enters view, so it
+  // has already arrived by the time it is on screen — and a fast scroll can
+  // never outrun it and leave a blank panel behind.
+  const reveal = (element) => {
+    element.classList.add('is-visible');
+    observer.unobserve(element);
+  };
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add('is-visible');
-      observer.unobserve(entry.target);
-    });
-  }, { threshold: .12, rootMargin: '0px 0px -8% 0px' });
+    entries.forEach((entry) => entry.isIntersecting && reveal(entry.target));
+  }, { threshold: 0, rootMargin: '0px 0px 300px 0px' });
+
   const revealable = [...document.querySelectorAll('[data-reveal]')];
-  revealable.forEach((element) => observer.observe(element));
+  revealable.forEach((element) => {
+    // Anything already at or above the fold shows straight away — no fade in
+    // from nothing on first paint.
+    if (element.getBoundingClientRect().top < window.innerHeight) element.classList.add('is-visible');
+    else observer.observe(element);
+  });
   // Safety net: reveal blocks are hidden by CSS until observed, so if the
   // observer never fires (odd viewport, stalled layout) show them anyway
   // rather than leaving the page blank.
-  window.setTimeout(() => revealable.forEach((element) => element.classList.add('is-visible')), 2500);
+  window.setTimeout(() => revealable.forEach((element) => element.classList.add('is-visible')), 1800);
   if (reduced) return;
 
   document.querySelectorAll('[data-parallax]').forEach((stage) => {
@@ -1022,13 +1031,20 @@ function contact() {
 function bindLightbox() {
   const lightbox = document.createElement('div');
   lightbox.className = 'lightbox';
-  // The <img> is created without a src and only gets one on open, so it is
-  // never a src-less broken image sitting in the document.
   lightbox.innerHTML = '<button type="button" aria-label="Закрыть фотографию">×</button>';
-  const picture = document.createElement('img');
-  picture.alt = 'Увеличенная фотография Жителя';
-  lightbox.append(picture);
   document.body.append(lightbox);
+
+  // The <img> is built on first open, so no src-less image ever sits in the
+  // document waiting to be used.
+  let picture = null;
+  const picture_ = () => {
+    if (!picture) {
+      picture = document.createElement('img');
+      picture.alt = 'Увеличенная фотография Жителя';
+      lightbox.append(picture);
+    }
+    return picture;
+  };
 
   const close = () => {
     lightbox.classList.remove('is-open');
@@ -1038,7 +1054,7 @@ function bindLightbox() {
     if (event.target === lightbox || event.target.matches('button')) close();
   });
   document.querySelectorAll('[data-lightbox]').forEach((button) => button.addEventListener('click', () => {
-    picture.src = button.dataset.lightbox;
+    picture_().src = button.dataset.lightbox;
     lightbox.classList.add('is-open');
     // Stop the page behind the overlay from scrolling under it.
     document.body.classList.add('menu-open');
