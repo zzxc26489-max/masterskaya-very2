@@ -113,23 +113,24 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   justify-content: center;
   gap: .55rem;
   min-height: 3.25rem;
-  padding: .8rem 1.3rem;
+  padding: .85rem 1.6rem;
   border: 1px solid transparent;
-  border-radius: .22rem;
-  font-size: .69rem;
-  font-weight: 700;
-  letter-spacing: .09em;
-  line-height: 1.2;
-  text-transform: uppercase;
+  /* Soft, rounded and in sentence case: this is a workshop, not a bank. */
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 600;
+  letter-spacing: .01em;
+  line-height: 1.25;
   cursor: pointer;
-  transition: transform .25s var(--ease), background-color .25s, color .25s, border-color .25s;
+  transition: transform .25s var(--ease), background-color .25s, color .25s, border-color .25s, box-shadow .25s;
 }
 .button:hover { transform: translateY(-3px); }
 .button--wine {
   background: var(--wine);
   color: #fff8e9;
-  box-shadow: 0 1rem 2.8rem rgb(77 16 20 / .24);
+  box-shadow: 0 .7rem 1.8rem rgb(77 16 20 / .22);
 }
+.button--wine:hover { box-shadow: 0 1rem 2.4rem rgb(77 16 20 / .3); }
 .button--wine:hover { background: #8e3034; }
 .button--light {
   border-color: var(--line-dark);
@@ -148,9 +149,10 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   color: var(--ink);
 }
 .button--compact {
-  min-height: 2.55rem;
-  padding: .56rem .82rem;
-  font-size: .62rem;
+  /* 2.75rem = 44px: the smallest reliable touch target. */
+  min-height: 2.75rem;
+  padding: .6rem 1.15rem;
+  font-size: .8rem;
 }
 .text-link {
   display: inline-flex;
@@ -509,9 +511,10 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   min-height: clamp(34rem, 43vw, 44rem);
   overflow: hidden;
   border: 1px solid var(--line-dark);
+  border-radius: 1.4rem;
   background: #17110e;
   color: #fff0dc;
-  box-shadow: 0 2rem 5rem rgb(0 0 0 / .2);
+  box-shadow: 0 1.4rem 4rem rgb(0 0 0 / .18);
 }
 .world-chapter:first-child {
   grid-column: 1 / -1;
@@ -914,9 +917,10 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   min-width: 0;
   overflow: hidden;
   border: 1px solid var(--line);
+  border-radius: 1.2rem;
   background: var(--paper-light);
   color: var(--ink);
-  box-shadow: 0 1rem 3rem rgb(48 28 15 / .1);
+  box-shadow: 0 .9rem 2.6rem rgb(48 28 15 / .09);
   scroll-snap-align: start;
 }
 .resident-card__image {
@@ -981,10 +985,9 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   border-radius: 999px;
   background: #e3d5bd;
   color: #5d4430;
-  font-size: .57rem;
-  font-weight: 700;
-  letter-spacing: .07em;
-  text-transform: uppercase;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .01em;
 }
 .status--available { background: #dbe5d4; color: #315039; }
 .status--in-progress { background: #eadbb6; color: #6d5422; }
@@ -1047,15 +1050,18 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
 .filters::-webkit-scrollbar { display: none; }
 .filter-button {
   flex: 0 0 auto;
-  min-height: 2.65rem;
-  padding: .55rem .9rem;
+  min-height: 2.75rem;
+  padding: .55rem 1.15rem;
   border: 1px solid var(--line);
+  border-radius: 999px;
   background: transparent;
   color: var(--ink);
-  font-size: .64rem;
-  font-weight: 700;
+  font-size: .82rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: border-color .2s, background-color .2s, color .2s;
 }
+.filter-button:hover { border-color: var(--wine); color: var(--wine); }
 .filter-button[aria-pressed='true'] { border-color: var(--wine); background: var(--wine); color: #fff7e8; }
 .residents-world {
   position: relative;
@@ -1948,7 +1954,10 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   .world-stage > .atmosphere { inset: 0; }
   .world-stage__intro { min-height: 25rem; padding: 3rem 0 2rem; }
   .world-back { margin-bottom: 1.5rem; }
-  .world-stage__intro h1 { font-size: clamp(3.8rem, 16vw, 6.4rem); }
+  .world-stage__intro h1 { font-size: clamp(2.6rem, 11vw, 5rem); }
+  .world-traits { grid-template-columns: 1fr; gap: .9rem; }
+  .lexicon-grid { grid-template-columns: repeat(2, 1fr); }
+  .worth-grid { grid-template-columns: 1fr; }
   .world-stage__intro > p:last-child { font-size: .88rem; }
   .world-slider { padding-bottom: 3rem; }
   .world-slider__slides { min-height: 52rem; }
@@ -2025,6 +2034,9 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   .process-stage__image { min-height: 27rem; }
   .option-grid { grid-template-columns: 1fr; }
   .contact-actions { display: grid; grid-template-columns: 1fr; }
+  .lexicon-grid { grid-template-columns: 1fr; }
+  .world-stage__facts { gap: .45rem; }
+  .world-badge { font-size: .68rem; padding: .45rem .75rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
