@@ -900,6 +900,28 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
 }
 .final-call__panel .cluster { justify-content: center; }
 
+/* ---------------------------------------------------------------------------
+   Next step — closes a resident's page with somewhere to go, so a sold-out
+   figure still leads to a commission or to one that is free.
+--------------------------------------------------------------------------- */
+.next-step__panel {
+  padding: clamp(2rem, 4.5vw, 3.4rem);
+  border: 1px solid var(--line);
+  border-radius: 1.5rem;
+  background: linear-gradient(165deg, #fdf8ee, #f2e3ca);
+  text-align: center;
+}
+.next-step__panel h2 { margin-bottom: .9rem; }
+.next-step__panel > p:not(.eyebrow) {
+  max-width: 42rem;
+  margin: 0 auto 1.8rem;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+.next-step__panel .cluster { justify-content: center; }
+.next-step__suggestions { margin-top: clamp(2.5rem, 5vw, 4rem); }
+.next-step__suggestions .eyebrow { margin-bottom: 1.4rem; }
+
 /* Residents cards */
 .residents-featured { background: var(--paper); overflow: hidden; }
 .resident-carousel {

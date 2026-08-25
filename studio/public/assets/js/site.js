@@ -936,9 +936,54 @@ function chronicle() {
     </div></section>
     <section class="section"><div class="shell"><header class="section-head"><div><p class="eyebrow">Свиток Жителя</p><h2>Хроника в трёх частях</h2></div></header><div class="chronicle-grid"><div><p class="eyebrow">Истоки</p><h3>Откуда пришёл</h3><p>${esc(resident.chronicle?.origin)}</p></div><div><p class="eyebrow">Характер</p><h3>Какой он</h3><p>${esc(resident.chronicle?.character)}</p></div><div><p class="eyebrow">Путь</p><h3>Куда ведёт история</h3><p>${esc(resident.chronicle?.path)}</p></div></div></div></section>
     <section class="section section--night"><div class="shell"><header class="section-head section-head--light"><div><p class="eyebrow eyebrow--light">Настоящие фотографии</p><h2>Рассмотреть ближе</h2></div></header><div class="gallery">${resident.gallery.map((media, index) => isVideo(media) ? `<div class="gallery__video">${galleryMedia(media, `${resident.name} — видео ${index + 1}`)}</div>` : `<button type="button" data-lightbox="${esc(media)}" aria-label="Открыть фото ${index + 1}">${galleryMedia(media, `${resident.name} — фотография ${index + 1}`)}</button>`).join('')}</div></div></section>
+    ${chronicleNextStep(resident, collection)}
   </main>`;
   document.title = `${resident.name} — Хроника Мастерской Веры`;
   bindLightbox();
+  enableAtmosphereMotion();
+}
+
+// A resident's page must never be a dead end. A sold or reserved one still
+// leads somewhere: to the ones that are free, or to a commission.
+function chronicleNextStep(resident, collection) {
+  const free = content.residents.filter((item) => item.availability === 'available' && item.id !== resident.id);
+  const suggestions = [
+    ...free.filter((item) => item.collectionId === resident.collectionId),
+    ...free.filter((item) => item.collectionId !== resident.collectionId)
+  ].slice(0, 3);
+
+  const taken = resident.availability === 'archive' || resident.availability === 'reserved';
+  const heading = taken
+    ? 'Этот Житель уже нашёл свой дом'
+    : resident.availability === 'in-progress'
+      ? 'Этот Житель ещё рождается'
+      : `Забрать «${resident.shortName || resident.name}» к себе`;
+  const copy = taken
+    ? 'Повторить его один в один нельзя — каждая работа создаётся в единственном экземпляре. Но Вера может слепить для вас нового Жителя в том же духе, а ещё вот кто свободен прямо сейчас.'
+    : resident.availability === 'in-progress'
+      ? 'Работа ещё в Мастерской. Напишите Вере — она расскажет, на каком он этапе, когда будет готов и сколько будет стоить.'
+      : 'Напишите Вере — она подтвердит, что он свободен, назовёт стоимость и расскажет, как он доедет до вас.';
+
+  const action = taken
+    ? `<a class="button button--wine" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Заказать похожего</a><a class="button button--line" href="/residents.html">Кто свободен сейчас</a>`
+    : resident.availability === 'in-progress'
+      ? `<a class="button button--wine" href="/contact.html?resident=${encodeURIComponent(resident.slug)}">Спросить о работе</a><a class="button button--line" href="/collection.html?world=${encodeURIComponent(collection.slug || '')}">Другие из этого Мира</a>`
+      : `<a class="button button--wine" href="${esc(purchaseLink(resident))}" target="_blank" rel="noreferrer">Написать Вере</a><a class="button button--line" href="/collection.html?world=${encodeURIComponent(collection.slug || '')}">Другие из этого Мира</a>`;
+
+  return `<section class="section section--paper next-step">
+    <div class="shell">
+      <div class="next-step__panel" data-reveal>
+        <p class="eyebrow">Что дальше</p>
+        <h2>${esc(heading)}</h2>
+        <p>${esc(copy)}</p>
+        <div class="cluster">${action}</div>
+      </div>
+      ${taken && suggestions.length ? `<div class="next-step__suggestions" data-reveal>
+        <p class="eyebrow">Свободны прямо сейчас</p>
+        <div class="resident-carousel">${suggestions.map(residentCard).join('')}</div>
+      </div>` : ''}
+    </div>
+  </section>`;
 }
 
 function about() {
