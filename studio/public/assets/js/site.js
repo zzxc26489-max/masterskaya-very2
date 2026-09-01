@@ -120,94 +120,308 @@ function residentWord(count) {
   return 'Жителей';
 }
 
-// Deterministic pseudo-random so particle drifts look scattered rather than
-// striped, but stay identical between renders (no layout jitter on re-render).
-function scatter(seed) {
-  let value = seed * 9301 + 49297;
-  return () => {
-    value = (value * 9301 + 49297) % 233280;
-    return value / 233280;
+/* ---------------------------------------------------------------------------
+   World air — a canvas ambience engine.
+
+   One canvas per layer instead of dozens of animated DOM nodes: it draws real
+   glow (shadowBlur), gives every particle its own behaviour, and crossfades
+   when the reader moves between worlds. It idles at zero cost whenever the tab
+   is hidden or the layer is scrolled out of view.
+--------------------------------------------------------------------------- */
+
+const WORLD_AIR = {
+  winter: {
+    kind: 'snow',
+    colors: ['#ffffff', '#dbeafe', '#bfdbfe'],
+    count: 46,
+    glow: 0
+  },
+  forest: {
+    kind: 'firefly',
+    colors: ['#f6efa4', '#d9f08a', '#fff3b0'],
+    count: 26,
+    glow: 12
+  },
+  dragons: {
+    kind: 'ember',
+    colors: ['#f0a462', '#e2762f', '#ffd8a8'],
+    count: 30,
+    glow: 10
+  },
+  russian: {
+    kind: 'ember',
+    colors: ['#ffcf87', '#e2963c', '#fff0c9'],
+    count: 26,
+    glow: 9
+  },
+  home: {
+    kind: 'dust',
+    colors: ['#ffe6b0', '#f7dcae', '#fff6e3'],
+    count: 30,
+    glow: 4
+  }
+};
+
+function airConfig(theme) {
+  return WORLD_AIR[theme] || WORLD_AIR.dragons;
+}
+
+// Spawn one particle. `fresh` seeds a particle mid-flight on first fill, so the
+// scene starts already populated instead of raining in from the top edge.
+function spawnParticle(config, width, height, fresh) {
+  const rand = Math.random;
+  const pick = config.colors[Math.floor(rand() * config.colors.length)];
+  const base = {
+    color: pick,
+    phase: rand() * Math.PI * 2,
+    life: 0,
+    fade: 1
+  };
+
+  if (config.kind === 'snow') {
+    return {
+      ...base,
+      x: rand() * width,
+      y: fresh ? rand() * height : -20,
+      r: 1 + rand() * 2.4,
+      vy: 14 + rand() * 26,
+      sway: 10 + rand() * 34,
+      swaySpeed: .3 + rand() * .7,
+      alpha: .35 + rand() * .5
+    };
+  }
+
+  if (config.kind === 'ember') {
+    return {
+      ...base,
+      x: rand() * width,
+      y: fresh ? rand() * height : height + 20,
+      r: .8 + rand() * 1.9,
+      vy: -(16 + rand() * 30),
+      sway: 8 + rand() * 26,
+      swaySpeed: .4 + rand() * .9,
+      alpha: .45 + rand() * .5
+    };
+  }
+
+  if (config.kind === 'firefly') {
+    return {
+      ...base,
+      x: rand() * width,
+      y: rand() * height,
+      r: 1.1 + rand() * 1.9,
+      vx: (rand() - .5) * 16,
+      vy: (rand() - .5) * 14,
+      turn: (rand() - .5) * .5,
+      alpha: .25 + rand() * .5,
+      pulse: .6 + rand() * 1.4
+    };
+  }
+
+  // dust — drifts slowly upward on a warm current
+  return {
+    ...base,
+    x: rand() * width,
+    y: rand() * height,
+    r: .7 + rand() * 1.5,
+    vx: (rand() - .5) * 7,
+    vy: -(3 + rand() * 9),
+    sway: 6 + rand() * 16,
+    swaySpeed: .2 + rand() * .4,
+    alpha: .2 + rand() * .4
   };
 }
 
-// Particles for a world's ambience. `density` scales the count: the page-wide
-// layer carries more than the small copy laid over a single photo.
-function atmosphereParticles(theme, density = 1) {
-  const random = scatter(theme.length * 17 + 3);
-  const round = (value, digits = 2) => Number(value.toFixed(digits));
-
-  if (theme === 'forest') {
-    // Fireflies wander on their own paths — each gets its own drift vector so
-    // no two trace the same arc.
-    return Array.from({ length: Math.round(18 * density) }, () => {
-      const x = round(random() * 100);
-      const y = round(random() * 100);
-      const driftX = round(-26 + random() * 52);
-      const driftY = round(-22 + random() * 44);
-      const duration = round(9 + random() * 13);
-      const delay = round(random() * 18);
-      const scale = round(.45 + random() * .85);
-      const glow = round(.32 + random() * .5);
-      return `<i style="--x:${x}%;--y:${y}%;--dx:${driftX}px;--dy:${driftY}px;--d:${duration}s;--delay:-${delay}s;--scale:${scale};--glow:${glow}"></i>`;
-    }).join('');
+function stepParticle(p, config, width, height, dt, time) {
+  if (config.kind === 'firefly') {
+    // Wander: nudge the heading continuously so no two trace the same arc.
+    p.vx += Math.cos(time * p.turn + p.phase) * 9 * dt;
+    p.vy += Math.sin(time * p.turn * 1.3 + p.phase) * 8 * dt;
+    p.vx = Math.max(-22, Math.min(22, p.vx));
+    p.vy = Math.max(-20, Math.min(20, p.vy));
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.fade = .45 + .55 * (Math.sin(time * p.pulse + p.phase) * .5 + .5);
+  } else if (config.kind === 'snow' || config.kind === 'ember') {
+    p.y += p.vy * dt;
+    p.x += Math.sin(time * p.swaySpeed + p.phase) * p.sway * dt;
+    // Embers cool as they climb.
+    p.fade = config.kind === 'ember'
+      ? Math.max(0, Math.min(1, p.y / height))
+      : 1;
+  } else {
+    p.x += (p.vx + Math.sin(time * p.swaySpeed + p.phase) * p.sway) * dt;
+    p.y += p.vy * dt;
+    p.fade = .5 + .5 * (Math.sin(time * .6 + p.phase) * .5 + .5);
   }
 
-  if (theme === 'winter') {
-    return Array.from({ length: Math.round(38 * density) }, () => {
-      const x = round(random() * 100);
-      const sway = round(14 + random() * 40);
-      const duration = round(11 + random() * 15);
-      const delay = round(random() * 26);
-      const size = round(1.6 + random() * 3.4, 1);
-      const opacity = round(.3 + random() * .55);
-      return `<i style="--x:${x}%;--sway:${sway}px;--d:${duration}s;--delay:-${delay}s;--size:${size}px;--o:${opacity}"></i>`;
-    }).join('');
+  // Wrap horizontally, respawn once a particle leaves through its exit edge.
+  if (p.x < -30) p.x = width + 30;
+  if (p.x > width + 30) p.x = -30;
+  const gone = config.kind === 'snow'
+    ? p.y > height + 30
+    : config.kind === 'ember'
+      ? p.y < -30
+      : p.y < -40 || p.y > height + 40;
+  return !gone;
+}
+
+// Starts the ambience on a canvas and returns a handle: setTheme() crossfades
+// to another world, destroy() releases everything.
+function startWorldAir(canvas, theme, options = {}) {
+  const context = canvas.getContext('2d', { alpha: true });
+  if (!context) return { setTheme() {}, destroy() {} };
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const scale = options.scale || 1;
+  let config = airConfig(theme);
+  let particles = [];
+  let width = 0;
+  let height = 0;
+  let dpr = 1;
+  let frame = 0;
+  let last = 0;
+  let visible = true;
+  let onScreen = true;
+  // Crossfade state: the outgoing world dims out while the new one fades in.
+  let blend = 1;
+
+  const targetCount = () => {
+    // Fewer particles on a phone — same read, far less GPU.
+    const narrow = width < 720;
+    const capped = Math.min(50, Math.round(config.count * scale));
+    return narrow ? Math.round(capped * .55) : capped;
+  };
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    width = Math.max(1, rect.width);
+    height = Math.max(1, rect.height);
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    context.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
-  if (theme === 'dragons') {
-    // Drifting smoke banks plus embers rising from below.
-    const smoke = Array.from({ length: Math.round(4 * density) }, () => {
-      const x = round(random() * 100);
-      const y = round(40 + random() * 60);
-      const size = round(30 + random() * 34);
-      const duration = round(22 + random() * 16);
-      const delay = round(random() * 30);
-      return `<u style="--x:${x}%;--y:${y}%;--size:${size}%;--d:${duration}s;--delay:-${delay}s"></u>`;
-    }).join('');
-    const embers = Array.from({ length: Math.round(11 * density) }, () => {
-      const x = round(random() * 100);
-      const drift = round(-30 + random() * 60);
-      const duration = round(9 + random() * 11);
-      const delay = round(random() * 20);
-      const scale = round(.5 + random() * .8);
-      return `<i style="--x:${x}%;--dx:${drift}px;--d:${duration}s;--delay:-${delay}s;--scale:${scale}"></i>`;
-    }).join('');
-    return smoke + embers;
+  function fill(fresh) {
+    const want = targetCount();
+    while (particles.length < want) particles.push(spawnParticle(config, width, height, fresh));
+    if (particles.length > want) particles.length = want;
   }
 
-  if (theme === 'russian') {
-    // Warm sparks lifting off an evening fire, under the woven ornament.
-    return Array.from({ length: Math.round(12 * density) }, () => {
-      const x = round(random() * 100);
-      const drift = round(-24 + random() * 48);
-      const duration = round(11 + random() * 13);
-      const delay = round(random() * 22);
-      const scale = round(.45 + random() * .7);
-      return `<i style="--x:${x}%;--dx:${drift}px;--d:${duration}s;--delay:-${delay}s;--scale:${scale}"></i>`;
-    }).join('');
+  function draw(time, dt) {
+    context.clearRect(0, 0, width, height);
+    context.globalCompositeOperation = 'lighter';
+    for (let index = particles.length - 1; index >= 0; index -= 1) {
+      const p = particles[index];
+      const alive = stepParticle(p, config, width, height, dt, time);
+      if (!alive) {
+        particles[index] = spawnParticle(config, width, height, false);
+        continue;
+      }
+      context.beginPath();
+      context.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      context.fillStyle = p.color;
+      context.globalAlpha = Math.max(0, p.alpha * p.fade * blend);
+      context.shadowBlur = config.glow;
+      context.shadowColor = config.glow ? p.color : 'transparent';
+      context.fill();
+    }
+    context.globalAlpha = 1;
+    context.shadowBlur = 0;
+    context.globalCompositeOperation = 'source-over';
   }
 
-  // home — dust motes turning slowly in a shaft of afternoon sun
-  return Array.from({ length: Math.round(14 * density) }, () => {
-    const x = round(random() * 100);
-    const y = round(random() * 100);
-    const driftX = round(-18 + random() * 36);
-    const driftY = round(-30 + random() * 24);
-    const duration = round(14 + random() * 16);
-    const delay = round(random() * 24);
-    const scale = round(.5 + random() * .9);
-    return `<i style="--x:${x}%;--y:${y}%;--dx:${driftX}px;--dy:${driftY}px;--d:${duration}s;--delay:-${delay}s;--scale:${scale}"></i>`;
-  }).join('');
+  function loop(now) {
+    frame = requestAnimationFrame(loop);
+    if (!last) last = now;
+    // Clamp dt so a backgrounded tab doesn't teleport every particle on return.
+    const dt = Math.min(.05, (now - last) / 1000);
+    last = now;
+    if (blend < 1) blend = Math.min(1, blend + dt * 1.6);
+    draw(now / 1000, dt);
+  }
+
+  function play() {
+    if (frame || !visible || !onScreen || reduced.matches) return;
+    last = 0;
+    frame = requestAnimationFrame(loop);
+  }
+
+  function pause() {
+    if (!frame) return;
+    cancelAnimationFrame(frame);
+    frame = 0;
+  }
+
+  function sync() {
+    if (visible && onScreen && !reduced.matches) play();
+    else pause();
+  }
+
+  const onVisibility = () => { visible = !document.hidden; sync(); };
+  const onResize = () => { resize(); fill(true); };
+
+  document.addEventListener('visibilitychange', onVisibility);
+  window.addEventListener('resize', onResize, { passive: true });
+  reduced.addEventListener?.('change', sync);
+
+  // Idle whenever the layer isn't on screen.
+  let observer = null;
+  if ('IntersectionObserver' in window) {
+    observer = new IntersectionObserver((entries) => {
+      onScreen = entries.some((entry) => entry.isIntersecting);
+      sync();
+    }, { threshold: 0 });
+    observer.observe(canvas);
+  }
+
+  resize();
+  fill(true);
+  if (reduced.matches) draw(0, 0); // one still frame, then stay put
+  else sync();
+
+  return {
+    setTheme(next) {
+      if (!next || next === theme) return;
+      theme = next;
+      config = airConfig(next);
+      particles = [];
+      blend = 0;
+      fill(true);
+      sync();
+    },
+    destroy() {
+      pause();
+      observer?.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('resize', onResize);
+      reduced.removeEventListener?.('change', sync);
+    }
+  };
+}
+
+// Tracks the live ambience so a page can retheme it without rebuilding.
+let liveAir = null;
+
+function mountWorldAir(theme) {
+  liveAir?.destroy();
+  document.querySelector('.world-air')?.remove();
+  document.body.insertAdjacentHTML('afterbegin', worldAtmosphere(theme));
+  const canvas = document.querySelector('.world-air__canvas');
+  liveAir = canvas ? startWorldAir(canvas, theme) : null;
+  return liveAir;
+}
+
+// Swaps the page-wide world theme with a colour crossfade on the wash and
+// ornament, used when scrolling through the world atlas.
+function setWorldTheme(theme) {
+  const air = document.querySelector('.world-air');
+  if (!air) return;
+  air.className = `world-air world-air--${theme}`;
+  const ornament = air.querySelector('.world-air__ornament');
+  if (ornament) ornament.innerHTML = worldOrnament(theme);
+  liveAir?.setTheme(theme);
 }
 
 // Ornament plates drawn as inline SVG so each world carries a motif of its own
@@ -297,10 +511,20 @@ function worldOrnament(theme) {
   </svg>`;
 }
 
-// The small ambience laid over a single photo — kept sparse so it reads as part
-// of the picture instead of a veil across the subject.
+// A sparse copy laid over a single scene photo, so the air reads as part of the
+// picture. It sits under the text panels, never across them — particles behind
+// type is what makes copy hard to read.
 function atmosphereMarkup(theme) {
-  return `<div class="atmosphere atmosphere--${esc(theme)}" aria-hidden="true">${atmosphereParticles(theme, .55)}</div>`;
+  return `<div class="atmosphere atmosphere--${esc(theme)}" aria-hidden="true"><canvas class="atmosphere__canvas" data-air-scene="${esc(theme)}"></canvas></div>`;
+}
+
+// Boots every scene-local canvas on the page (hero photos, world stages).
+const sceneAir = [];
+function mountSceneAir() {
+  while (sceneAir.length) sceneAir.pop().destroy();
+  document.querySelectorAll('[data-air-scene]').forEach((canvas) => {
+    sceneAir.push(startWorldAir(canvas, canvas.dataset.airScene, { scale: .5 }));
+  });
 }
 
 // The full-page ambience: this is what makes a world feel like a place you
@@ -309,7 +533,7 @@ function worldAtmosphere(theme) {
   return `<div class="world-air world-air--${esc(theme)}" aria-hidden="true">
     <div class="world-air__wash"></div>
     <div class="world-air__ornament">${worldOrnament(theme)}</div>
-    <div class="world-air__particles">${atmosphereParticles(theme, 1)}</div>
+    <canvas class="world-air__canvas"></canvas>
     <div class="world-air__vignette"></div>
   </div>`;
 }
@@ -419,7 +643,7 @@ function worldCard(collection, index = 0) {
     .sort((left, right) => (left.worldOrder ?? 99) - (right.worldOrder ?? 99));
   const count = residentsInWorld.length;
   const stageResident = residentsInWorld.find((resident) => resident.sceneImage) || residentsInWorld[0];
-  return `<article class="world-chapter theme-${esc(collection.theme)}" data-reveal>
+  return `<article class="world-chapter theme-${esc(collection.theme)}" data-world="${esc(collection.theme)}" data-reveal>
     <img class="world-chapter__scene" src="${esc(stageResident?.sceneImage || collection.sceneImage || collection.image)}" alt="" loading="lazy">
     <div class="world-chapter__shade"></div>
     ${atmosphereMarkup(collection.theme)}
@@ -429,7 +653,6 @@ function worldCard(collection, index = 0) {
       <p class="eyebrow eyebrow--light">Мир Мастерской</p>
       <h3>${esc(collection.name)}</h3>
       <p>${esc(collection.description)}</p>
-      <span class="world-chapter__cue">${esc(collection.cue || '')}</span>
       <span class="world-chapter__count">${count} ${count === 1 ? 'Житель' : count < 5 ? 'Жителя' : 'Жителей'}</span>
       <span class="text-link text-link--light">Войти в мир <b aria-hidden="true">↗</b></span>
     </div>
@@ -636,6 +859,7 @@ function home() {
   </main>`;
   document.title = 'Мастерская Веры — авторские фигурки ручной работы';
   enableAtmosphereMotion();
+  bindWorldWalk();
 }
 
 function residentWorldSection(collection) {
@@ -648,7 +872,7 @@ function residentWorldSection(collection) {
     ${atmosphereMarkup(collection.theme)}
     <div class="shell residents-world__inner">
       <header class="residents-world__head">
-        <div><p class="eyebrow eyebrow--light">${esc(collection.cue || 'Мир Мастерской')}</p><h2>${esc(collection.name)}</h2><p>${esc(collection.description)}</p></div>
+        <div><p class="eyebrow eyebrow--light">Мир Мастерской</p><h2>${esc(collection.name)}</h2><p>${esc(collection.description)}</p></div>
         <a class="button button--light" href="/collection.html?world=${encodeURIComponent(collection.slug)}">Войти в мир</a>
       </header>
       <div class="resident-grid">${residentsInWorld.map(residentCard).join('')}</div>
@@ -698,6 +922,81 @@ function collections() {
   </main>`;
   document.title = 'Миры Мастерской — Мастерская Веры';
   enableAtmosphereMotion();
+  bindWorldWalk();
+}
+
+// Scrolling the atlas walks the reader through the worlds: whichever world
+// card is nearest the middle of the screen sets the page's air. This is what
+// makes the atlas feel like moving between places rather than reading a list.
+// Card micro-interactions. Pointer-only: a tilt that follows a finger just
+// fights the scroll on a phone, so touch devices get the plain card.
+function bindCardMotion() {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  document.querySelectorAll('.resident-card, .world-chapter').forEach((card) => {
+    let raf = 0;
+    const move = (event) => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const box = card.getBoundingClientRect();
+        const px = (event.clientX - box.left) / box.width - .5;
+        const py = (event.clientY - box.top) / box.height - .5;
+        // Kept deliberately shallow — a craft shop, not a gadget store.
+        card.style.setProperty('--tilt-x', `${(-py * 4).toFixed(2)}deg`);
+        card.style.setProperty('--tilt-y', `${(px * 5).toFixed(2)}deg`);
+        card.style.setProperty('--tilt-lift', '-4px');
+      });
+    };
+    const reset = () => {
+      if (raf) { cancelAnimationFrame(raf); raf = 0; }
+      card.style.setProperty('--tilt-x', '0deg');
+      card.style.setProperty('--tilt-y', '0deg');
+      card.style.setProperty('--tilt-lift', '0px');
+    };
+    card.addEventListener('pointermove', move);
+    card.addEventListener('pointerleave', reset);
+  });
+}
+
+// The header condenses once the reader leaves the first screen.
+function bindHeaderShrink() {
+  const header = document.querySelector('.site-header');
+  if (!header) return;
+  let compact = false;
+  const check = () => {
+    const next = window.scrollY > 80;
+    if (next === compact) return;
+    compact = next;
+    header.classList.toggle('is-compact', next);
+  };
+  check();
+  window.addEventListener('scroll', check, { passive: true });
+}
+
+function bindWorldWalk() {
+  const cards = [...document.querySelectorAll('[data-world]')];
+  if (!cards.length || !('IntersectionObserver' in window)) return;
+
+  mountWorldAir(cards[0].dataset.world);
+  document.body.classList.add('world-walk');
+
+  let current = cards[0].dataset.world;
+  const observer = new IntersectionObserver((entries) => {
+    // Pick the most-visible card rather than the first to cross the line, so a
+    // fast scroll settles on what the reader is actually looking at.
+    let best = null;
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && (!best || entry.intersectionRatio > best.intersectionRatio)) best = entry;
+    });
+    const next = best?.target?.dataset?.world;
+    if (!next || next === current) return;
+    current = next;
+    setWorldTheme(next);
+  }, { threshold: [.35, .6], rootMargin: '-20% 0px -20% 0px' });
+
+  cards.forEach((card) => observer.observe(card));
 }
 
 function worldResidentSlide(resident, index) {
@@ -730,7 +1029,7 @@ function collectionPage() {
   const traits = worldTraits(collection.theme);
   const available = residentsInWorld.filter((resident) => resident.availability === 'available');
   document.body.classList.add(`theme-${collection.theme}`, 'world-page');
-  document.body.insertAdjacentHTML('afterbegin', worldAtmosphere(collection.theme));
+  mountWorldAir(collection.theme);
 
   app.innerHTML = `<main id="main">
     <section class="world-stage theme-${esc(collection.theme)}" style="--world-accent:${esc(collection.accent)}" data-parallax>
@@ -739,7 +1038,7 @@ function collectionPage() {
       ${atmosphereMarkup(collection.theme)}
       <div class="shell world-stage__intro">
         <a class="world-back" href="/collections.html">← Все Миры</a>
-        <p class="eyebrow eyebrow--light">${esc(collection.cue || 'Мир Мастерской')}</p>
+        <p class="eyebrow eyebrow--light">Мир Мастерской</p>
         <h1>${esc(collection.name)}</h1>
         <p>${esc(collection.description)}</p>
         <div class="world-stage__facts">
@@ -1105,6 +1404,9 @@ async function boot() {
       contact
     }[page] || notFound)();
     rewritePreviewPaths();
+    mountSceneAir();
+    bindCardMotion();
+    bindHeaderShrink();
   } catch (error) {
     setShell('');
     app.innerHTML = `<main id="main"><section class="section"><div class="shell"><p class="eyebrow">Техническая пауза</p><h1>Мастерская пока не открылась</h1><p class="lede">${esc(error.message)}. Попробуйте обновить страницу чуть позже.</p></div></section></main>`;
