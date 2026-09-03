@@ -359,7 +359,18 @@ app.post("/api/media", upload.array("files", 20), (request, response) => {
   response.status(201).json({ files });
 });
 
-app.use(express.static(publicDir, { extensions: ["html"], maxAge: isProduction ? "1h" : 0 }));
+// Photos and bundles carry a ?v= tag in their URL, so they can be cached hard
+// and for a long time — a returning visitor re-downloads nothing. The HTML
+// shells stay on the short leash, since that is what points at the new tags.
+app.use(express.static(publicDir, {
+  extensions: ["html"],
+  maxAge: isProduction ? "1h" : 0,
+  setHeaders(response, filePath) {
+    if (/\.(webp|jpe?g|png|svg|mp4|webm|woff2?)$/i.test(filePath)) {
+      response.setHeader("Cache-Control", isProduction ? "public, max-age=2592000" : "public, max-age=300");
+    }
+  }
+}));
 app.get("/admin", (request, response) => response.sendFile(path.join(publicDir, "admin", "index.html")));
 app.get("/*splat", (request, response) => response.status(404).sendFile(path.join(publicDir, "404.html")));
 

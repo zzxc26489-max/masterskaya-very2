@@ -1,3 +1,5 @@
+import { phoneCopy, PHONE_SIZES } from './media.js';
+
 const pageName = document.body.dataset.page || 'home';
 // GitHub Pages project sites live under /<repo>/, so root-relative media
 // paths need that prefix stitched back in. Any other static host (Beget, a
@@ -41,8 +43,17 @@ function focusFor(resident, mobile = false) {
 
 function setImage(image, resident, eager = false) {
   if (!image || !resident?.heroImage) return;
-  const source = mediaUrl(mobileQuery.matches && resident.mobileImage ? resident.mobileImage : resident.heroImage);
-  image.src = source;
+  const raw = mobileQuery.matches && resident.mobileImage ? resident.mobileImage : resident.heroImage;
+  // A srcset left over from the previous photo would win over the new src and
+  // quietly show the wrong Житель, so it is always rewritten or dropped.
+  const small = phoneCopy(raw);
+  if (small) {
+    image.srcset = `${mediaUrl(small)} 800w, ${mediaUrl(raw)} 1400w`;
+    image.sizes = PHONE_SIZES;
+  } else {
+    image.removeAttribute('srcset');
+  }
+  image.src = mediaUrl(raw);
   image.alt = `${resident.name} в своём мире`;
   image.style.setProperty('--resident-focus', focusFor(resident));
   image.style.setProperty('--resident-focus-mobile', focusFor(resident, true));
