@@ -1268,10 +1268,19 @@ function bindWorldSlider() {
   let current = 0;
   let pointerStart = null;
 
-  slides.slice(1).forEach((slide) => {
+  // Warm the other slides once the page is quiet. Deferring matters twice
+  // over: reading .src now would catch the paths before rewritePreviewPaths()
+  // has stitched the Pages subfolder back in (a 404 per slide on the preview),
+  // and the warm-up would be racing the photo the reader is actually looking
+  // at for bandwidth.
+  const warmSlides = () => slides.slice(1).forEach((slide) => {
+    const source = slide.querySelector('.world-resident__scene img');
+    if (!source) return;
     const image = new Image();
-    image.src = slide.querySelector('.world-resident__scene img').src;
+    image.src = source.currentSrc || source.src;
   });
+  if ('requestIdleCallback' in window) requestIdleCallback(warmSlides, { timeout: 2000 });
+  else setTimeout(warmSlides, 800);
 
   const show = (next, direction = 1) => {
     const normalized = (next + slides.length) % slides.length;
