@@ -5,9 +5,11 @@
   "scripts": {
     "studio:dev": "npm --prefix studio run dev",
     "studio:check": "npm --prefix studio run check",
-    "studio:test": "playwright test --config=playwright.studio.config.mjs"
+    "studio:test": "playwright test --config=playwright.studio.config.mjs",
+    "media:phone": "node studio/scripts/build-phone-images.mjs"
   },
   "devDependencies": {
-    "@playwright/test": "1.61.1"
+    "@playwright/test": "1.61.1",
+    "sharp": "^0.35.4"
   }
 }

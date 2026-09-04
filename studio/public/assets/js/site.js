@@ -1,3 +1,5 @@
+import { phoneCopy, PHONE_SIZES } from './media.js';
+
 const app = document.querySelector('#app');
 const page = document.body.dataset.page || 'home';
 let content;
@@ -20,13 +22,23 @@ const isVideo = (url = '') => /\.(mp4|webm|mov)(?:\?.*)?$/i.test(url);
 
 function rewritePreviewPaths(root = document) {
   if (!isStaticPreview) return;
-  root.querySelectorAll('[href^="/"], [src^="/"]').forEach((element) => {
+  root.querySelectorAll('[href^="/"], [src^="/"], [srcset]').forEach((element) => {
     ['href', 'src'].forEach((attribute) => {
       const value = element.getAttribute(attribute);
       if (value?.startsWith('/') && !value.startsWith('//')) {
         element.setAttribute(attribute, `${staticBasePath}${value}`);
       }
     });
+    // srcset holds its own copies of the same paths — miss these and the
+    // preview serves 404s to exactly the phones the small files were for.
+    const set = element.getAttribute('srcset');
+    if (!set) return;
+    element.setAttribute('srcset', set.split(',').map((candidate) => {
+      const trimmed = candidate.trim();
+      return trimmed.startsWith('/') && !trimmed.startsWith('//')
+        ? `${staticBasePath}${trimmed}`
+        : trimmed;
+    }).join(', '));
   });
 }
 
@@ -129,6 +141,29 @@ function residentWord(count) {
    is hidden or the layer is scrolled out of view.
 --------------------------------------------------------------------------- */
 
+/* Phones should not download desktop photos.
+
+   This bolts the srcset on after the markup is built, so every template below
+   stays a plain <img src="...">  and nothing has to be threaded through by
+   hand. Photos with no small copy are left exactly as they were. */
+function responsive(html) {
+  return html.replace(/<img\b[^>]*>/g, (tag) => {
+    if (tag.includes('srcset=')) return tag;
+    const src = /\ssrc="([^"]+)"/.exec(tag)?.[1];
+    const small = phoneCopy(src);
+    if (!small) return tag;
+    return tag.replace(
+      /\ssrc="/,
+      ` srcset="${small} 800w, ${src} 1400w" sizes="${PHONE_SIZES}" src="`
+    );
+  });
+}
+
+// Every page paints through here, so the srcset rewrite applies everywhere.
+function paint(target, html) {
+  target.innerHTML = responsive(html);
+}
+
 const WORLD_AIR = {
   winter: {
     kind: 'snow',
@@ -164,6 +199,63 @@ const WORLD_AIR = {
 
 function airConfig(theme) {
   return WORLD_AIR[theme] || WORLD_AIR.dragons;
+}
+
+/* Glow, cheaply.
+
+   Drawing every particle with shadowBlur makes the browser blur each dot on
+   every frame — the single most expensive thing canvas 2D can do, and on a
+   mid-range phone it drops the page to a few frames a second. Instead each
+   colour gets one small sprite, painted once, and every particle is a scaled
+   copy of it. Same look, one drawImage per dot. */
+
+const SPRITE_PX = 48;
+const spriteCache = new Map();
+// Typical radius per particle kind — sets how much of the sprite is solid core
+// versus falloff, so the glow reads the same as the old shadowBlur did.
+const AVG_RADIUS = { snow: 2.2, ember: 1.75, firefly: 2.05, dust: 1.45 };
+
+function rgba(hex, alpha) {
+  const raw = hex.replace('#', '');
+  const full = raw.length === 3 ? raw.split('').map((c) => c + c).join('') : raw;
+  const value = parseInt(full, 16);
+  return `rgba(${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255}, ${alpha})`;
+}
+
+function airSprite(color, core) {
+  const key = `${color}|${core.toFixed(2)}`;
+  const cached = spriteCache.get(key);
+  if (cached) return cached;
+
+  const sprite = document.createElement('canvas');
+  sprite.width = SPRITE_PX;
+  sprite.height = SPRITE_PX;
+  const pen = sprite.getContext('2d');
+  const mid = SPRITE_PX / 2;
+  const gradient = pen.createRadialGradient(mid, mid, 0, mid, mid, mid);
+  gradient.addColorStop(0, rgba(color, 1));
+  gradient.addColorStop(Math.min(.94, core), rgba(color, core > .7 ? .96 : .55));
+  gradient.addColorStop(1, rgba(color, 0));
+  pen.fillStyle = gradient;
+  pen.fillRect(0, 0, SPRITE_PX, SPRITE_PX);
+  spriteCache.set(key, sprite);
+  return sprite;
+}
+
+/* Only a couple of layers may animate at once.
+
+   The home page stacks a full-page backdrop plus one canvas per world card, so
+   a long scroll can leave five of them on screen together. Each is cheap now,
+   but five is still five: the busiest two run, the rest hold a still frame. */
+
+const AIR_MAX_LIVE = 2;
+const airLayers = new Set();
+
+function airRebalance() {
+  const wanted = [...airLayers].filter((layer) => layer.wants());
+  wanted.sort((a, b) => b.ratio - a.ratio);
+  wanted.forEach((layer, index) => layer.apply(index < AIR_MAX_LIVE));
+  airLayers.forEach((layer) => { if (!wanted.includes(layer)) layer.apply(false); });
 }
 
 // Spawn one particle. `fresh` seeds a particle mid-flight on first fill, so the
@@ -276,6 +368,8 @@ function startWorldAir(canvas, theme, options = {}) {
   const scale = options.scale || 1;
   let config = airConfig(theme);
   let particles = [];
+  let sprites = new Map();
+  let spread = 0;
   let width = 0;
   let height = 0;
   let dpr = 1;
@@ -283,21 +377,38 @@ function startWorldAir(canvas, theme, options = {}) {
   let last = 0;
   let visible = true;
   let onScreen = true;
+  let allowed = false;   // granted a slot by the layer budget
+  let booted = false;    // held back until the page has finished its first paint
+  let density = 1;       // trimmed down if the device turns out to be slow
+  let samples = 0;
+  let elapsed = 0;
   // Crossfade state: the outgoing world dims out while the new one fades in.
   let blend = 1;
+
+  // Ambient drift needs no more than this; the saved frames go to scrolling.
+  const FRAME_MS = 1000 / 36;
 
   const targetCount = () => {
     // Fewer particles on a phone — same read, far less GPU.
     const narrow = width < 720;
-    const capped = Math.min(50, Math.round(config.count * scale));
-    return narrow ? Math.round(capped * .55) : capped;
+    const capped = Math.min(50, Math.round(config.count * scale * density));
+    return Math.max(4, narrow ? Math.round(capped * .55) : capped);
   };
+
+  function buildSprites() {
+    const avg = AVG_RADIUS[config.kind] || 2;
+    const core = config.glow ? Math.max(.16, avg / (avg + config.glow)) : .78;
+    spread = config.glow / avg;
+    sprites = new Map(config.colors.map((color) => [color, airSprite(color, core)]));
+  }
 
   function resize() {
     const rect = canvas.getBoundingClientRect();
     width = Math.max(1, rect.width);
     height = Math.max(1, rect.height);
-    dpr = Math.min(2, window.devicePixelRatio || 1);
+    // Soft blobs gain nothing from a full retina buffer, and it costs four
+    // times the pixels to paint on a phone.
+    dpr = Math.min(1.5, window.devicePixelRatio || 1);
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
     context.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -319,31 +430,48 @@ function startWorldAir(canvas, theme, options = {}) {
         particles[index] = spawnParticle(config, width, height, false);
         continue;
       }
-      context.beginPath();
-      context.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      context.fillStyle = p.color;
+      const sprite = sprites.get(p.color);
+      if (!sprite) continue;
+      const extent = p.r * (1 + spread);
       context.globalAlpha = Math.max(0, p.alpha * p.fade * blend);
-      context.shadowBlur = config.glow;
-      context.shadowColor = config.glow ? p.color : 'transparent';
-      context.fill();
+      context.drawImage(sprite, p.x - extent, p.y - extent, extent * 2, extent * 2);
     }
     context.globalAlpha = 1;
-    context.shadowBlur = 0;
     context.globalCompositeOperation = 'source-over';
+  }
+
+  // If the device cannot keep up, thin the air out rather than stutter. Two
+  // strikes and the layer settles into a still frame for good.
+  function watchBudget(gap) {
+    elapsed += gap;
+    samples += 1;
+    if (samples < 90) return;
+    const average = elapsed / samples;
+    samples = 0;
+    elapsed = 0;
+    if (average < 44) return;
+    if (density > .5) { density = .5; fill(false); return; }
+    if (density > .25) { density = .25; fill(false); return; }
+    pause();
+    booted = false; // stop asking for a slot; the still frame stays on screen
+    airRebalance();
   }
 
   function loop(now) {
     frame = requestAnimationFrame(loop);
     if (!last) last = now;
-    // Clamp dt so a backgrounded tab doesn't teleport every particle on return.
-    const dt = Math.min(.05, (now - last) / 1000);
+    const gap = now - last;
+    if (gap < FRAME_MS) return;
     last = now;
+    // Clamp dt so a backgrounded tab doesn't teleport every particle on return.
+    const dt = Math.min(.05, gap / 1000);
     if (blend < 1) blend = Math.min(1, blend + dt * 1.6);
     draw(now / 1000, dt);
+    watchBudget(gap);
   }
 
   function play() {
-    if (frame || !visible || !onScreen || reduced.matches) return;
+    if (frame) return;
     last = 0;
     frame = requestAnimationFrame(loop);
   }
@@ -354,10 +482,20 @@ function startWorldAir(canvas, theme, options = {}) {
     frame = 0;
   }
 
-  function sync() {
-    if (visible && onScreen && !reduced.matches) play();
-    else pause();
-  }
+  const wants = () => booted && visible && onScreen && !reduced.matches;
+
+  const layer = {
+    ratio: 0,
+    wants,
+    apply(grant) {
+      allowed = grant;
+      if (grant && wants()) play();
+      else pause();
+    }
+  };
+  airLayers.add(layer);
+
+  const sync = () => airRebalance();
 
   const onVisibility = () => { visible = !document.hidden; sync(); };
   const onResize = () => { resize(); fill(true); };
@@ -370,33 +508,49 @@ function startWorldAir(canvas, theme, options = {}) {
   let observer = null;
   if ('IntersectionObserver' in window) {
     observer = new IntersectionObserver((entries) => {
-      onScreen = entries.some((entry) => entry.isIntersecting);
+      const entry = entries[entries.length - 1];
+      onScreen = entry.isIntersecting;
+      layer.ratio = entry.intersectionRatio;
       sync();
-    }, { threshold: 0 });
+    }, { threshold: [0, .25, .6] });
     observer.observe(canvas);
   }
 
   resize();
+  buildSprites();
   fill(true);
-  if (reduced.matches) draw(0, 0); // one still frame, then stay put
-  else sync();
+  draw(0, 0); // a still frame straight away, so the layer is never blank
+
+  // Hold the animation back until the browser has drawn the page and gone
+  // quiet. Nothing in the ambience is worth a slower first screen.
+  let bootTimer = 0;
+  const boot = () => { booted = true; sync(); };
+  if (!reduced.matches) {
+    if ('requestIdleCallback' in window) requestIdleCallback(boot, { timeout: 1500 });
+    else bootTimer = setTimeout(boot, 600);
+  }
 
   return {
     setTheme(next) {
       if (!next || next === theme) return;
       theme = next;
       config = airConfig(next);
+      buildSprites();
       particles = [];
       blend = 0;
       fill(true);
+      if (!allowed || !wants()) draw(0, 0);
       sync();
     },
     destroy() {
       pause();
+      clearTimeout(bootTimer);
+      airLayers.delete(layer);
       observer?.disconnect();
       document.removeEventListener('visibilitychange', onVisibility);
       window.removeEventListener('resize', onResize);
       reduced.removeEventListener?.('change', sync);
+      airRebalance();
     }
   };
 }
@@ -706,7 +860,7 @@ function home() {
   const featured = featuredIds.map((id) => byId(content.residents, id)).filter(Boolean);
   const availableCount = content.residents.filter((resident) => resident.availability === 'available').length;
 
-  app.innerHTML = `<main id="main">
+  paint(app, `<main id="main">
     <section class="home-hero" data-parallax>
       <div class="home-hero__media"><img src="/media/hero/atelier-group-temp.webp" alt="Собрание Жителей Мастерской Веры" fetchpriority="high"></div>
       <div class="home-hero__shade"></div>
@@ -773,7 +927,7 @@ function home() {
           </div>
         </div>
         <figure class="manifesto-portrait" data-reveal>
-          <img src="/media/residents/forest-dragon/studio.webp" alt="Готовый лесной дракон Веры" loading="lazy">
+          <img src="/media/residents/forest-dragon/studio.webp?v=20260805g" alt="Готовый лесной дракон Веры" loading="lazy">
           <figcaption><span>Готовая работа</span><b>Лесной дракон</b></figcaption>
         </figure>
       </div>
@@ -856,7 +1010,7 @@ function home() {
         </div>
       </div>
     </section>
-  </main>`;
+  </main>`);
   document.title = 'Мастерская Веры — авторские фигурки ручной работы';
   enableAtmosphereMotion();
   bindWorldWalk();
@@ -881,7 +1035,7 @@ function residentWorldSection(collection) {
 }
 
 function residents() {
-  app.innerHTML = `<main id="main">
+  paint(app, `<main id="main">
     <section class="page-hero page-hero--residents"><div class="shell"><p class="eyebrow eyebrow--light">Все работы Веры</p><h1>Жители Мастерской</h1><p class="lede lede--light">Готовых можно приобрести, проданные остаются в Хрониках, а будущих — увидеть в процессе рождения.</p></div></section>
     <div class="filter-dock"><div class="shell filters" data-filters>
       <button class="filter-button" aria-pressed="true" data-filter="all">Все Миры</button>
@@ -892,7 +1046,7 @@ function residents() {
     </div></div>
     <div data-resident-worlds>${content.collections.map(residentWorldSection).join('')}</div>
     <section class="section section--paper"><div class="shell empty-state" hidden data-empty>В этом разделе пока нет Жителей. Выберите другой Мир или напишите Вере.</div></section>
-  </main>`;
+  </main>`);
   document.title = 'Жители — Мастерская Веры';
   document.querySelector('[data-filters]').addEventListener('click', (event) => {
     const button = event.target.closest('[data-filter]');
@@ -916,10 +1070,10 @@ function residents() {
 }
 
 function collections() {
-  app.innerHTML = `<main id="main">
+  paint(app, `<main id="main">
     <section class="page-hero page-hero--atlas"><div class="shell"><p class="eyebrow eyebrow--light">Атлас Мастерской</p><h1>Пять Миров.<br>Пять разных ощущений.</h1><p class="lede lede--light">Не фильтры каталога, а отдельные сцены: лес дышит мхом и огоньками, зима — снегом, русская сказка — деревом и вязью.</p></div></section>
     <section class="section section--night worlds-section"><div class="shell"><div class="world-atlas world-atlas--full">${content.collections.map(worldCard).join('')}</div></div></section>
-  </main>`;
+  </main>`);
   document.title = 'Миры Мастерской — Мастерская Веры';
   enableAtmosphereMotion();
   bindWorldWalk();
@@ -1031,7 +1185,7 @@ function collectionPage() {
   document.body.classList.add(`theme-${collection.theme}`, 'world-page');
   mountWorldAir(collection.theme);
 
-  app.innerHTML = `<main id="main">
+  paint(app, `<main id="main">
     <section class="world-stage theme-${esc(collection.theme)}" style="--world-accent:${esc(collection.accent)}" data-parallax>
       <img class="world-stage__scene" src="${esc(collection.sceneImage || collection.image)}" alt="" fetchpriority="high">
       <div class="world-stage__shade"></div>
@@ -1099,7 +1253,7 @@ function collectionPage() {
         </div>
       </div>
     </section>
-  </main>`;
+  </main>`);
   document.title = `${collection.name} — Мастерская Веры`;
   bindWorldSlider();
   enableAtmosphereMotion();
@@ -1172,7 +1326,7 @@ function process() {
     ['07', 'Первая роспись', 'Первые синие мазки намечают глубину, свет и будущую палитру.', '/media/process/07-first-paint.webp'],
     ['08', 'Готовый Азимондиас', 'Многослойная роспись завершает образ — после неё Житель отправился к Хранителю.', '/media/process/08-finished.webp']
   ];
-  app.innerHTML = `<main id="main">
+  paint(app, `<main id="main">
     <section class="page-hero page-hero--process"><div class="shell"><p class="eyebrow eyebrow--light">От проволоки до характера</p><h1>Как создаётся Житель</h1><p class="lede lede--light">Не разрозненный коллаж, а настоящий путь Азимондиаса — восемь последовательных этапов ручной работы.</p></div></section>
     <section class="section section--paper process-chronicle"><div class="shell">
       <header class="process-chronicle__head"><div><p class="eyebrow">Рождение формы</p><h2>Азимондиас.<br>Шаг за шагом.</h2></div><p class="lede">${esc(azimondias.story)}</p></header>
@@ -1182,7 +1336,7 @@ function process() {
       </li>`).join('')}</ol>
     </div></section>
     <section class="section section--night"><div class="shell quote-panel"><p class="eyebrow eyebrow--light">Голос Мастера</p><blockquote>«${esc(threshold.quote)}»</blockquote><cite>Вера — о первой большой драконьей работе</cite></div></section>
-  </main>`;
+  </main>`);
   document.title = 'Как создаётся Житель — Мастерская Веры';
   enableAtmosphereMotion();
 }
@@ -1193,7 +1347,7 @@ function createResident() {
     { title: 'Малыш-дракон', note: 'Новый характер, который ещё появляется', image: '/media/residents/baby-dragon/hero.webp' },
     { title: 'Сказочный спутник', note: 'Дорога, движение и собственная легенда', image: '/media/residents/horse/hero.webp' }
   ];
-  app.innerHTML = `<main id="main">
+  paint(app, `<main id="main">
     <section class="page-hero page-hero--create"><div class="shell"><p class="eyebrow eyebrow--light">Будущая работа</p><h1>Обсудить идею с Верой</h1><p class="lede lede--light">Не конструктор готовой копии, а разговор о характере, форме, цвете и деталях нового Жителя.</p></div></section>
     <section class="section section--paper"><div class="shell creation-layout">
       <aside class="creation-preview">
@@ -1206,7 +1360,7 @@ function createResident() {
         <div class="contact-actions"><a class="button button--wine" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Написать в Telegram</a><a class="button button--line" href="https://www.instagram.com/vera.romanycheva.23" target="_blank" rel="noreferrer">Instagram</a></div>
       </div>
     </div></section>
-  </main>`;
+  </main>`);
   document.title = 'Обсудить нового Жителя — Мастерская Веры';
   document.querySelector('[data-choice="base"]').addEventListener('click', (event) => {
     const option = event.target.closest('.option');
@@ -1229,7 +1383,7 @@ function chronicle() {
     primaryAction = `<a class="button button--wine" href="/contact.html?resident=${encodeURIComponent(resident.slug)}">Узнать о работе</a>`;
   }
 
-  app.innerHTML = `<main id="main" class="theme-${esc(collection.theme)}">
+  paint(app, `<main id="main" class="theme-${esc(collection.theme)}">
     <section class="chronicle-hero">
       <img class="chronicle-hero__scene" src="${esc(resident.sceneImage || collection.sceneImage || collection.image)}" alt="${esc(resident.name)} в мире «${esc(collection.name)}»">
       <div class="chronicle-hero__shade"></div>${atmosphereMarkup(collection.theme)}
@@ -1245,7 +1399,7 @@ function chronicle() {
     <section class="section"><div class="shell"><header class="section-head"><div><p class="eyebrow">Свиток Жителя</p><h2>Хроника в трёх частях</h2></div></header><div class="chronicle-grid"><div><p class="eyebrow">Истоки</p><h3>Откуда пришёл</h3><p>${esc(resident.chronicle?.origin)}</p></div><div><p class="eyebrow">Характер</p><h3>Какой он</h3><p>${esc(resident.chronicle?.character)}</p></div><div><p class="eyebrow">Путь</p><h3>Куда ведёт история</h3><p>${esc(resident.chronicle?.path)}</p></div></div></div></section>
     <section class="section section--night"><div class="shell"><header class="section-head section-head--light"><div><p class="eyebrow eyebrow--light">Настоящие фотографии</p><h2>Рассмотреть ближе</h2></div></header><div class="gallery">${resident.gallery.map((media, index) => isVideo(media) ? `<div class="gallery__video">${galleryMedia(media, `${resident.name} — видео ${index + 1}`)}</div>` : `<button type="button" data-lightbox="${esc(media)}" aria-label="Открыть фото ${index + 1}">${galleryMedia(media, `${resident.name} — фотография ${index + 1}`)}</button>`).join('')}</div></div></section>
     ${chronicleNextStep(resident, collection)}
-  </main>`;
+  </main>`);
   document.title = `${resident.name} — Хроника Мастерской Веры`;
   bindLightbox();
   enableAtmosphereMotion();
@@ -1295,10 +1449,10 @@ function chronicleNextStep(resident, collection) {
 }
 
 function about() {
-  app.innerHTML = `<main id="main">
+  paint(app, `<main id="main">
     <section class="page-hero page-hero--about"><div class="shell"><p class="eyebrow eyebrow--light">О Мастерской</p><h1>Там, где форма становится характером</h1><p class="lede lede--light">Вера лепит и расписывает фантазийных Жителей вручную — от первого каркаса до финального взгляда.</p></div></section>
-    <section class="section section--paper"><div class="shell about-grid"><figure class="about-image"><img src="/media/residents/forest-dragon/studio.webp" alt="Готовая работа Веры" loading="lazy"></figure><div><p class="eyebrow">Руки и материал</p><h2>Работа начинается не с витрины, а с идеи и формы</h2><p class="lede">Полимерная глина, каркас из фольги и проволоки, ручная обработка, акриловая роспись, защитное покрытие и маленькие детали — путь каждого Жителя зависит от его характера.</p><div class="facts"><div class="fact"><b>Вручную</b><span>каждый этап проходит через руки Веры</span></div><div class="fact"><b>Лично</b><span>идеи и заказы обсуждаются напрямую</span></div><div class="fact"><b>Без копий</b><span>повторить работу один в один нельзя</span></div></div><div class="cluster cluster--top"><a class="button button--wine" href="/contact.html">Написать Вере</a><a class="button button--line" href="/process.html">Посмотреть процесс</a></div></div></div></section>
-  </main>`;
+    <section class="section section--paper"><div class="shell about-grid"><figure class="about-image"><img src="/media/residents/forest-dragon/studio.webp?v=20260805g" alt="Готовая работа Веры" loading="lazy"></figure><div><p class="eyebrow">Руки и материал</p><h2>Работа начинается не с витрины, а с идеи и формы</h2><p class="lede">Полимерная глина, каркас из фольги и проволоки, ручная обработка, акриловая роспись, защитное покрытие и маленькие детали — путь каждого Жителя зависит от его характера.</p><div class="facts"><div class="fact"><b>Вручную</b><span>каждый этап проходит через руки Веры</span></div><div class="fact"><b>Лично</b><span>идеи и заказы обсуждаются напрямую</span></div><div class="fact"><b>Без копий</b><span>повторить работу один в один нельзя</span></div></div><div class="cluster cluster--top"><a class="button button--wine" href="/contact.html">Написать Вере</a><a class="button button--line" href="/process.html">Посмотреть процесс</a></div></div></div></section>
+  </main>`);
   document.title = 'О Мастерской — Мастерская Веры';
 }
 
@@ -1307,7 +1461,7 @@ function contact() {
   const telegramText = resident
     ? encodeURIComponent(`Здравствуйте! Хочу узнать о Жителе «${resident.name}».`)
     : encodeURIComponent('Здравствуйте! Хочу узнать о работах Мастерской Веры.');
-  app.innerHTML = `<main id="main">
+  paint(app, `<main id="main">
     <section class="page-hero page-hero--contact"><div class="shell"><p class="eyebrow eyebrow--light">Связь с Мастерской</p><h1>Написать Вере</h1><p class="lede lede--light">О готовой работе, будущем Жителе или доставке — без посредников.</p></div></section>
     <section class="section section--paper"><div class="shell contact-grid">
       <div class="contact-card"><p class="eyebrow">Telegram</p><h2>Самый быстрый способ связаться</h2><p>${resident ? `Вы спрашиваете о работе «${esc(resident.name)}». Сообщение уже будет подготовлено.` : 'Вера лично ответит на вопросы о наличии, стоимости, сроках и индивидуальной работе.'}</p><div class="contact-actions"><a class="button button--wine" href="https://t.me/vera120700?text=${telegramText}" target="_blank" rel="noreferrer">Открыть Telegram</a><a class="button button--line" href="https://www.instagram.com/vera.romanycheva.23" target="_blank" rel="noreferrer">Instagram</a></div><p class="contact-channel">Смотреть готовые работы и процесс: <a class="text-link" href="https://t.me/masterskayaver" target="_blank" rel="noreferrer">t.me/masterskayaver →</a></p></div>
@@ -1322,7 +1476,7 @@ function contact() {
         <div class="fact"><b>Оплата</b><span>Перевод на карту, наличные при личной встрече или безопасная сделка через Авито-доставку.</span></div>
       </div>
     </div></section>
-  </main>`;
+  </main>`);
   document.title = 'Связаться с Верой — Мастерская Веры';
   enableAtmosphereMotion();
 }
@@ -1364,7 +1518,7 @@ function bindLightbox() {
 }
 
 function notFound() {
-  app.innerHTML = '<main id="main"><section class="section"><div class="shell"><p class="eyebrow">Страница не найдена</p><h1>Здесь пока нет Хроники</h1><p class="lede">Вернитесь на главную или откройте атлас Миров.</p><p class="cluster cluster--top"><a class="button button--wine" href="/">На главную</a></p></div></section></main>';
+  paint(app, '<main id="main"><section class="section"><div class="shell"><p class="eyebrow">Страница не найдена</p><h1>Здесь пока нет Хроники</h1><p class="lede">Вернитесь на главную или откройте атлас Миров.</p><p class="cluster cluster--top"><a class="button button--wine" href="/">На главную</a></p></div></section></main>');
 }
 
 // Try the live API first (the real Express server); on any static host —
@@ -1409,7 +1563,7 @@ async function boot() {
     bindHeaderShrink();
   } catch (error) {
     setShell('');
-    app.innerHTML = `<main id="main"><section class="section"><div class="shell"><p class="eyebrow">Техническая пауза</p><h1>Мастерская пока не открылась</h1><p class="lede">${esc(error.message)}. Попробуйте обновить страницу чуть позже.</p></div></section></main>`;
+    paint(app, `<main id="main"><section class="section"><div class="shell"><p class="eyebrow">Техническая пауза</p><h1>Мастерская пока не открылась</h1><p class="lede">${esc(error.message)}. Попробуйте обновить страницу чуть позже.</p></div></section></main>`);
     rewritePreviewPaths();
   }
 }
