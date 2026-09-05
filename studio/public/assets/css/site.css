@@ -1546,7 +1546,18 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   transition: opacity .25s;
 }
 .lightbox.is-open { opacity: 1; pointer-events: auto; }
-.lightbox img { max-width: min(88rem, 94vw); max-height: 88vh; box-shadow: var(--shadow); }
+/* Both limits subtract the overlay's own 1.5rem of padding on each side.
+   94vw did not, so on a phone the photo came out wider than the box holding
+   it — and grid pins an overflowing item to the start edge, which cut the
+   right-hand side of the Житель off. Percentages are no good here either:
+   against a grid area they leave the height unconstrained. dvh keeps the
+   photo clear of the browser's own bars on a phone. */
+.lightbox img {
+  max-width: min(88rem, calc(100vw - 3rem));
+  max-height: calc(100vh - 3rem);
+  max-height: calc(100dvh - 3rem);
+  box-shadow: var(--shadow);
+}
 .lightbox button {
   position: fixed;
   top: 1rem;

@@ -22,8 +22,8 @@ const isVideo = (url = '') => /\.(mp4|webm|mov)(?:\?.*)?$/i.test(url);
 
 function rewritePreviewPaths(root = document) {
   if (!isStaticPreview) return;
-  root.querySelectorAll('[href^="/"], [src^="/"], [srcset]').forEach((element) => {
-    ['href', 'src'].forEach((attribute) => {
+  root.querySelectorAll('[href^="/"], [src^="/"], [srcset], [data-lightbox^="/"]').forEach((element) => {
+    ['href', 'src', 'data-lightbox'].forEach((attribute) => {
       const value = element.getAttribute(attribute);
       if (value?.startsWith('/') && !value.startsWith('//')) {
         element.setAttribute(attribute, `${staticBasePath}${value}`);
@@ -1516,7 +1516,16 @@ function bindLightbox() {
     if (event.target === lightbox || event.target.matches('button')) close();
   });
   document.querySelectorAll('[data-lightbox]').forEach((button) => button.addEventListener('click', () => {
-    picture_().src = button.dataset.lightbox;
+    // Take the address off the thumbnail rather than the data- attribute: the
+    // thumbnail's src is already absolute and already carries the Pages
+    // subfolder, and .src (not .currentSrc) is the full-size photo, not the
+    // small copy a phone is showing in the grid.
+    const thumbnail = button.querySelector('img');
+    const source = thumbnail?.src || button.dataset.lightbox;
+    if (!source) return;
+    const photo = picture_();
+    photo.alt = thumbnail?.alt || 'Увеличенная фотография Жителя';
+    photo.src = source;
     lightbox.classList.add('is-open');
     // Stop the page behind the overlay from scrolling under it.
     document.body.classList.add('menu-open');
