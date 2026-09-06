@@ -47,6 +47,18 @@ jobs:
             studio/data/content.worlds.json \
             _site/content.json
 
+          # The preview is a plain file host with no /api/content behind it.
+          # Saying so up front spares every page a 404 round trip before it
+          # falls back to the snapshot — and keeps the console clean.
+          sed -i 's/<body /<body data-static="true" /' _site/*.html
+
+          # Fill the origin placeholder in the social tags, and build the
+          # sitemap from the content so every Житель and Мир is listed.
+          SITE_ORIGIN="https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}"
+          sed -i "s#__SITE_ORIGIN__#${SITE_ORIGIN}#g" _site/*.html
+          node studio/scripts/build-sitemap.mjs _site "$SITE_ORIGIN"
+          ! grep -rq '__SITE_ORIGIN__' _site/ || { echo 'плейсхолдер остался'; exit 1; }
+
           printf '{"commit":"%s","builtAt":"%s"}\n' "$GITHUB_SHA" "$(date -u +%FT%TZ)" > _site/build-info.json
 
           test -s _site/media/residents/nutcracker/studio.webp

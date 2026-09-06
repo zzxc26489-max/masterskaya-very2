@@ -830,9 +830,10 @@ function enableAtmosphereMotion() {
 
   const revealable = [...document.querySelectorAll('[data-reveal]')];
   revealable.forEach((element) => {
-    // Anything already at or above the fold shows straight away — no fade in
-    // from nothing on first paint.
-    if (element.getBoundingClientRect().top < window.innerHeight) element.classList.add('is-visible');
+    // Anything already at or above the fold shows straight away, and without
+    // the transition: it is the first screen, so fading it in only delays the
+    // moment the page counts as painted.
+    if (element.getBoundingClientRect().top < window.innerHeight) element.classList.add('is-visible', 'is-instant');
     else observer.observe(element);
   });
   // Safety net: reveal blocks are hidden by CSS until observed, so if the
@@ -1255,6 +1256,7 @@ function collectionPage() {
     </section>
   </main>`);
   document.title = `${collection.name} — Мастерская Веры`;
+  setCanonical(`world=${encodeURIComponent(collection.slug || collection.id)}`);
   bindWorldSlider();
   enableAtmosphereMotion();
 }
@@ -1410,6 +1412,7 @@ function chronicle() {
     ${chronicleNextStep(resident, collection)}
   </main>`);
   document.title = `${resident.name} — Хроника Мастерской Веры`;
+  setCanonical(`resident=${encodeURIComponent(resident.slug || resident.id)}`);
   bindLightbox();
   enableAtmosphereMotion();
 }
@@ -1543,11 +1546,32 @@ function notFound() {
 // GitHub Pages, Beget, a future domain — that 404s, so fall back to the
 // content.json snapshot the build step generates. This way the frontend
 // doesn't need to know in advance which kind of host it's running on.
+/* The canonical has to be an absolute URL, and on chronicle.html?resident=X
+   and collection.html?world=Y it has to carry the query: those are a separate
+   page per Житель and per Мир, and a canonical pointing at the bare file would
+   tell a search engine that all sixteen Жители are the same page. The shell
+   ships one with the origin filled in at build time; this rewrites it from the
+   address actually open, which also repairs it on a host the build did not
+   know about. */
+function setCanonical(query) {
+  const link = document.querySelector('link[rel="canonical"]');
+  if (!link) return;
+  const url = new URL(window.location.pathname, window.location.origin);
+  if (query) url.search = query;
+  link.setAttribute('href', url.href);
+}
+
 async function loadContent() {
-  try {
-    const response = await fetch('/api/content');
-    if (response.ok) return await response.json();
-  } catch { /* no server here — fall through to the static snapshot */ }
+  // A file host has no /api/content behind it. The build stamps data-static
+  // on <body> so those pages go straight to the snapshot instead of spending
+  // a round trip on a 404 first. Anywhere else, ask the live API and fall
+  // back if there is nobody home.
+  if (!document.body.dataset.static) {
+    try {
+      const response = await fetch('/api/content');
+      if (response.ok) return await response.json();
+    } catch { /* no server here — fall through to the static snapshot */ }
+  }
   const response = await fetch('content.json');
   if (!response.ok) throw new Error('Контент недоступен');
   return await response.json();
@@ -1575,6 +1599,7 @@ async function boot() {
       about,
       contact
     }[page] || notFound)();
+    if (!document.querySelector('link[rel="canonical"][href*="?"]')) setCanonical();
     rewritePreviewPaths();
     mountSceneAir();
     bindCardMotion();

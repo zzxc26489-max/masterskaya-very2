@@ -6,7 +6,8 @@
     "studio:dev": "npm --prefix studio run dev",
     "studio:check": "npm --prefix studio run check",
     "studio:test": "playwright test --config=playwright.studio.config.mjs",
-    "media:phone": "node studio/scripts/build-phone-images.mjs"
+    "media:phone": "node studio/scripts/build-phone-images.mjs",
+    "fonts": "node studio/scripts/build-fonts.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.61.1",

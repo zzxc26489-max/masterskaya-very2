@@ -11,6 +11,11 @@
   --wine: #78272b;
   --wine-deep: #471519;
   --gold: #b78a4f;
+  /* The brand gold is for gilding — rules, borders, gold on a dark ground.
+     At 11px bold on paper it reads at 2.45:1, well under the 4.5:1 a small
+     label needs, so the uppercase labels use this deeper one instead: same
+     hue, 4.8:1 on the darker paper and 5.6:1 on the lighter. */
+  --gold-ink: #7a5d34;
   --gold-light: #e8c98f;
   --line: rgb(70 45 27 / .2);
   --line-dark: rgb(246 222 184 / .2);
@@ -90,7 +95,7 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
 
 .eyebrow {
   margin-bottom: .9rem;
-  color: var(--gold);
+  color: var(--gold-ink);
   font-size: .68rem;
   font-weight: 700;
   letter-spacing: .2em;
@@ -1504,7 +1509,7 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
 }
 .meta-list div { padding-top: .75rem; border-top: 1px solid var(--line); }
 .meta-list dt {
-  color: var(--gold);
+  color: var(--gold-ink);
   font-size: .59rem;
   font-weight: 700;
   letter-spacing: .13em;
@@ -1628,6 +1633,12 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   transition: opacity .8s var(--ease), transform .8s var(--ease);
 }
 [data-reveal].is-visible { opacity: 1; transform: none; }
+/* What is already on screen at load must not fade in. The browser treats the
+   page as still arriving until the biggest block has finished painting, and
+   the hero heading is that block — an .8s fade there is .8s added to the
+   measured load, for an animation nobody sees start. Below the fold the fade
+   stays: there it plays as the reader arrives. */
+[data-reveal].is-instant { opacity: 1; transform: none; transition: none; }
 
 @keyframes scroll-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(.35rem); } }
 @keyframes scene-next {

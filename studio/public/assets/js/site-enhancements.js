@@ -17,10 +17,13 @@ const mediaUrl = (value = '') => {
 // Same fallback as the main app: prefer the live API, drop to the static
 // snapshot when there is no server to ask.
 async function fetchContent() {
-  try {
-    const response = await fetch('/api/content', { cache: 'no-store' });
-    if (response.ok) return response;
-  } catch { /* no server here — fall through */ }
+  // Same rule as site.js: a build that stamped data-static has no API to ask.
+  if (!document.body.dataset.static) {
+    try {
+      const response = await fetch('/api/content', { cache: 'no-store' });
+      if (response.ok) return response;
+    } catch { /* no server here — fall through */ }
+  }
   return fetch('content.json', { cache: 'no-store' });
 }
 
