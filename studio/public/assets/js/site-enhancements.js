@@ -34,16 +34,30 @@ function residentMap(data) {
   return map;
 }
 
-function focusFor(resident, mobile = false) {
-  if (!resident) return 'center';
+// focus/mobileFocus were measured against the studio shot — where the Житель
+// often sits off to one side. The world photos are composed with them in the
+// middle, so those numbers would shove the subject out of frame; centre is
+// right for a scene.
+function focusFor(resident, { mobile = false, scene = false } = {}) {
+  if (!resident || scene) return 'center';
   return mobile
     ? (resident.mobileFocus || resident.focus || 'center')
     : (resident.focus || 'center');
 }
 
-function setImage(image, resident, eager = false) {
+// Which photo a slot wants. 'scene' is the Житель standing in their own world
+// — that is what a card, a slide and the Chronicle header show. 'studio' is
+// the bare shot of the work itself, used where the page is talking about
+// Vera's hands rather than about one Житель.
+function sourceFor(resident, want) {
+  if (mobileQuery.matches && resident.mobileImage) return resident.mobileImage;
+  return want === 'studio' ? resident.heroImage : (resident.sceneImage || resident.heroImage);
+}
+
+function setImage(image, resident, { eager = false, want = 'scene' } = {}) {
   if (!image || !resident?.heroImage) return;
-  const raw = mobileQuery.matches && resident.mobileImage ? resident.mobileImage : resident.heroImage;
+  const raw = sourceFor(resident, want);
+  const scene = raw === resident.sceneImage;
   // A srcset left over from the previous photo would win over the new src and
   // quietly show the wrong Житель, so it is always rewritten or dropped.
   const small = phoneCopy(raw);
@@ -54,9 +68,9 @@ function setImage(image, resident, eager = false) {
     image.removeAttribute('srcset');
   }
   image.src = mediaUrl(raw);
-  image.alt = `${resident.name} в своём мире`;
-  image.style.setProperty('--resident-focus', focusFor(resident));
-  image.style.setProperty('--resident-focus-mobile', focusFor(resident, true));
+  image.alt = scene ? `${resident.name} в своём мире` : `${resident.name} — работа Веры`;
+  image.style.setProperty('--resident-focus', focusFor(resident, { scene }));
+  image.style.setProperty('--resident-focus-mobile', focusFor(resident, { scene, mobile: true }));
   image.decoding = 'async';
   if (eager) {
     image.loading = 'eager';
@@ -93,8 +107,8 @@ function upgrade(data) {
     if (!resident) return;
     card.dataset.resident = resident.id;
     card.dataset.showcase = resident.showcase === false ? 'false' : 'true';
-    card.style.setProperty('--resident-focus', focusFor(resident));
-    card.style.setProperty('--resident-focus-mobile', focusFor(resident, true));
+    card.style.setProperty('--resident-focus', focusFor(resident, { scene: true }));
+    card.style.setProperty('--resident-focus-mobile', focusFor(resident, { scene: true, mobile: true }));
     setImage(card.querySelector('.resident-card__image img'), resident);
   });
 
@@ -103,8 +117,8 @@ function upgrade(data) {
     if (!resident) return;
     slide.dataset.resident = resident.id;
     slide.dataset.showcase = resident.showcase === false ? 'false' : 'true';
-    slide.style.setProperty('--resident-focus', focusFor(resident));
-    slide.style.setProperty('--resident-focus-mobile', focusFor(resident, true));
+    slide.style.setProperty('--resident-focus', focusFor(resident, { scene: true }));
+    slide.style.setProperty('--resident-focus-mobile', focusFor(resident, { scene: true, mobile: true }));
     setImage(slide.querySelector('.world-resident__photo img'), resident);
   });
 
@@ -119,7 +133,7 @@ function upgrade(data) {
   const forest = lookup.get('forest-dragon');
   if (forest) {
     document.querySelectorAll('.manifesto-portrait img, .about-image img')
-      .forEach((image) => setImage(image, forest));
+      .forEach((image) => setImage(image, forest, { want: 'studio' }));
   }
 
   if (pageName === 'chronicle') {
@@ -128,9 +142,9 @@ function upgrade(data) {
     const hero = document.querySelector('.chronicle-hero');
     if (hero && resident) {
       hero.dataset.resident = resident.id;
-      hero.style.setProperty('--hero-focus', focusFor(resident));
-      hero.style.setProperty('--hero-focus-mobile', focusFor(resident, true));
-      setImage(hero.querySelector('.chronicle-hero__scene'), resident, true);
+      hero.style.setProperty('--hero-focus', focusFor(resident, { scene: true }));
+      hero.style.setProperty('--hero-focus-mobile', focusFor(resident, { scene: true, mobile: true }));
+      setImage(hero.querySelector('.chronicle-hero__scene'), resident, { eager: true });
     }
     cleanChronicleGallery();
   }
