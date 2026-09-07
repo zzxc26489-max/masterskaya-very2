@@ -885,6 +885,10 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   font: 700 .85rem var(--body);
   color: var(--wine);
 }
+.resident-card__meta .stock {
+  font: 600 .72rem var(--body);
+  color: var(--muted);
+}
 
 /* Residents by world */
 .page-hero {

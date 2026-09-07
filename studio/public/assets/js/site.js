@@ -59,7 +59,18 @@ function statusCopy(status) {
 
 function priceLabel(resident) {
   const price = Number(resident?.price);
-  return price > 0 ? `${price.toLocaleString('ru-RU')} ₽` : 'Цена по запросу';
+  if (!(price > 0)) return 'Цена по запросу';
+  const note = resident?.priceNote?.trim();
+  return note ? `${price.toLocaleString('ru-RU')} ₽ ${note}` : `${price.toLocaleString('ru-RU')} ₽`;
+}
+
+// "Готово: 4" — how many finished copies are on the shelf right now. Only
+// worth saying for a one-of-a-kind piece that already has some ready; a
+// resident still being sculpted, or one with no count entered, says nothing.
+function stockLabel(resident) {
+  const stock = Number(resident?.stock);
+  if (resident?.availability !== 'available' || !(stock > 0)) return '';
+  return `Готово: ${stock}`;
 }
 
 function techniqueCopy(technique) {
@@ -783,7 +794,7 @@ function residentCard(resident) {
       <span class="resident-card__world">${esc(world.name)}</span>
     </a>
     <div class="resident-card__body">
-      <div class="resident-card__meta"><span class="status ${className}">${label}</span>${['available', 'in-progress'].includes(resident.availability) ? `<span class="price">${priceLabel(resident)}</span>` : ''}</div>
+      <div class="resident-card__meta"><span class="status ${className}">${label}</span>${['available', 'in-progress'].includes(resident.availability) ? `<span class="price">${priceLabel(resident)}</span>` : ''}${stockLabel(resident) ? `<span class="stock">${esc(stockLabel(resident))}</span>` : ''}</div>
       <h3>${esc(resident.shortName || resident.name)}</h3>
       <p>${esc(resident.excerpt)}</p>
       <div class="cluster">${residentActions(resident, true)}</div>
@@ -1403,7 +1414,7 @@ function chronicle() {
     <section class="section section--paper"><div class="shell resident-detail">
       <figure class="resident-detail__image"><img src="${esc(resident.heroImage)}" alt="${esc(resident.name)}"></figure>
       <div class="resident-detail__copy"><span class="status ${className}">${status}</span><h2>${esc(resident.name)}</h2><p class="lede">${esc(resident.story)}</p>
-        <dl class="meta-list"><div><dt>Мир</dt><dd>${esc(collection.name)}</dd></div>${['available', 'in-progress'].includes(resident.availability) ? `<div><dt>Стоимость</dt><dd>${esc(priceLabel(resident))}</dd></div>` : ''}<div><dt>Работа</dt><dd>${esc(techniqueCopy(resident.technique))}</dd></div><div><dt>Характер</dt><dd>${esc(resident.character)}</dd></div><div><dt>Где обитает</dt><dd>${esc(resident.habitat)}</dd></div></dl>
+        <dl class="meta-list"><div><dt>Мир</dt><dd>${esc(collection.name)}</dd></div>${['available', 'in-progress'].includes(resident.availability) ? `<div><dt>Стоимость</dt><dd>${esc(priceLabel(resident))}</dd></div>` : ''}${stockLabel(resident) ? `<div><dt>В наличии</dt><dd>${esc(stockLabel(resident))}</dd></div>` : ''}<div><dt>Работа</dt><dd>${esc(techniqueCopy(resident.technique))}</dd></div><div><dt>Характер</dt><dd>${esc(resident.character)}</dd></div><div><dt>Где обитает</dt><dd>${esc(resident.habitat)}</dd></div></dl>
         <div class="cluster">${primaryAction}<a class="button button--line" href="/residents.html">Все Жители</a></div>
       </div>
     </div></section>

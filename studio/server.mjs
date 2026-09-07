@@ -122,6 +122,15 @@ function safePrice(value, previous = null) {
   return Number.isFinite(number) && number >= 0 ? Math.round(number) : previous;
 }
 
+// Ready copies of a one-of-a-kind piece — how many are on the shelf right
+// now, not a manufacturing count. Blank clears it (a sold-out item stops
+// saying "Готово: 0").
+function safeStock(value, previous = null) {
+  if (value === "" || value === null || value === undefined) return null;
+  const number = Number(value);
+  return Number.isInteger(number) && number >= 0 ? number : previous;
+}
+
 function normaliseResident(payload, previous = {}) {
   const allowedAvailability = ["available", "in-progress", "archive", "reserved"];
   const allowedTechnique = ["one-of-a-kind", "author-series"];
@@ -137,6 +146,8 @@ function normaliseResident(payload, previous = {}) {
     availability,
     technique,
     price: safePrice(payload.price, previous.price ?? null),
+    priceNote: safeText(payload.priceNote || previous.priceNote, 40),
+    stock: safeStock(payload.stock, previous.stock ?? null),
     type: safeText(payload.type || previous.type, 120),
     character: safeText(payload.character || previous.character, 300),
     habitat: safeText(payload.habitat || previous.habitat, 300),

@@ -113,14 +113,16 @@
         "keeper": "Можно приобрести"
       },
       "focus": "center",
-      "mobileFocus": "center"
+      "mobileFocus": "center",
+      "price": 3000,
+      "stock": 1
     },
     {
       "id": "girl-with-nutcracker",
       "slug": "girl-with-nutcracker",
       "name": "Девочка со Щелкунчиком",
       "collectionId": "winter",
-      "availability": "available",
+      "availability": "in-progress",
       "technique": "one-of-a-kind",
       "type": "Зимняя сказочная композиция",
       "character": "Мягкая, заботливая и умеющая беречь маленькое чудо.",
@@ -191,7 +193,9 @@
         "path": "Готов к встрече с новым Хранителем",
         "keeper": "Можно приобрести"
       },
-      "focus": "73% center"
+      "focus": "73% center",
+      "price": 4500,
+      "stock": 4
     },
     {
       "id": "gorynych-amber",
@@ -218,7 +222,8 @@
         "path": "Готов к встрече с новым Хранителем",
         "keeper": "Можно приобрести"
       },
-      "focus": "72% center"
+      "focus": "72% center",
+      "price": 6500
     },
     {
       "id": "gorynych-green",
@@ -227,7 +232,7 @@
       "shortName": "Змей Горыныч",
       "collectionId": "russian",
       "worldOrder": 1,
-      "availability": "available",
+      "availability": "in-progress",
       "technique": "one-of-a-kind",
       "type": "Первая версия Змея Горыныча",
       "character": "Царственный, упрямый и удивительно живой в каждом из трёх взглядов.",
@@ -272,7 +277,8 @@
         "keeper": "Можно приобрести"
       },
       "focus": "center",
-      "mobileFocus": "center"
+      "mobileFocus": "center",
+      "price": 13100
     },
     {
       "id": "forest-mushrooms",
@@ -298,7 +304,9 @@
         "path": "Можно выбрать отдельные грибочки или собрать лесной набор",
         "keeper": "Можно приобрести"
       },
-      "focus": "72% center"
+      "focus": "72% center",
+      "price": 1500,
+      "priceNote": "за штуку"
     },
     {
       "id": "baby-dragon",
@@ -377,7 +385,8 @@
         "path": "Готова к встрече с новым Хранителем",
         "keeper": "Можно приобрести"
       },
-      "focus": "71% center"
+      "focus": "71% center",
+      "price": 2000
     },
     {
       "id": "rocking-horse",
@@ -403,7 +412,8 @@
         "path": "Готова к встрече с новым Хранителем",
         "keeper": "Можно приобрести"
       },
-      "focus": "71% center"
+      "focus": "71% center",
+      "price": 3500
     },
     {
       "id": "sirin",
@@ -430,7 +440,8 @@
         "keeper": "Можно приобрести"
       },
       "focus": "66% center",
-      "mobileFocus": "60% center"
+      "mobileFocus": "60% center",
+      "price": 3500
     },
     {
       "id": "mermaid",
@@ -458,7 +469,8 @@
         "keeper": "В работе"
       },
       "showcase": false,
-      "creationDate": "Каркас — работа продолжается"
+      "creationDate": "Каркас — работа продолжается",
+      "price": 3500
     },
     {
       "id": "little-humpbacked-horse",
@@ -484,7 +496,9 @@
         "path": "Готов к встрече с новым Хранителем",
         "keeper": "Можно приобрести"
       },
-      "focus": "71% center"
+      "focus": "71% center",
+      "price": 4000,
+      "stock": 2
     }
   ],
   "stories": [
