@@ -124,11 +124,11 @@
 .site-footer { overflow: hidden; }
 .scroll-top { z-index: 90; }
 
-[data-showcase="false"],
-.resident-card[data-resident="mermaid"],
-.world-resident[data-resident="mermaid"] {
-  display: none !important;
-}
+/* Скрывается только тем, у кого showcase выключен в данных — это
+   управляется из админки. Отдельного правила «спрятать Русалку» больше
+   нет: она показывается со статусом «В работе», чтобы её увидели и
+   написали Вере заранее. */
+[data-showcase="false"] { display: none !important; }
 
 @media (max-width: 64rem) {
   .chronicle-hero > .shell > * { max-width: min(32rem, 52vw); }

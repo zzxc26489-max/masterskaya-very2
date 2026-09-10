@@ -499,7 +499,7 @@
         "path": "Пока рождается в Мастерской",
         "keeper": "В работе"
       },
-      "showcase": false,
+      "showcase": true,
       "creationDate": "Каркас — работа продолжается",
       "price": 3500
     },
