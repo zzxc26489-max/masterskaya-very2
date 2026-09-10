@@ -416,6 +416,37 @@
       "price": 3500
     },
     {
+      "id": "puss-in-boots",
+      "slug": "puss-in-boots",
+      "name": "Кот в сапогах",
+      "shortName": "Кот в сапогах",
+      "collectionId": "home",
+      "availability": "available",
+      "technique": "one-of-a-kind",
+      "type": "Сказочный Житель",
+      "character": "Уверенный, обаятельный и с видом того, кто уже всё придумал.",
+      "habitat": "Книжная полка, рабочий стол и дом, где любят старые сказки.",
+      "excerpt": "Рыжий, в плаще и сапогах, с воротником по моде своего века — тот самый кот, который выигрывает не силой, а хитростью.",
+      "story": "Кот в сапогах слеплен вручную от каркаса до последнего мазка: фольга, полимерная глина, роспись акрилом и защитное покрытие. Отдельно проработаны воротник-жабо, пряжка ремня и складки плаща — детали, которые видно только вблизи. Есть петелька, поэтому его можно поставить на полку или подвесить.",
+      "heroImage": "/media/residents/puss-in-boots/hero.webp",
+      "gallery": [
+        "/media/residents/puss-in-boots/hero.webp",
+        "/media/residents/puss-in-boots/pair.webp",
+        "/media/residents/puss-in-boots/details.webp",
+        "/media/residents/puss-in-boots/sculpted.webp",
+        "/media/residents/puss-in-boots/armature.webp"
+      ],
+      "chronicle": {
+        "origin": "Начался с каркаса из фольги — на нём ещё не было ни шерсти, ни плаща, только поза и характер",
+        "character": "Держится так, будто сапоги ему достались по праву",
+        "path": "Готов к встрече с новым Хранителем",
+        "keeper": "Можно приобрести"
+      },
+      "focus": "center 8%",
+      "price": 5500,
+      "mobileFocus": "center 8%"
+    },
+    {
       "id": "sirin",
       "slug": "sirin",
       "name": "Птица Сирин",

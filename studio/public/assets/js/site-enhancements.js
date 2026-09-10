@@ -57,8 +57,13 @@ function sourceFor(resident, want) {
   return want === 'studio' ? resident.heroImage : (resident.sceneImage || resident.heroImage);
 }
 
-function setImage(image, resident, { eager = false, want = 'scene' } = {}) {
+function setImage(image, resident, { eager = false, want = 'scene', sceneOnly = false } = {}) {
   if (!image || !resident?.heroImage) return;
+  // A wide banner asked for the world photo. If this Житель has none yet, the
+  // markup already fell back to the Мир's own scene — a landscape shot that
+  // fits the slot. Swapping in the upright studio photo instead would crop it
+  // to a slice of belt and cape, so leave what is there alone.
+  if (sceneOnly && !resident.sceneImage) return;
   const raw = sourceFor(resident, want);
   const scene = raw === resident.sceneImage;
   // A srcset left over from the previous photo would win over the new src and
@@ -147,7 +152,7 @@ function upgrade(data) {
       hero.dataset.resident = resident.id;
       hero.style.setProperty('--hero-focus', focusFor(resident, { scene: true }));
       hero.style.setProperty('--hero-focus-mobile', focusFor(resident, { scene: true, mobile: true }));
-      setImage(hero.querySelector('.chronicle-hero__scene'), resident, { eager: true });
+      setImage(hero.querySelector('.chronicle-hero__scene'), resident, { eager: true, sceneOnly: true });
     }
     cleanChronicleGallery();
   }

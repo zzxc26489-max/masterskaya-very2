@@ -88,10 +88,16 @@
   width: 100%;
   margin-inline: auto;
 }
+/* «Рассмотреть ближе» — единственное место, где человек хочет увидеть работу
+   целиком. Раньше здесь любое фото обрезалось под 16/9: для широкого кадра из
+   Мира это было незаметно, а вертикальный снимок фигурки лишался головы.
+   Теперь кадр сохраняет свои пропорции, а высота просто ограничена экраном. */
 .gallery img,
 .gallery__video video {
-  aspect-ratio: 16 / 9;
-  object-position: var(--resident-focus, center);
+  aspect-ratio: auto;
+  height: auto;
+  max-height: 78vh;
+  object-fit: contain;
 }
 
 .world-stage__scene,
@@ -178,10 +184,7 @@
 
   .section.section--paper:has(.resident-detail) { padding-top: 2.5rem; }
   .gallery img,
-  .gallery__video video {
-    aspect-ratio: 3 / 2;
-    object-position: var(--resident-focus-mobile, var(--resident-focus, center));
-  }
+  .gallery__video video { max-height: 70vh; }
 
   .world-slider { min-height: 48rem; }
   .world-resident__photo {
