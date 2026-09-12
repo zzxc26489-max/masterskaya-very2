@@ -715,7 +715,64 @@ function setShell(active) {
     ['contact', '/contact.html', 'Контакты']
   ];
 
-  header.innerHTML = `<a class="skip-link" href="#main">Перейти к содержанию</a>
+  const homeNav = [
+    ['residents', '/residents.html', 'Жители'],
+    ['collections', '/collections.html', 'Миры'],
+    ['process', '/process.html', 'Как создаются'],
+    ['about', '/about.html', 'О мастерской']
+  ];
+
+  if (active === 'home') {
+    header.innerHTML = `<a class="skip-link" href="#main">Перейти к содержанию</a>
+      <div class="site-header home-site-header"><div class="header-inner">
+        <a class="brand" href="/" aria-label="Мастерская Веры — главная">
+          <img class="brand__logo" src="/media/brand/logo-mark.webp" alt="" width="96" height="96">
+          <span class="brand__name">Мастерская<br>Веры</span>
+        </a>
+        <nav class="main-nav" id="main-nav" aria-label="Основная навигация">
+          ${homeNav.map(([id, href, label]) => `<a href="${href}">${label}</a>`).join('')}
+        </nav>
+        <div class="header-actions">
+          <a class="button button--forest button--compact header-cta" href="/residents.html">Смотреть работы</a>
+          <button class="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false" data-menu-toggle>
+            <span></span><span></span><span></span><span class="sr-only">Открыть меню</span>
+          </button>
+        </div>
+      </div></div>`;
+
+    footer.innerHTML = `<footer class="site-footer home-site-footer">
+      <div class="home-ornament home-ornament--footer-left" aria-hidden="true">${worldOrnament('forest')}</div>
+      <div class="home-ornament home-ornament--footer-right" aria-hidden="true">${worldOrnament('forest')}</div>
+      <div class="shell">
+        <div class="home-footer-grid">
+          <div class="home-footer-brand">
+            <a class="brand" href="/">
+              <img class="brand__logo" src="/media/brand/logo-mark.webp" alt="" width="96" height="96">
+              <span class="brand__name">Мастерская<br>Веры</span>
+            </a>
+            <p>Авторские фигурки ручной работы. Каждый Житель — в единственном экземпляре.</p>
+          </div>
+          <nav class="home-footer-nav" aria-label="Навигация в подвале">
+            <p class="home-footer-heading">Разделы</p>
+            <a href="/residents.html">Жители</a>
+            <a href="/collections.html">Миры</a>
+            <a href="/process.html">Как создаются</a>
+            <a href="/about.html">О мастерской</a>
+            <a href="/contact.html">Контакты</a>
+          </nav>
+          <div class="home-footer-contact">
+            <p class="home-footer-heading">Связь</p>
+            <span>Telegram-канал</span>
+            <a class="home-footer-handle" href="https://t.me/masterskayaver" target="_blank" rel="noreferrer">t.me/masterskayaver</a>
+            <a class="button button--gold-outline" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Написать Вере</a>
+          </div>
+        </div>
+        <div class="home-footer-bottom">© Мастерская Веры</div>
+      </div>
+    </footer><button class="scroll-top" type="button" data-scroll-top aria-label="Наверх">↑</button>`;
+  } else {
+
+    header.innerHTML = `<a class="skip-link" href="#main">Перейти к содержанию</a>
     <div class="site-header"><div class="header-inner">
       <a class="brand" href="/" aria-label="Мастерская Веры — главная">
         <img class="brand__logo" src="/media/brand/logo-mark.webp" alt="" width="96" height="96">
@@ -732,7 +789,7 @@ function setShell(active) {
       </div>
     </div></div>`;
 
-  footer.innerHTML = `<footer class="site-footer"><div class="shell footer-grid">
+    footer.innerHTML = `<footer class="site-footer"><div class="shell footer-grid">
     <div>
       <a class="brand" href="/"><span class="brand__mark" aria-hidden="true">✦</span><span class="brand__name">Мастерская Веры</span></a>
       <p class="footer-copy">Авторские фигурки из полимерной глины. Каждая работа создаётся вручную и получает собственный характер.</p>
@@ -749,7 +806,8 @@ function setShell(active) {
       <a href="https://t.me/masterskayaver" target="_blank" rel="noreferrer">Telegram-канал · Мастерская Веры</a>
       <a href="https://www.instagram.com/vera.romanycheva.23" target="_blank" rel="noreferrer">Instagram</a>
     </div>
-  </div></footer><button class="scroll-top" type="button" data-scroll-top aria-label="Наверх">↑</button>`;
+    </div></footer><button class="scroll-top" type="button" data-scroll-top aria-label="Наверх">↑</button>`;
+  }
 
   const toggle = document.querySelector('[data-menu-toggle]');
   const navElement = document.querySelector('#main-nav');
@@ -866,166 +924,181 @@ function enableAtmosphereMotion() {
   });
 }
 
+const HOME_WORLD_COPY = {
+  winter: ['Зимние легенды', 'Там, где живёт волшебство зимних вечеров', '/media/scenes/nutcracker-ernst.webp'],
+  forest: ['Тайны древнего леса', 'Среди корней и мха рождаются свои истории', '/media/worlds/forest-scene.webp'],
+  dragons: ['Древние существа', 'Те, кто помнит забытые времена', '/media/scenes/azimondias.webp'],
+  russian: ['Русские сказки', 'Любимые герои в новом воплощении', '/media/scenes/sirin.webp'],
+  home: ['Домашние легенды', 'Истории, которые живут рядом', '/media/worlds/home-scene.webp']
+};
+
+function homeFeatureIcon(type) {
+  if (type === 'hand') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-4 0v4-5a2 2 0 0 0-4 0v5-3a2 2 0 0 0-4 0v5-1a2 2 0 0 0-4 0v3c0 4.4 3.6 8 8 8h2a8 8 0 0 0 8-8v-3a2 2 0 0 0-2-2Z"/></svg>`;
+  if (type === 'palette') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0 0 18h1.5a1.5 1.5 0 0 0 0-3H12a2 2 0 0 1 0-4h3a6 6 0 0 0 0-12h-3Z"/><path d="M7.5 10h.01M9.5 6.5h.01M14 6h.01M17 9h.01"/></svg>`;
+  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 6-7 12L5 9l7-6Z"/><path d="m5 9 7 2 7-2M12 3v8"/></svg>`;
+}
+
+function homeWorldCard(collection, index) {
+  const [title, description, image] = HOME_WORLD_COPY[collection.theme] || [collection.name, collection.description, collection.sceneImage || collection.image];
+  return `<article class="home-world-card theme-${esc(collection.theme)}" data-home-world-card>
+    <a href="/collection.html?world=${encodeURIComponent(collection.slug)}" aria-label="Открыть мир «${esc(title)}»">
+      <img src="${esc(image)}" alt="${esc(title)}" fetchpriority="low">
+      <span class="home-world-card__copy">
+        <b>${esc(title)}</b>
+        <small>${esc(description)}</small>
+      </span>
+    </a>
+  </article>`;
+}
+
+function homeResidentCard(resident, price) {
+  if (!resident) return '';
+  return `<article class="home-resident-card">
+    <a class="home-resident-card__image" href="/chronicle.html?resident=${encodeURIComponent(resident.slug)}">
+      <img src="${esc(resident.sceneImage || resident.heroImage)}" alt="${esc(resident.shortName || resident.name)} в своём мире">
+    </a>
+    <div class="home-resident-card__copy">
+      <h3>${esc(resident.shortName || resident.name)}</h3>
+      <p>${esc(price)}</p>
+    </div>
+    <a class="home-card-arrow" href="/chronicle.html?resident=${encodeURIComponent(resident.slug)}" aria-label="Открыть Хронику: ${esc(resident.shortName || resident.name)}">→</a>
+  </article>`;
+}
+
+function bindHomeWorldCarousel() {
+  const track = document.querySelector('[data-home-world-track]');
+  if (!track) return;
+  const cards = [...track.querySelectorAll('[data-home-world-card]')];
+  const dots = [...document.querySelectorAll('[data-home-world-dot]')];
+  let current = 0;
+  const show = (next) => {
+    current = (next + cards.length) % cards.length;
+    cards[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    dots.forEach((dot, index) => {
+      dot.classList.toggle('is-active', index === current);
+      dot.setAttribute('aria-current', index === current ? 'true' : 'false');
+    });
+  };
+  document.querySelector('[data-home-world-prev]')?.addEventListener('click', () => show(current - 1));
+  document.querySelector('[data-home-world-next]')?.addEventListener('click', () => show(current + 1));
+  dots.forEach((dot, index) => dot.addEventListener('click', () => show(index)));
+  track.addEventListener('scroll', () => {
+    const center = track.scrollLeft + track.clientWidth / 2;
+    let nearest = 0;
+    let distance = Infinity;
+    cards.forEach((card, index) => {
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const nextDistance = Math.abs(cardCenter - center);
+      if (nextDistance < distance) { nearest = index; distance = nextDistance; }
+    });
+    if (nearest !== current) {
+      current = nearest;
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('is-active', index === current);
+        dot.setAttribute('aria-current', index === current ? 'true' : 'false');
+      });
+    }
+  }, { passive: true });
+}
+
 function home() {
-  const giftStory = content.stories.find((story) => story.id === 'gift-ceremony') || content.stories[0];
-  const featuredIds = ['forest-dragon', 'gorynych-green', 'nutcracker-ernst', 'forest-mushrooms', 'azimondias', 'sirin'];
-  const featured = featuredIds.map((id) => byId(content.residents, id)).filter(Boolean);
-  const availableCount = content.residents.filter((resident) => resident.availability === 'available').length;
+  const residents = [
+    [byId(content.residents, 'forest-dragon'), 'Цена по запросу'],
+    [byId(content.residents, 'nutcracker-ernst'), 'Цена по запросу'],
+    [byId(content.residents, 'gorynych-green'), 'в работе']
+  ];
 
-  paint(app, `<main id="main">
-    <section class="home-hero" data-parallax>
-      <div class="home-hero__media"><img src="/media/hero/atelier-group-temp.webp" alt="Собрание Жителей Мастерской Веры" fetchpriority="high"></div>
-      <div class="home-hero__shade"></div>
-      <div class="home-hero__glow" aria-hidden="true"></div>
-      <div class="shell home-hero__layout">
-        <div class="home-hero__copy">
-          <p class="eyebrow eyebrow--light" data-reveal>Добро пожаловать, путник ✦</p>
-          <h1 data-reveal>Не просто фигурки.<br><em>Жители с историей.</em></h1>
-          <p class="lede lede--light" data-reveal>Вера лепит и расписывает вручную драконов, сказочных героев и маленькие лесные чудеса. Каждая фигурка существует в одном экземпляре — второй такой не будет ни у кого.</p>
-          <div class="cluster" data-reveal>
-            <a class="button button--wine" href="/residents.html">Смотреть работы <span aria-hidden="true">↗</span></a>
-            <a class="button button--light" href="#worlds">Заглянуть в Миры</a>
+  paint(app, `<main id="main" class="home-redesign">
+    <section class="home-v2-hero">
+      <div class="home-v2-hero__media"><img src="/media/hero/atelier-group-temp.webp" alt="Собрание Жителей Мастерской Веры" fetchpriority="high"></div>
+      <div class="home-v2-hero__shade"></div>
+      <div class="shell home-v2-hero__layout">
+        <div class="home-v2-hero__copy">
+          <h1>Не просто фигурки.<br>Жители с историей.</h1>
+          <p>Вера создаёт каждого вручную —<br>от каркаса до последнего мазка.</p>
+          <div class="home-v2-actions">
+            <a class="button button--forest" href="/residents.html">Смотреть готовые работы <span aria-hidden="true">→</span></a>
+            <a class="button button--gold-outline" href="/contact.html">Заказать своего</a>
           </div>
+          <div class="home-v2-proof">1 экземпляр <i></i> ручная лепка <i></i> авторская роспись</div>
         </div>
-        <aside class="home-hero__folio" data-reveal>
-          <p>Сейчас можно забрать домой</p>
-          <strong>${availableCount}</strong>
-          <span>готовых работ ждут своего человека</span>
-          <a href="https://t.me/vera120700" target="_blank" rel="noreferrer">Спросить Веру →</a>
-        </aside>
+        <div class="home-v2-note" aria-hidden="true">Сказки<br>живут<br>здесь</div>
       </div>
-      <a class="hero-scroll" href="#lexicon"><span>Листать дальше</span><i>↓</i></a>
     </section>
 
-    <section id="lexicon" class="section section--paper lexicon">
+    <section id="workshop" class="home-v2-workshop">
+      <div class="home-ornament home-ornament--workshop-left" aria-hidden="true">${worldOrnament('forest')}</div>
+      <div class="home-ornament home-ornament--workshop-right" aria-hidden="true">${worldOrnament('forest')}</div>
       <div class="shell">
-        <header class="section-head" data-reveal>
+        <div class="home-v2-workshop__grid">
+          <div class="home-v2-workshop__copy">
+            <p class="eyebrow">Познакомьтесь с мастерской</p>
+            <h2>Здесь у вещей<br>свои имена</h2>
+            <p>Вера создаёт каждого Жителя вручную — от каркаса до последнего мазка. У каждой работы есть имя, характер и собственная история.</p>
+            <a class="button button--forest" href="/about.html">О мастерской <span aria-hidden="true">→</span></a>
+          </div>
+          <div class="home-process-prints" aria-label="Как рождается Житель">
+            <figure class="home-process-print home-process-print--one"><img src="/media/process/01-wire.webp" alt="Проволочный каркас дракона" fetchpriority="low"></figure>
+            <figure class="home-process-print home-process-print--two"><img src="/media/process/03-first-clay.webp" alt="Ручная лепка дракона из глины" fetchpriority="low"></figure>
+            <figure class="home-process-print home-process-print--three"><img src="/media/process/08-finished.webp" alt="Готовый сине-белый дракон" fetchpriority="low"></figure>
+            <span class="home-process-note home-process-note--start" aria-hidden="true">Сначала<br>идея</span>
+            <span class="home-process-note home-process-note--finish" aria-hidden="true">А потом жизнь</span>
+          </div>
+        </div>
+        <div class="home-features">
+          <div class="home-feature"><span class="home-feature__icon">${homeFeatureIcon('hand')}</span><span><b>Ручная лепка</b><small>Каждая фигурка создаётся вручную, без форм</small></span></div>
+          <div class="home-feature"><span class="home-feature__icon">${homeFeatureIcon('palette')}</span><span><b>Авторская роспись</b><small>Уникальные цвета и характеры</small></span></div>
+          <div class="home-feature"><span class="home-feature__icon">${homeFeatureIcon('diamond')}</span><span><b>Один экземпляр</b><small>Таких больше не будет</small></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="worlds" class="home-v2-worlds">
+      <div class="home-ornament home-ornament--worlds-left" aria-hidden="true">${worldOrnament('forest')}</div>
+      <div class="home-ornament home-ornament--worlds-right" aria-hidden="true">${worldOrnament('forest')}</div>
+      <div class="shell">
+        <header class="home-v2-section-head home-v2-section-head--dark">
+          <div><p class="eyebrow eyebrow--light">Миры мастерской</p><h2>Пять миров — пять разных историй</h2></div>
+          <a href="/collections.html">Открыть все Миры <span aria-hidden="true">→</span></a>
+        </header>
+        <div class="home-world-carousel">
+          <button class="home-world-control home-world-control--prev" type="button" data-home-world-prev aria-label="Предыдущий Мир">‹</button>
+          <div class="home-world-track" data-home-world-track>${content.collections.map(homeWorldCard).join('')}</div>
+          <button class="home-world-control home-world-control--next" type="button" data-home-world-next aria-label="Следующий Мир">›</button>
+        </div>
+        <div class="home-world-dots" aria-label="Выбор Мира">${content.collections.map((collection, index) => `<button class="${index === 0 ? 'is-active' : ''}" type="button" data-home-world-dot aria-label="${esc(collection.name)}" aria-current="${index === 0 ? 'true' : 'false'}"></button>`).join('')}</div>
+        <a class="button button--forest home-world-all" href="/collections.html">Открыть все Миры <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <section id="residents" class="home-v2-residents">
+      <div class="home-ornament home-ornament--residents-left" aria-hidden="true">${worldOrnament('forest')}</div>
+      <div class="home-ornament home-ornament--residents-right" aria-hidden="true">${worldOrnament('forest')}</div>
+      <div class="shell">
+        <header class="home-v2-section-head home-v2-section-head--residents">
           <div>
-            <p class="eyebrow">Пара слов, прежде чем идти дальше</p>
-            <h2>Здесь у вещей свои имена</h2>
+            <h2>Кто ждёт своего Хранителя</h2>
+            <p>Больше, чем декор — это истории, которые остаются</p>
           </div>
+          <a href="/residents.html">Смотреть всех жителей <span aria-hidden="true">→</span></a>
         </header>
-        <div class="lexicon-grid" data-reveal>
-          <div class="lexicon-card">
-            <b>Житель</b>
-            <span>Так Вера называет свои фигурки. У каждой есть имя, характер и своя история — поэтому не «товар», а Житель.</span>
-          </div>
-          <div class="lexicon-card">
-            <b>Мир</b>
-            <span>Тематическая семья Жителей: зимние сказки, древний лес, драконы, русские сказки, домашние истории. У каждого Мира свой воздух.</span>
-          </div>
-          <div class="lexicon-card">
-            <b>Хранитель</b>
-            <span>Человек, у которого Житель поселился. Фигурка одна на свете, поэтому её не «покупают», а забирают к себе.</span>
-          </div>
-          <div class="lexicon-card">
-            <b>Хроника</b>
-            <span>Страница Жителя: как он появился, какой у него характер и куда ведёт его история. Там же — фотографии и цена.</span>
-          </div>
-        </div>
+        <div class="home-resident-grid">${residents.map(([resident, price]) => homeResidentCard(resident, price)).join('')}</div>
+        <a class="button button--forest home-resident-all" href="/residents.html">Смотреть всех жителей <span aria-hidden="true">→</span></a>
       </div>
     </section>
 
-    <section class="section section--paper manifesto">
-      <div class="shell manifesto-grid">
-        <div class="manifesto-copy" data-reveal>
-          <p class="eyebrow">Мастерская, а не фабрика</p>
-          <h2>Характер рождается в руках — из формы, цвета и маленьких несовершенств.</h2>
-          <p class="lede">Здесь нет конвейера и одинаковых лиц. Даже близкие образы отличаются взглядом, оттенками, фактурой и деталями ручной работы.</p>
-          <div class="facts">
-            <div class="fact"><b>Ручная лепка</b><span>от каркаса до последней детали</span></div>
-            <div class="fact"><b>Своя роспись</b><span>живые переходы цвета и выражение</span></div>
-            <div class="fact"><b>Личная встреча</b><span>заказ и вопросы напрямую Вере</span></div>
-          </div>
-        </div>
-        <figure class="manifesto-portrait" data-reveal>
-          <img src="/media/residents/forest-dragon/studio.webp?v=20260805g" alt="Готовый лесной дракон Веры" loading="lazy">
-          <figcaption><span>Готовая работа</span><b>Лесной дракон</b></figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <section id="worlds" class="section section--night worlds-section">
-      <div class="shell">
-        <header class="section-head section-head--light" data-reveal>
-          <div><p class="eyebrow eyebrow--light">Пять атмосфер</p><h2>У каждого Мира — свой воздух, свет и способ рассказать историю.</h2></div>
-          <a class="text-link text-link--light" href="/collections.html">Открыть весь атлас →</a>
-        </header>
-        <div class="world-atlas">${content.collections.map(worldCard).join('')}</div>
-      </div>
-    </section>
-
-    <section id="residents" class="section residents-featured">
-      <div class="shell">
-        <header class="section-head" data-reveal>
-          <div><p class="eyebrow">Жители Мастерской</p><h2>Готовые, архивные и те, кто ещё только появляется.</h2></div>
-          <a class="text-link" href="/residents.html">Смотреть всех →</a>
-        </header>
-        <div class="resident-carousel" data-reveal>${featured.map(residentCard).join('')}</div>
-      </div>
-    </section>
-
-    <section class="section section--paper worth">
-      <div class="shell">
-        <header class="section-head" data-reveal>
-          <div>
-            <p class="eyebrow">Почему это дороже сувенира</p>
-            <h2>Одна пара рук, один экземпляр, ни одной копии</h2>
-          </div>
-        </header>
-        <div class="worth-grid" data-reveal>
-          <div class="worth-card">
-            <span class="worth-card__num">01</span>
-            <b>Второго такого нет</b>
-            <p>Вера не делает копий. Даже когда образ повторяется — Щелкунчик, Горыныч — меняются лицо, оттенки и детали. Ваш Житель существует в единственном экземпляре.</p>
-          </div>
-          <div class="worth-card">
-            <span class="worth-card__num">02</span>
-            <b>От каркаса до последнего мазка</b>
-            <p>Проволока, фольга, полимерная глина, запекание, многослойная роспись. Никакого литья и конвейера — всё проходит через руки Веры.</p>
-          </div>
-          <div class="worth-card">
-            <span class="worth-card__num">03</span>
-            <b>Работа на недели, а не на часы</b>
-            <p>Крупная фигурка рождается неделями: форма, сушка, роспись слой за слоем. Это то, за что платят — время мастера и внимание к мелочам.</p>
-          </div>
-          <div class="worth-card">
-            <span class="worth-card__num">04</span>
-            <b>С вами говорит сама Вера</b>
-            <p>Без менеджеров и посредников. Вера сама отвечает, сама советует, сама упаковывает и отправляет.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--deep">
-      <div class="shell story-strip" data-reveal>
-        <figure class="story-strip__image"><img src="${esc(giftStory.image)}" alt="Подарочный набор Мастерской Веры" loading="lazy"></figure>
-        <div class="story-strip__copy">
-          <p class="eyebrow eyebrow--light">Если выбираете подарок</p>
-          <h2>${esc(giftStory.title)}</h2>
-          <p>${esc(giftStory.lead)}</p>
-          <p class="story-strip__note">Такой подарок трудно повторить: человек получает вещь, которая существует в одном экземпляре, вместе с её историей.</p>
-          <div class="cluster"><a class="button button--wine" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Спросить о подарке</a><a class="button button--light" href="/process.html">Посмотреть, как создаются</a></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--paper final-call">
-      <div class="shell final-call__panel" data-reveal>
-        <p class="eyebrow">Стать Хранителем</p>
-        <h2>Понравился кто-то из Жителей?</h2>
-        <p>Напишите Вере — она подскажет, свободен ли он, сколько стоит и как доедет до вас. А если ни один не отозвался, расскажите свою идею: Вера создаёт Жителей и на заказ.</p>
-        <div class="cluster">
-          <a class="button button--wine" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Написать Вере в Telegram</a>
-          <a class="button button--line" href="/residents.html">Посмотреть всех Жителей</a>
-        </div>
+    <section class="home-v2-cta">
+      <div class="home-v2-cta__media" aria-hidden="true"></div>
+      <div class="home-v2-cta__shade" aria-hidden="true"></div>
+      <div class="shell home-v2-cta__copy">
+        <h2>Найти своего Жителя</h2>
+        <p>Возможно, он уже ждёт вас в Мастерской.</p>
+        <a class="button button--forest" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Написать Вере</a>
       </div>
     </section>
   </main>`);
   document.title = 'Мастерская Веры — авторские фигурки ручной работы';
-  enableAtmosphereMotion();
-  bindWorldWalk();
+  bindHomeWorldCarousel();
 }
 
 function residentWorldSection(collection) {
