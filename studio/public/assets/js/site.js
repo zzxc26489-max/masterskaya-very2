@@ -925,11 +925,11 @@ function enableAtmosphereMotion() {
 }
 
 const HOME_WORLD_COPY = {
-  winter: ['Зимние легенды', 'Там, где живёт волшебство зимних вечеров', '/media/scenes/nutcracker-ernst.webp'],
-  forest: ['Тайны древнего леса', 'Среди корней и мха рождаются свои истории', '/media/worlds/forest-scene.webp'],
-  dragons: ['Древние существа', 'Те, кто помнит забытые времена', '/media/scenes/azimondias.webp'],
-  russian: ['Русские сказки', 'Любимые герои в новом воплощении', '/media/scenes/sirin.webp'],
-  home: ['Домашние легенды', 'Истории, которые живут рядом', '/media/worlds/home-scene.webp']
+  winter: ['Зимние легенды', 'Там, где живёт волшебство зимних вечеров', '/media/scenes/nutcracker-ernst.webp', '52% center'],
+  forest: ['Тайны древнего леса', 'Среди корней и мха рождаются свои истории', '/media/scenes/forest-dragon.webp', '72% center'],
+  dragons: ['Древние существа', 'Те, кто помнит забытые времена', '/media/scenes/azimondias.webp', '66% center'],
+  russian: ['Русские сказки', 'Любимые герои в новом воплощении', '/media/scenes/little-humpbacked-horse.webp', '72% center'],
+  home: ['Домашние легенды', 'Истории, которые живут рядом', '/media/scenes/rocking-horse.webp', '50% center']
 };
 
 function homeFeatureIcon(type) {
@@ -939,10 +939,10 @@ function homeFeatureIcon(type) {
 }
 
 function homeWorldCard(collection, index) {
-  const [title, description, image] = HOME_WORLD_COPY[collection.theme] || [collection.name, collection.description, collection.sceneImage || collection.image];
+  const [title, description, image, focus = 'center'] = HOME_WORLD_COPY[collection.theme] || [collection.name, collection.description, collection.sceneImage || collection.image];
   return `<article class="home-world-card theme-${esc(collection.theme)}" data-home-world-card>
     <a href="/collection.html?world=${encodeURIComponent(collection.slug)}" aria-label="Открыть мир «${esc(title)}»">
-      <img src="${esc(image)}" alt="${esc(title)}" fetchpriority="low">
+      <img src="${esc(image)}" alt="${esc(title)}" fetchpriority="low" style="--home-world-focus: ${esc(focus)}">
       <span class="home-world-card__copy">
         <b>${esc(title)}</b>
         <small>${esc(description)}</small>
@@ -951,8 +951,9 @@ function homeWorldCard(collection, index) {
   </article>`;
 }
 
-function homeResidentCard(resident, price) {
+function homeResidentCard(resident) {
   if (!resident) return '';
+  const price = resident.availability === 'in-progress' ? 'В работе' : priceLabel(resident);
   return `<article class="home-resident-card">
     <a class="home-resident-card__image" href="/chronicle.html?resident=${encodeURIComponent(resident.slug)}">
       <img src="${esc(resident.sceneImage || resident.heroImage)}" alt="${esc(resident.shortName || resident.name)} в своём мире">
@@ -1003,9 +1004,9 @@ function bindHomeWorldCarousel() {
 
 function home() {
   const residents = [
-    [byId(content.residents, 'forest-dragon'), 'Цена по запросу'],
-    [byId(content.residents, 'nutcracker-ernst'), 'Цена по запросу'],
-    [byId(content.residents, 'gorynych-green'), 'в работе']
+    byId(content.residents, 'forest-dragon'),
+    byId(content.residents, 'nutcracker-ernst'),
+    byId(content.residents, 'gorynych-green')
   ];
 
   paint(app, `<main id="main" class="home-redesign">
@@ -1014,7 +1015,7 @@ function home() {
       <div class="home-v2-hero__shade"></div>
       <div class="shell home-v2-hero__layout">
         <div class="home-v2-hero__copy">
-          <h1>Не просто фигурки.<br>Жители с историей.</h1>
+          <h1><span>Не просто фигурки.</span><span>Жители с историей.</span></h1>
           <p>Вера создаёт каждого вручную —<br>от каркаса до последнего мазка.</p>
           <div class="home-v2-actions">
             <a class="button button--forest" href="/residents.html">Смотреть готовые работы <span aria-hidden="true">→</span></a>
@@ -1082,7 +1083,7 @@ function home() {
           </div>
           <a href="/residents.html">Смотреть всех жителей <span aria-hidden="true">→</span></a>
         </header>
-        <div class="home-resident-grid">${residents.map(([resident, price]) => homeResidentCard(resident, price)).join('')}</div>
+        <div class="home-resident-grid">${residents.map(homeResidentCard).join('')}</div>
         <a class="button button--forest home-resident-all" href="/residents.html">Смотреть всех жителей <span aria-hidden="true">→</span></a>
       </div>
     </section>
