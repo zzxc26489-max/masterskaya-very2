@@ -322,3 +322,44 @@
   .residents-world__head h2 { font-size: clamp(2.1rem, 9.5vw, 2.9rem); }
   .residents-world__head p { font-size: .92rem; line-height: 1.5; }
 }
+
+/* ——— Выпадающее меню ———
+   Высота шапки была вписана руками в пяти разных местах (5.2rem, 5.35rem,
+   4.6rem, 4.65rem, 6.1rem). Когда шапка стала ниже, меню продолжило
+   отсчитывать старую высоту — между ним и шапкой зияла тёмная щель.
+   Теперь высота живёт в одной переменной, и всё считается от неё. */
+:root { --shell-header: 4.4rem; }
+
+@media (max-width: 50rem) {
+  .site-header,
+  .site-header.is-compact { z-index: 60; }
+
+  .main-nav {
+    top: var(--shell-header) !important;
+    max-height: calc(100svh - var(--shell-header)) !important;
+    transform: translateY(calc(-100% - var(--shell-header))) !important;
+    padding: .5rem 1.5rem 1.6rem;
+    border-top: 0;
+  }
+
+  .main-nav.is-open { transform: none !important; }
+
+  /* Пункты были мелкими и жались к левому краю. */
+  .main-nav a {
+    justify-content: center !important;
+    width: 100%;
+    min-height: 3.4rem !important;
+    font-size: 1.12rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+    text-align: center;
+  }
+
+  .main-nav a:last-child { border-bottom: 0; }
+}
+
+/* Прокрутка при открытом меню. overflow: hidden стоял на body, а
+   прокручивается корневой элемент — страница уезжала из-под меню, и оно
+   повисало посреди экрана отдельно от шапки. */
+html:has(body.menu-open) { overflow: hidden; }
+.main-nav { overscroll-behavior: contain; }
