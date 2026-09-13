@@ -671,6 +671,13 @@ body[data-page="home"] .home-site-footer .brand__name { color: #f8ead5; }
   letter-spacing: .2em;
   text-transform: uppercase;
 }
+.home-footer-nav a,
+.home-footer-contact a:not(.button) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+}
+
 .home-footer-nav a { color: #f0e3cd; }
 .home-footer-nav a:hover { color: #e8c98f; }
 .home-footer-contact > span { color: #f0e3cd; }
@@ -1175,54 +1182,54 @@ body[data-page="home"] .home-site-footer .brand__name { color: #f8ead5; }
   }
 
   .home-footer-grid {
-    gap: .72rem;
-    padding-bottom: .7rem;
+    gap: 1.9rem;
+    padding-bottom: 2rem;
   }
 
   .home-site-footer .brand {
-    gap: .5rem;
+    gap: .7rem;
   }
 
   .home-site-footer .brand__logo {
-    width: 2.7rem;
-    height: 2.7rem;
+    width: 3.2rem;
+    height: 3.2rem;
   }
 
   body[data-page="home"] .home-site-footer .brand__name {
-    font-size: 1.35rem;
+    font-size: 1.6rem;
   }
 
   .home-footer-brand > p {
-    max-width: 19rem;
-    margin: .55rem auto 0;
-    font-size: .64rem;
-    line-height: 1.34;
+    max-width: 21rem;
+    margin: .8rem auto 0;
+    font-size: .9rem;
+    line-height: 1.5;
     text-align: center;
   }
 
   .home-footer-nav,
   .home-footer-contact {
-    gap: .08rem;
-    font-size: .64rem;
-    line-height: 1.32;
+    gap: .3rem;
+    font-size: .98rem;
+    line-height: 1.4;
   }
 
   .home-footer-heading {
-    margin-bottom: .2rem;
-    font-size: .6rem;
+    margin-bottom: .45rem;
+    font-size: .74rem;
   }
 
   .home-footer-contact .button {
     width: calc(100% - 2rem);
-    min-height: 2.3rem;
-    margin-top: .4rem;
+    min-height: 3rem;
+    margin-top: .8rem;
     margin-inline: auto;
-    padding-block: .48rem;
+    padding-block: .75rem;
   }
 
   .home-footer-bottom {
-    padding: .5rem 0 .58rem;
-    font-size: .58rem;
+    padding: 1rem 0 1.2rem;
+    font-size: .76rem;
   }
 
   .home-ornament {
@@ -1413,32 +1420,33 @@ body[data-page="home"] .home-site-footer .brand__name { color: #f8ead5; }
   }
 
   .home-site-footer {
-    padding-top: .85rem;
+    padding-top: 3.4rem;
   }
 
   .home-footer-grid {
-    gap: 3rem;
-    padding-bottom: .7rem;
+    gap: 3.5rem;
+    padding-bottom: 2.6rem;
   }
 
   .home-footer-brand > p {
-    margin-top: .65rem;
-    font-size: .72rem;
+    margin-top: .9rem;
+    font-size: 1rem;
   }
 
   .home-footer-nav,
   .home-footer-contact {
-    gap: .25rem;
-    font-size: .74rem;
+    gap: .5rem;
+    font-size: 1rem;
   }
 
   .home-footer-contact .button {
-    min-height: 2.4rem;
-    margin-top: .35rem;
+    min-height: 3.1rem;
+    margin-top: .9rem;
   }
 
   .home-footer-bottom {
-    padding: .58rem 0 .68rem;
+    padding: 1.2rem 0 1.4rem;
+    font-size: .82rem;
   }
 }
 
