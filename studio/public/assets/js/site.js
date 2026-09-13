@@ -1166,7 +1166,7 @@ function home() {
       <div class="home-ornament home-ornament--worlds-right" aria-hidden="true">${worldOrnament('forest')}</div>
       <div class="shell">
         <header class="home-v2-section-head home-v2-section-head--dark">
-          <div><p class="eyebrow eyebrow--light">Миры мастерской</p><h2>Пять миров — пять разных историй</h2></div>
+          <div><p class="eyebrow eyebrow--light">Где живут Жители</p><h2>Миры Мастерской</h2></div>
           <a href="/collections.html">Открыть все Миры <span aria-hidden="true">→</span></a>
         </header>
         <div class="home-world-carousel">
