@@ -1008,10 +1008,16 @@ html:has(body.menu-open) { overflow: hidden; }
 
 .theme-russian { --world-bg: url('/media/patterns/russian-bg.webp'); }
 .theme-winter { --world-bg: url('/media/patterns/winter-bg.webp'); }
+.theme-forest { --world-bg: url('/media/patterns/forest-bg.webp'); }
+.theme-dragons { --world-bg: url('/media/patterns/dragons-bg.webp'); }
+.theme-home { --world-bg: url('/media/patterns/home-bg.webp'); }
 
 @media (max-width: 50rem) {
   .theme-russian { --world-bg: url('/media/patterns/russian-bg-mobile.webp'); }
   .theme-winter { --world-bg: url('/media/patterns/winter-bg-mobile.webp'); }
+  .theme-forest { --world-bg: url('/media/patterns/forest-bg-mobile.webp'); }
+  .theme-dragons { --world-bg: url('/media/patterns/dragons-bg-mobile.webp'); }
+  .theme-home { --world-bg: url('/media/patterns/home-bg-mobile.webp'); }
 
   .world-character::before,
   .world-residents-section::before {
