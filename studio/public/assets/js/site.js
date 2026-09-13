@@ -948,6 +948,28 @@ function homeWorldCard(collection, index) {
 // Иконки-гравюры: тонкая линия с проработанной деталью, а не пиктограмма
 // из набора. Двойная толщина линии (основной контур 1.4, детали .9) даёт
 // им вид гравировки на золоте, под стать остальной странице.
+// Вопросы, которые Вере задают до покупки. Ответы — по её реальным
+// условиям (см. раздел «Доставка и оплата» на странице контактов).
+const HOME_FAQ = [
+  ['Сколько стоит фигурка?',
+   'Цена зависит от размера и сложности: от полутора тысяч за небольшую работу. У готовых Жителей цена указана в карточке, по остальным Вера называет её при обсуждении.'],
+  ['Сколько ждать новую работу?',
+   'Сроки всегда индивидуальные — от пары недель до нескольких месяцев. Вера назовёт свои сроки сразу, когда поймёт, о ком идёт речь, и покажет работу по ходу.'],
+  ['Можно повторить фигурку, которую уже забрали?',
+   'В точности — нет, и в этом её ценность: каждая лепится вручную, без форм. Но можно сделать нового Жителя в том же характере, и он будет только ваш.'],
+  ['Как доставляете?',
+   'По России и, по возможности, по всему миру. Доставка за счёт покупателя, стоимость и сроки считаем под ваш адрес. Упаковываем так, чтобы работа доехала целой.'],
+  ['Как оплатить?',
+   'Переводом, наличными при личной встрече или сделкой на Авито — как вам удобнее. Обсуждается там же, в переписке.']
+];
+
+function homeFaqItem([question, answer], index) {
+  return `<details class="home-faq__item"${index === 0 ? ' open' : ''}>
+    <summary><span>${esc(question)}</span><i aria-hidden="true"></i></summary>
+    <div class="home-faq__answer"><p>${esc(answer)}</p></div>
+  </details>`;
+}
+
 function homeFeatureIcon(type) {
   if (type === 'hand') {
     // Отпечаток пальца: и «сделано руками», и «второго такого нет».
@@ -1077,6 +1099,11 @@ function markHomeReveal() {
     ['.home-v2-residents .home-v2-section-head > *', 70],
     ['.home-resident-bar > *', 80],
     ['.home-resident-card', 55],
+    ['.home-v2-section-head--steps > *', 80],
+    ['.home-step', 95],
+    ['.home-steps-actions > *', 80],
+    ['.home-v2-faq .home-v2-section-head > *', 70],
+    ['.home-faq__item', 70],
     ['.home-v2-cta__copy > *', 90],
     ['.home-footer-grid > *', 80]
   ];
@@ -1287,6 +1314,58 @@ function home() {
         <p class="home-resident-empty" data-home-resident-empty hidden>Здесь сейчас пусто — посмотрите всех Жителей Мастерской.</p>
         <button class="home-resident-more" type="button" data-home-resident-more hidden>Показать ещё</button>
         <a class="button button--forest home-resident-all" href="/residents.html">Смотреть всех жителей <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <section id="order" class="home-v2-steps">
+      <div class="home-ornament home-ornament--steps-left" aria-hidden="true">${worldOrnament('forest')}</div>
+      <div class="shell">
+        <header class="home-v2-section-head home-v2-section-head--steps">
+          <div>
+            <p class="eyebrow">Как это работает</p>
+            <h2>Путь от письма<br>до вашей полки</h2>
+          </div>
+          <p class="home-steps-lede">Никаких форм заказа и менеджеров: вы пишете Вере, она отвечает сама. Готового Жителя можно забрать сразу, нового — обсудить и дождаться.</p>
+        </header>
+        <ol class="home-steps">
+          <li class="home-step">
+            <span class="home-step__number">01</span>
+            <h3>Вы пишете</h3>
+            <p>В Telegram или через страницу контактов. Расскажите, кто вам приглянулся или кого хочется — можно просто настроением.</p>
+          </li>
+          <li class="home-step">
+            <span class="home-step__number">02</span>
+            <h3>Обсуждаем</h3>
+            <p>Вера отвечает лично: наличие, цена, сроки. Для новой работы — характер, цвета, размер и детали.</p>
+          </li>
+          <li class="home-step">
+            <span class="home-step__number">03</span>
+            <h3>Вера лепит</h3>
+            <p>От каркаса до последнего мазка, вручную. По пути показывает, как идёт работа, — вы видите, каким получается ваш Житель.</p>
+          </li>
+          <li class="home-step">
+            <span class="home-step__number">04</span>
+            <h3>Отправляем</h3>
+            <p>Упаковываем так, чтобы доехал целым, и отправляем — по России и за её пределы. Сроки и стоимость считаем под ваш адрес.</p>
+          </li>
+        </ol>
+        <div class="home-steps-actions">
+          <a class="button button--forest" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Написать Вере <span aria-hidden="true">→</span></a>
+          <a class="button button--quiet" href="/create.html">Обсудить будущего Жителя</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="home-v2-faq">
+      <div class="shell">
+        <header class="home-v2-section-head home-v2-section-head--dark">
+          <div>
+            <p class="eyebrow eyebrow--light">Прежде чем писать</p>
+            <h2>Частые вопросы</h2>
+          </div>
+          <a href="/contact.html">Все условия <span aria-hidden="true">→</span></a>
+        </header>
+        <div class="home-faq">${HOME_FAQ.map(homeFaqItem).join('')}</div>
       </div>
     </section>
 

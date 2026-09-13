@@ -1788,3 +1788,193 @@ body[data-page="home"] .home-site-footer .brand__name { color: #f8ead5; }
 .home-site-footer [data-reveal].is-instant {
   transition-delay: 0ms;
 }
+
+/* ——— Путь от письма до полки ——— */
+.home-v2-steps {
+  position: relative;
+  padding: clamp(3.6rem, 5.5vw, 5.6rem) 0;
+  overflow: hidden;
+  border-bottom: 1px solid #b78a4f;
+  background: #fbf4e7;
+  color: #261a15;
+}
+
+.home-v2-section-head--steps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: end;
+  margin-bottom: clamp(2.2rem, 3.5vw, 3.2rem);
+}
+
+.home-v2-section-head--steps h2 {
+  color: #261a15;
+  font-size: clamp(2.6rem, 4.4vw, 4.2rem);
+}
+
+.home-steps-lede {
+  margin: 0 0 .4rem;
+  color: #76665a;
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+.home-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid #d9c4a4;
+}
+
+.home-step {
+  position: relative;
+  padding: 1.9rem clamp(1rem, 1.8vw, 1.9rem) 1.6rem;
+}
+
+.home-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 1.9rem;
+  right: 0;
+  bottom: 1.6rem;
+  border-right: 1px solid #d9c4a4;
+}
+
+.home-step__number {
+  display: block;
+  margin-bottom: .85rem;
+  color: #b78a4f;
+  font: 500 2.4rem/1 var(--display);
+  letter-spacing: -.03em;
+}
+
+.home-step h3 {
+  margin-bottom: .5rem;
+  color: #261a15;
+  font-size: 1.55rem;
+  line-height: 1.05;
+}
+
+.home-step p {
+  color: #76665a;
+  font-size: .95rem;
+  line-height: 1.6;
+}
+
+.home-steps-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .7rem;
+  margin-top: 2.4rem;
+}
+
+.button--quiet {
+  border-color: #b78a4f;
+  background: transparent;
+  color: #7a5d34;
+  box-shadow: none;
+}
+
+.button--quiet:hover { background: rgb(183 138 79 / .12); }
+
+/* ——— Частые вопросы ——— */
+.home-v2-faq {
+  position: relative;
+  padding: clamp(3.4rem, 5vw, 5.2rem) 0;
+  border-bottom: 1px solid #b78a4f;
+  background: #120d0b;
+  color: #f8ead5;
+}
+
+.home-faq {
+  display: grid;
+  gap: .55rem;
+  max-width: 74rem;
+}
+
+.home-faq__item {
+  border: 1px solid rgb(183 138 79 / .45);
+  border-radius: .9rem;
+  background: #1a1310;
+  transition: border-color .25s ease;
+}
+
+.home-faq__item[open],
+.home-faq__item:hover { border-color: rgb(183 138 79 / .85); }
+
+.home-faq__item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  min-height: 3.9rem;
+  padding: 1rem 1.4rem;
+  color: #f8ead5;
+  font-size: 1.08rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.home-faq__item summary::-webkit-details-marker { display: none; }
+
+/* Плюс, который на раскрытии становится минусом. */
+.home-faq__item summary i {
+  position: relative;
+  flex: 0 0 auto;
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.home-faq__item summary i::before,
+.home-faq__item summary i::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto;
+  border-top: 1px solid #e8c98f;
+  transition: transform .3s var(--ease);
+}
+
+.home-faq__item summary i::after { transform: rotate(90deg); }
+.home-faq__item[open] summary i::after { transform: rotate(0deg); }
+
+.home-faq__answer {
+  padding: 0 1.4rem 1.2rem;
+  color: #d8c3a3;
+  font-size: .98rem;
+  line-height: 1.65;
+}
+
+.home-faq__item[open] .home-faq__answer { animation: faq-open .35s var(--ease); }
+
+@keyframes faq-open {
+  from { opacity: 0; transform: translateY(-.4rem); }
+  to { opacity: 1; transform: none; }
+}
+
+.home-ornament--steps-left { left: -3.2rem; bottom: -1.5rem; transform: rotate(-20deg); }
+
+@media (max-width: 62rem) {
+  .home-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .home-step:nth-child(2)::after { border-right: 0; }
+  .home-step:nth-child(-n+2) { border-bottom: 1px solid #d9c4a4; }
+}
+
+@media (max-width: 50rem) {
+  .home-v2-section-head--steps { grid-template-columns: 1fr; gap: 1rem; align-items: start; }
+  .home-steps-lede { font-size: .92rem; }
+  .home-steps { grid-template-columns: 1fr; }
+  .home-step { padding: 1.3rem 0 1.2rem; }
+  .home-step::after { display: none !important; }
+  .home-step:not(:last-child) { border-bottom: 1px solid #d9c4a4; }
+  .home-step__number { margin-bottom: .5rem; font-size: 1.9rem; }
+  .home-step h3 { font-size: 1.32rem; }
+  .home-step p { font-size: .9rem; }
+  .home-steps-actions { margin-top: 1.6rem; }
+  .home-steps-actions .button { width: 100%; }
+  .home-faq__item summary { min-height: 3.4rem; padding: .85rem 1.1rem; font-size: .98rem; }
+  .home-faq__answer { padding: 0 1.1rem 1rem; font-size: .9rem; }
+}
