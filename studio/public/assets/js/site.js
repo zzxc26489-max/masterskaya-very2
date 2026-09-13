@@ -715,14 +715,11 @@ function setShell(active) {
     ['contact', '/contact.html', 'Контакты']
   ];
 
-  const homeNav = [
-    ['residents', '/residents.html', 'Жители'],
-    ['collections', '/collections.html', 'Миры'],
-    ['process', '/process.html', 'Как создаются'],
-    ['about', '/about.html', 'О мастерской']
-  ];
+  // Логотип ведёт на главную, поэтому отдельного пункта «Главная» в шапке
+  // нет — он появлялся только на внутренних страницах и ломал единство.
+  const shellNav = nav.filter(([id]) => id !== 'home');
 
-  if (active === 'home') {
+  {
     header.innerHTML = `<a class="skip-link" href="#main">Перейти к содержанию</a>
       <div class="site-header home-site-header"><div class="header-inner">
         <a class="brand" href="/" aria-label="Мастерская Веры — главная">
@@ -730,7 +727,7 @@ function setShell(active) {
           <span class="brand__name">Мастерская<br>Веры</span>
         </a>
         <nav class="main-nav" id="main-nav" aria-label="Основная навигация">
-          ${homeNav.map(([id, href, label]) => `<a href="${href}">${label}</a>`).join('')}
+          ${shellNav.map(([id, href, label]) => `<a class="${id === active ? 'is-active' : ''}"${id === active ? ' aria-current="page"' : ''} href="${href}">${label}</a>`).join('')}
         </nav>
         <div class="header-actions">
           <a class="button button--forest button--compact header-cta" href="/residents.html">Смотреть работы</a>
@@ -770,43 +767,6 @@ function setShell(active) {
         <div class="home-footer-bottom">© Мастерская Веры</div>
       </div>
     </footer><button class="scroll-top" type="button" data-scroll-top aria-label="Наверх">↑</button>`;
-  } else {
-
-    header.innerHTML = `<a class="skip-link" href="#main">Перейти к содержанию</a>
-    <div class="site-header"><div class="header-inner">
-      <a class="brand" href="/" aria-label="Мастерская Веры — главная">
-        <img class="brand__logo" src="/media/brand/logo-mark.webp" alt="" width="96" height="96">
-        <span class="brand__name">Мастерская Веры</span>
-      </a>
-      <nav class="main-nav" id="main-nav" aria-label="Основная навигация">
-        ${nav.map(([id, href, label]) => `<a class="${id === active ? 'is-active' : ''}" ${id === active ? 'aria-current="page"' : ''} href="${href}">${label}</a>`).join('')}
-      </nav>
-      <div class="header-actions">
-        <a class="button button--wine button--compact header-cta" href="/residents.html">Смотреть Жителей</a>
-        <button class="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false" data-menu-toggle>
-          <span></span><span></span><span></span><span class="sr-only">Открыть меню</span>
-        </button>
-      </div>
-    </div></div>`;
-
-    footer.innerHTML = `<footer class="site-footer"><div class="shell footer-grid">
-    <div>
-      <a class="brand" href="/"><span class="brand__mark" aria-hidden="true">✦</span><span class="brand__name">Мастерская Веры</span></a>
-      <p class="footer-copy">Авторские фигурки из полимерной глины. Каждая работа создаётся вручную и получает собственный характер.</p>
-    </div>
-    <nav class="footer-nav" aria-label="Навигация в подвале">
-      <a href="/residents.html">Все Жители</a>
-      <a href="/collections.html">Миры Мастерской</a>
-      <a href="/process.html">Как создаются</a>
-      <a href="/about.html">О мастерской</a>
-    </nav>
-    <div class="footer-contact">
-      <p>Связаться с Верой</p>
-      <a href="https://t.me/vera120700" target="_blank" rel="noreferrer">Telegram · @vera120700</a>
-      <a href="https://t.me/masterskayaver" target="_blank" rel="noreferrer">Telegram-канал · Мастерская Веры</a>
-      <a href="https://www.instagram.com/vera.romanycheva.23" target="_blank" rel="noreferrer">Instagram</a>
-    </div>
-    </div></footer><button class="scroll-top" type="button" data-scroll-top aria-label="Наверх">↑</button>`;
   }
 
   const toggle = document.querySelector('[data-menu-toggle]');
