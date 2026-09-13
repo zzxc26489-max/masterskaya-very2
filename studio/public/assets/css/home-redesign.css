@@ -121,14 +121,14 @@ body[data-page="home"] .menu-toggle > span:not(.sr-only) { background: #261a15; 
 .home-v2-hero__media img {
   object-fit: cover;
   object-position: center center;
-  filter: saturate(.9) contrast(1.06) brightness(.83);
+  filter: saturate(.95) contrast(1.04) brightness(.94);
 }
 
 .home-v2-hero__shade {
   z-index: -2;
   background:
-    linear-gradient(90deg, rgb(18 13 11 / .97) 0%, rgb(18 13 11 / .92) 42%, rgb(18 13 11 / .42) 68%, rgb(18 13 11 / .06) 88%),
-    linear-gradient(0deg, rgb(18 13 11 / .3), transparent 48%);
+    linear-gradient(90deg, rgb(18 13 11 / .94) 0%, rgb(18 13 11 / .84) 26%, rgb(18 13 11 / .52) 48%, rgb(18 13 11 / .16) 72%, transparent 90%),
+    linear-gradient(0deg, rgb(18 13 11 / .34), transparent 52%);
 }
 
 .home-v2-hero__layout {
@@ -247,30 +247,31 @@ body[data-page="home"] .menu-toggle > span:not(.sr-only) { background: #261a15; 
 
 .home-process-prints {
   position: relative;
-  min-height: 26rem;
+  min-height: 31rem;
 }
 
 .home-process-print {
   position: absolute;
-  top: 1rem;
-  width: 35%;
+  top: 0;
+  width: 38%;
   aspect-ratio: .82;
-  padding: .4rem;
+  padding: .5rem;
   overflow: hidden;
-  border: 1px solid #d9c4a4;
-  background: #fbf4e7;
-  box-shadow: 0 1.1rem 2.7rem rgb(38 26 21 / .18);
+  border: 1px solid #e6d6ba;
+  background: #fffdf8;
+  box-shadow: 0 1.3rem 3rem rgb(38 26 21 / .24);
 }
 
 .home-process-print img { width: 100%; height: 100%; object-fit: cover; }
-.home-process-print--one { left: 1%; transform: rotate(-5deg); }
-.home-process-print--two { left: 32.5%; transform: translateY(.5rem) rotate(3deg); }
-.home-process-print--three { right: 0; transform: rotate(5deg); }
-.home-process-print--three img { object-position: 61% center; }
+.home-process-print--one { left: 0; z-index: 1; transform: rotate(-6deg); }
+.home-process-print--two { left: 30%; z-index: 2; transform: translateY(.7rem) rotate(3deg); }
+.home-process-print--three { right: 0; z-index: 3; transform: rotate(6deg); }
+.home-process-print--two img { object-position: 42% 10%; }
+.home-process-print--three img { object-position: 61% 62%; }
 
 .home-process-note { position: absolute; z-index: 3; color: #7a5d34; }
-.home-process-note--start { bottom: -1.35rem; left: -1.2rem; transform: rotate(-8deg); }
-.home-process-note--finish { right: -.4rem; bottom: -1.25rem; transform: rotate(8deg); }
+.home-process-note--start { bottom: .4rem; left: .6rem; transform: rotate(-8deg); }
+.home-process-note--finish { right: .8rem; bottom: .2rem; transform: rotate(8deg); }
 
 .home-features {
   display: grid;
@@ -515,6 +516,9 @@ body[data-page="home"] .menu-toggle > span:not(.sr-only) { background: #261a15; 
   grid-column: 1 / -1;
   aspect-ratio: 4 / 3;
   overflow: hidden;
+  /* Фотографии витрины грузятся лениво — пока кадр в пути, место под него
+     должно выглядеть частью бумаги, а не дырой в карточке. */
+  background: #e6d6ba;
 }
 
 /* На широком экране бейдж лежит поверх фотографии, на узком — становится
@@ -651,20 +655,20 @@ body[data-page="home"] .home-site-footer .brand__name { color: #f8ead5; }
 .home-ornament {
   position: absolute;
   z-index: 0;
-  width: 12rem;
-  height: 12rem;
+  width: 15rem;
+  height: 15rem;
   overflow: hidden;
   color: #b78a4f;
-  opacity: .34;
+  opacity: .5;
   pointer-events: none;
 }
 .home-ornament .ornament { width: 100%; height: 100%; }
-.home-ornament--workshop-left { left: -5.5rem; bottom: -1rem; transform: rotate(-26deg); }
-.home-ornament--workshop-right { right: -5rem; top: 1.2rem; transform: rotate(34deg); }
-.home-ornament--worlds-left { left: -5rem; top: -.5rem; transform: rotate(28deg); }
-.home-ornament--worlds-right { right: -5.4rem; bottom: -2rem; transform: rotate(-40deg); }
-.home-ornament--residents-left { left: -5.5rem; bottom: -2.4rem; transform: rotate(-24deg); }
-.home-ornament--residents-right { right: -5rem; top: -.5rem; transform: rotate(34deg); }
+.home-ornament--workshop-left { left: -3.2rem; bottom: -1rem; transform: rotate(-26deg); }
+.home-ornament--workshop-right { right: -3rem; top: 1.2rem; transform: rotate(34deg); }
+.home-ornament--worlds-left { left: -3rem; top: -.5rem; transform: rotate(28deg); }
+.home-ornament--worlds-right { right: -3.4rem; bottom: -2rem; transform: rotate(-40deg); }
+.home-ornament--residents-left { left: -3.2rem; bottom: -2.4rem; transform: rotate(-24deg); }
+.home-ornament--residents-right { right: -3rem; top: -.5rem; transform: rotate(34deg); }
 .home-ornament--footer-left { left: -4.5rem; bottom: 0; transform: rotate(-15deg); }
 .home-ornament--footer-right { right: -4.5rem; bottom: 0; transform: rotate(20deg); }
 
@@ -713,7 +717,7 @@ body[data-page="home"] .home-site-footer .brand__name { color: #f8ead5; }
   .home-v2-actions { position: absolute; right: 0; bottom: 2.65rem; left: 0; width: 100%; gap: .4rem; }
   .home-v2-actions .button { width: 100%; min-height: 2.8rem; font-size: .76rem; }
   .home-v2-proof { position: absolute; right: 0; bottom: .7rem; left: 0; justify-content: center; margin: 0; font-size: .52rem; }
-  .home-v2-note { top: 6.35rem; right: -.25rem; width: 6rem; font-size: 1rem; }
+  .home-v2-note { top: 10.6rem; right: .6rem; width: 5.4rem; font-size: .95rem; }
 
   .home-v2-workshop { padding: 2.5rem 0 0; }
   .home-v2-workshop__grid { grid-template-columns: 1fr; gap: 1.35rem; }
