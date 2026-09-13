@@ -945,10 +945,53 @@ function homeWorldCard(collection, index) {
   </article>`;
 }
 
+// Иконки-гравюры: тонкая линия с проработанной деталью, а не пиктограмма
+// из набора. Двойная толщина линии (основной контур 1.4, детали .9) даёт
+// им вид гравировки на золоте, под стать остальной странице.
 function homeFeatureIcon(type) {
-  if (type === 'hand') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-4 0v4-5a2 2 0 0 0-4 0v5-3a2 2 0 0 0-4 0v5-1a2 2 0 0 0-4 0v3c0 4.4 3.6 8 8 8h2a8 8 0 0 0 8-8v-3a2 2 0 0 0-2-2Z"/></svg>`;
-  if (type === 'palette') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0 0 18h1.5a1.5 1.5 0 0 0 0-3H12a2 2 0 0 1 0-4h3a6 6 0 0 0 0-12h-3Z"/><path d="M7.5 10h.01M9.5 6.5h.01M14 6h.01M17 9h.01"/></svg>`;
-  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 6-7 12L5 9l7-6Z"/><path d="m5 9 7 2 7-2M12 3v8"/></svg>`;
+  if (type === 'hand') {
+    // Отпечаток пальца: и «сделано руками», и «второго такого нет».
+    // Руку линией в этом размере не прочесть, а папиллярный узор — да.
+    return `<svg viewBox="0 0 44 44" aria-hidden="true">
+      <g class="icon-main">
+        <path d="M22 7.4c-7.2 0-13.1 5.9-13.1 13.2v5.9"/>
+        <path d="M35.1 20.6v6.8c0 2.6-.5 5.2-1.5 7.6"/>
+        <path d="M15.2 32.9a13 13 0 0 1-1.6-6.3v-5.9c0-4.6 3.8-8.4 8.4-8.4s8.4 3.8 8.4 8.4v6.8c0 2.2-.4 4.4-1.2 6.5"/>
+        <path d="M22 18.2c-1.3 0-2.4 1.1-2.4 2.4v6.4c0 2.4-.5 4.7-1.5 6.9"/>
+        <path d="M24.4 20.6v6.8c0 2.4-.3 4.8-1 7.1"/>
+      </g>
+      <g class="icon-detail">
+        <path d="M11.4 14.6a13.2 13.2 0 0 1 6.2-5.5M32.6 14.6a13.2 13.2 0 0 0-6.2-5.5"/>
+      </g>
+    </svg>`;
+  }
+  if (type === 'palette') {
+    // Палитра с красками и кистью поверх неё.
+    return `<svg viewBox="0 0 44 44" aria-hidden="true">
+      <g class="icon-main">
+        <path d="M21.6 5.5c-8.6 0-15.6 6.6-15.6 14.8 0 8.2 7 14.8 15.6 14.8 1.7 0 2.9-1.3 2.9-2.8 0-.8-.3-1.4-.8-1.9-.5-.5-.8-1.2-.8-1.9 0-1.6 1.3-2.8 2.9-2.8h3.4c5.3 0 9.6-4.1 9.6-9.2 0-6.6-7.7-11-17.2-11Z"/>
+        <path d="m30.6 26.8 6.6 9.1a2.6 2.6 0 0 1-4.2 3l-6.1-9.4"/>
+      </g>
+      <g class="icon-detail">
+        <circle cx="13.4" cy="15.4" r="1.5"/>
+        <circle cx="19.6" cy="11.2" r="1.5"/>
+        <circle cx="27" cy="12.4" r="1.5"/>
+        <circle cx="12.2" cy="23.4" r="1.5"/>
+      </g>
+    </svg>`;
+  }
+  // Гранёный камень с бликом — единственный экземпляр.
+  return `<svg viewBox="0 0 44 44" aria-hidden="true">
+    <g class="icon-main">
+      <path d="M13.1 7h17.8l7.1 9.6L22 38.4 6 16.6 13.1 7Z"/>
+      <path d="M6 16.6h32"/>
+      <path d="m13.1 7 3.6 9.6L22 38.4l5.3-21.8L30.9 7"/>
+    </g>
+    <g class="icon-detail">
+      <path d="m16.7 16.6 5.3-9.6 5.3 9.6"/>
+      <path d="M33.6 21.6c.9 1 1.4 2.3 1.4 3.6M9.4 11.6c.6-.8 1.4-1.4 2.3-1.8"/>
+    </g>
+  </svg>`;
 }
 
 function homeResidentCard(resident) {
@@ -1045,23 +1088,68 @@ function markHomeReveal() {
   });
 }
 
+// Карусель едет сама, пока читатель её не трогает. После любого касания —
+// пауза, чтобы лента не уезжала из-под пальца; через полминуты ход
+// возобновляется. На широком экране все Миры и так лежат рядом, там ход не
+// нужен, как и при отключённой анимации в системе.
+const HOME_WORLD_STEP_MS = 5000;
+const HOME_WORLD_RESUME_MS = 30000;
+
 function bindHomeWorldCarousel() {
   const track = document.querySelector('[data-home-world-track]');
   if (!track) return;
   const cards = [...track.querySelectorAll('[data-home-world-card]')];
   const dots = [...document.querySelectorAll('[data-home-world-dot]')];
   let current = 0;
-  const show = (next) => {
-    current = (next + cards.length) % cards.length;
-    cards[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+  const paint = () => {
+    cards.forEach((card, index) => card.classList.toggle('is-current', index === current));
     dots.forEach((dot, index) => {
       dot.classList.toggle('is-active', index === current);
       dot.setAttribute('aria-current', index === current ? 'true' : 'false');
     });
   };
-  document.querySelector('[data-home-world-prev]')?.addEventListener('click', () => show(current - 1));
-  document.querySelector('[data-home-world-next]')?.addEventListener('click', () => show(current + 1));
-  dots.forEach((dot, index) => dot.addEventListener('click', () => show(index)));
+  const show = (next) => {
+    current = (next + cards.length) % cards.length;
+    cards[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    paint();
+  };
+  paint();
+
+  const sliding = window.matchMedia('(max-width: 62rem)');
+  const calm = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let stepTimer = 0;
+  let resumeTimer = 0;
+  const stop = () => { window.clearInterval(stepTimer); stepTimer = 0; };
+  const play = () => {
+    stop();
+    if (!sliding.matches || calm.matches) return;
+    stepTimer = window.setInterval(() => {
+      if (document.hidden) return;
+      show(current + 1);
+    }, HOME_WORLD_STEP_MS);
+  };
+  // Пауза после ручного листания, наведения и ухода со вкладки.
+  const hold = (resume = true) => {
+    stop();
+    window.clearTimeout(resumeTimer);
+    if (resume) resumeTimer = window.setTimeout(play, HOME_WORLD_RESUME_MS);
+  };
+
+  const carousel = track.closest('.home-world-carousel') || track;
+  carousel.addEventListener('pointerenter', () => hold(false));
+  carousel.addEventListener('pointerleave', play);
+  carousel.addEventListener('focusin', () => hold(false));
+  carousel.addEventListener('focusout', play);
+  track.addEventListener('pointerdown', () => hold(), { passive: true });
+  track.addEventListener('touchstart', () => hold(), { passive: true });
+  sliding.addEventListener('change', play);
+  document.addEventListener('visibilitychange', () => (document.hidden ? stop() : play()));
+  play();
+
+  document.querySelector('[data-home-world-prev]')?.addEventListener('click', () => { hold(); show(current - 1); });
+  document.querySelector('[data-home-world-next]')?.addEventListener('click', () => { hold(); show(current + 1); });
+  dots.forEach((dot, index) => dot.addEventListener('click', () => { hold(); show(index); }));
   track.addEventListener('scroll', () => {
     const center = track.scrollLeft + track.clientWidth / 2;
     let nearest = 0;
@@ -1073,10 +1161,7 @@ function bindHomeWorldCarousel() {
     });
     if (nearest !== current) {
       current = nearest;
-      dots.forEach((dot, index) => {
-        dot.classList.toggle('is-active', index === current);
-        dot.setAttribute('aria-current', index === current ? 'true' : 'false');
-      });
+      paint();
     }
   }, { passive: true });
 }
@@ -1141,7 +1226,7 @@ function home() {
         <div class="home-v2-workshop__grid">
           <div class="home-v2-workshop__copy">
             <p class="eyebrow">Познакомьтесь с мастерской</p>
-            <h2>Здесь у вещей<br>свои имена</h2>
+            <h2>Как рождается<br>фигурка</h2>
             <p>Вера создаёт каждого Жителя вручную — от каркаса до последнего мазка. У каждой работы есть имя, характер и собственная история.</p>
             <a class="button button--forest" href="/about.html">О мастерской <span aria-hidden="true">→</span></a>
           </div>

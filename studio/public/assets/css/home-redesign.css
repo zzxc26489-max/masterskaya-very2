@@ -309,15 +309,37 @@ body[data-page="home"] .menu-toggle > span:not(.sr-only) { background: #261a15; 
   color: #7a5d34;
 }
 
+.home-feature__icon {
+  position: relative;
+  background:
+    radial-gradient(circle at 30% 25%, rgb(232 201 143 / .22), transparent 62%),
+    #fffdf8;
+}
+
+/* Двойное кольцо вместо одинарного: тонкий внутренний ободок читается как
+   оправа, а не как рамка по умолчанию. */
+.home-feature__icon::after {
+  content: '';
+  position: absolute;
+  inset: .3rem;
+  border: 1px solid rgb(183 138 79 / .38);
+  border-radius: 50%;
+}
+
 .home-feature__icon svg {
-  width: 1.7rem;
-  height: 1.7rem;
+  position: relative;
+  z-index: 1;
+  width: 2.3rem;
+  height: 2.3rem;
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
+.home-feature__icon .icon-main { stroke-width: 1.4; }
+.home-feature__icon .icon-detail { stroke-width: .9; opacity: .62; }
+.home-feature__icon svg circle { fill: currentColor; stroke: none; opacity: .5; }
 
 .home-feature b { display: block; font-size: 1.05rem; line-height: 1.35; }
 .home-feature small { display: block; margin-top: .25rem; color: #76665a; font-size: .82rem; line-height: 1.4; }
@@ -785,7 +807,7 @@ body[data-page="home"] .home-site-footer .brand__name { color: #f8ead5; }
   .home-world-carousel { position: relative; }
   .home-world-track {
     display: flex;
-    gap: 4rem;
+    gap: 1.1rem;
     overflow-x: auto;
     padding: 0 calc(50% - 8.6rem) .2rem;
     scroll-snap-type: x mandatory;
@@ -1054,14 +1076,23 @@ body[data-page="home"] .home-site-footer .brand__name { color: #f8ead5; }
     line-height: .9;
   }
 
+  /* Соседние Миры выглядывают по краям — так видно, что карусель можно
+     листать, и сколько всего Миров в Мастерской. */
   .home-world-track {
-    gap: 2.5rem;
-    padding: 0 .75rem .1rem;
+    gap: .7rem;
+    padding: 0 11% .1rem;
   }
 
   .home-world-card {
-    flex: 0 0 calc(100% - 1.5rem);
+    flex: 0 0 78%;
     border-radius: .55rem;
+    transition: opacity .45s var(--ease), transform .45s var(--ease), border-color .25s ease;
+  }
+
+  /* Боковые приглушены, чтобы взгляд держался за среднюю карточку. */
+  .home-world-card:not(.is-current) {
+    opacity: .55;
+    transform: scale(.94);
   }
 
   .home-world-card img {
