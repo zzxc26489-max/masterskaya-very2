@@ -726,7 +726,7 @@ function setShell(active) {
     header.innerHTML = `<a class="skip-link" href="#main">Перейти к содержанию</a>
       <div class="site-header home-site-header"><div class="header-inner">
         <a class="brand" href="/" aria-label="Мастерская Веры — главная">
-          <img class="brand__logo" src="/media/brand/logo-mark.webp" alt="" width="96" height="96">
+          <img class="brand__logo" src="/media/brand/logo-mark-dark.webp" alt="" width="96" height="96">
           <span class="brand__name">Мастерская<br>Веры</span>
         </a>
         <nav class="main-nav" id="main-nav" aria-label="Основная навигация">
@@ -747,7 +747,7 @@ function setShell(active) {
         <div class="home-footer-grid">
           <div class="home-footer-brand">
             <a class="brand" href="/">
-              <img class="brand__logo" src="/media/brand/logo-mark.webp" alt="" width="96" height="96">
+              <img class="brand__logo" src="/media/brand/logo-mark-dark.webp" alt="" width="96" height="96">
               <span class="brand__name">Мастерская<br>Веры</span>
             </a>
             <p>Авторские фигурки ручной работы. Каждый Житель — в единственном экземпляре.</p>
@@ -953,7 +953,7 @@ function homeWorldCard(collection, index) {
 
 function homeResidentCard(resident) {
   if (!resident) return '';
-  const price = resident.availability === 'in-progress' ? 'В работе' : priceLabel(resident);
+  const price = resident.availability === 'in-progress' ? 'В работе' : 'Цена по запросу';
   return `<article class="home-resident-card">
     <a class="home-resident-card__image" href="/chronicle.html?resident=${encodeURIComponent(resident.slug)}">
       <img src="${esc(resident.sceneImage || resident.heroImage)}" alt="${esc(resident.shortName || resident.name)} в своём мире">
@@ -1011,7 +1011,7 @@ function home() {
 
   paint(app, `<main id="main" class="home-redesign">
     <section class="home-v2-hero">
-      <div class="home-v2-hero__media"><img src="/media/hero/atelier-group-temp.webp" alt="Собрание Жителей Мастерской Веры" fetchpriority="high"></div>
+      <div class="home-v2-hero__media"><picture><source media="(max-width: 50rem)" srcset="/media/hero/atelier-group-mobile.webp"><img src="/media/hero/atelier-group-desktop.webp" alt="Собрание Жителей Мастерской Веры" fetchpriority="high"></picture></div>
       <div class="home-v2-hero__shade"></div>
       <div class="shell home-v2-hero__layout">
         <div class="home-v2-hero__copy">

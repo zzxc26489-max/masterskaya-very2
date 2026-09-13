@@ -738,6 +738,578 @@ body[data-page="home"] .home-site-footer .brand__name { color: #f8ead5; }
   .home-ornament { width: 8rem; height: 8rem; opacity: .26; }
 }
 
+/* Mobile art direction follows the approved narrow-column mockup. */
+@media (max-width: 50rem) {
+  body[data-page="home"] .shell { width: calc(100% - 2rem); }
+  body[data-page="home"] .header-inner { width: calc(100% - 1.5rem); }
+
+  body[data-page="home"] .header-inner {
+    min-height: 6.1rem;
+    gap: .75rem;
+  }
+
+  body[data-page="home"] .brand { gap: .62rem; }
+
+  body[data-page="home"] .brand__logo,
+  body[data-page="home"] .site-header.is-compact .brand__logo {
+    width: 3.05rem;
+    height: 3.05rem;
+  }
+
+  body[data-page="home"] .brand__name {
+    font-size: 1.7rem;
+    line-height: .76;
+  }
+
+  body[data-page="home"] .main-nav {
+    top: 6.1rem;
+    max-height: calc(100svh - 6.1rem);
+    transform: translateY(calc(-100% - 6.1rem));
+  }
+
+  body[data-page="home"] .menu-toggle {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .home-redesign .eyebrow {
+    margin-bottom: .42rem;
+    font-size: .68rem;
+    line-height: 1.3;
+  }
+
+  .home-redesign .button {
+    min-height: 2.88rem;
+    border-radius: .48rem;
+    font-size: .86rem;
+  }
+
+  .home-v2-hero {
+    min-height: 34.25rem;
+  }
+
+  .home-v2-hero__media img {
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    filter: saturate(.98) contrast(1.04) brightness(.94);
+  }
+
+  .home-v2-hero__shade {
+    background:
+      linear-gradient(180deg, rgb(18 13 11 / .98) 0%, rgb(18 13 11 / .82) 21%, rgb(18 13 11 / .08) 52%, rgb(18 13 11 / .22) 75%, rgb(18 13 11 / .78) 100%),
+      linear-gradient(90deg, rgb(18 13 11 / .38), transparent 55%, rgb(18 13 11 / .08));
+  }
+
+  .home-v2-hero__layout {
+    padding: 1rem 0 .8rem;
+  }
+
+  .home-v2-hero h1 {
+    max-width: none;
+    margin-bottom: .55rem;
+    font-size: 2.65rem;
+    line-height: .91;
+  }
+
+  .home-v2-hero__copy > p {
+    max-width: 15.5rem;
+    font-size: .92rem;
+    line-height: 1.38;
+  }
+
+  .home-v2-note {
+    top: 5.6rem;
+    right: .05rem;
+    width: 5.6rem;
+    font-size: 1.16rem;
+  }
+
+  .home-v2-actions {
+    bottom: 2.7rem;
+    gap: .38rem;
+  }
+
+  .home-v2-actions .button {
+    min-height: 2.88rem;
+    padding: .65rem 1rem;
+    font-size: .9rem;
+  }
+
+  .home-v2-proof {
+    bottom: .78rem;
+    gap: .42rem;
+    font-size: .66rem;
+  }
+
+  .home-v2-workshop {
+    padding: 2.45rem 0 0;
+  }
+
+  .home-v2-workshop__grid {
+    gap: 1.65rem;
+  }
+
+  .home-v2-workshop__copy h2 {
+    margin-bottom: .72rem;
+    font-size: 3rem;
+    line-height: .9;
+  }
+
+  .home-v2-workshop__copy > p:not(.eyebrow) {
+    max-width: 20.5rem;
+    margin-bottom: .9rem;
+    font-size: .88rem;
+    line-height: 1.48;
+  }
+
+  .home-v2-workshop__copy .button {
+    min-height: 2.65rem;
+  }
+
+  .home-process-prints {
+    gap: .38rem;
+  }
+
+  .home-process-print {
+    aspect-ratio: .8;
+    padding: .14rem;
+    border-color: #d9c4a4;
+  }
+
+  .home-features {
+    margin-top: 1.7rem;
+  }
+
+  .home-feature {
+    grid-template-columns: 3.65rem 1fr;
+    gap: .85rem;
+    min-height: 7.05rem;
+    padding: .78rem 0;
+  }
+
+  .home-feature__icon {
+    width: 3.65rem;
+    height: 3.65rem;
+  }
+
+  .home-feature__icon svg {
+    width: 1.45rem;
+    height: 1.45rem;
+  }
+
+  .home-feature b { font-size: 1rem; }
+  .home-feature small { margin-top: .1rem; font-size: .75rem; line-height: 1.35; }
+
+  .home-v2-worlds {
+    padding: 1.25rem 0 1.05rem;
+  }
+
+  .home-v2-section-head {
+    margin-bottom: .7rem;
+  }
+
+  .home-v2-section-head h2 {
+    font-size: 2.48rem;
+    line-height: .9;
+  }
+
+  .home-world-track {
+    gap: 2.5rem;
+    padding: 0 .75rem .1rem;
+  }
+
+  .home-world-card {
+    flex: 0 0 calc(100% - 1.5rem);
+    border-radius: .55rem;
+  }
+
+  .home-world-card img {
+    aspect-ratio: 1.6;
+  }
+
+  .home-world-card__copy {
+    min-height: 5rem;
+    padding: .65rem .75rem .72rem;
+  }
+
+  .home-world-card__copy b {
+    margin-bottom: .24rem;
+    font-size: 1.2rem;
+  }
+
+  .home-world-card__copy small {
+    font-size: .8rem;
+    line-height: 1.32;
+  }
+
+  .home-world-control {
+    top: 43%;
+    width: 2.7rem;
+    height: 2.7rem;
+    font-size: 1.35rem;
+  }
+
+  .home-world-control--prev { left: .08rem; }
+  .home-world-control--next { right: .08rem; }
+
+  .home-world-dots {
+    margin: .05rem 0 .1rem;
+  }
+
+  .home-world-dots button {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  .home-world-dots button::before {
+    width: .32rem;
+    height: .32rem;
+  }
+
+  .home-world-all {
+    min-height: 2.75rem;
+  }
+
+  .home-v2-residents {
+    padding: 1.2rem 0 1.05rem;
+  }
+
+  .home-v2-section-head--residents {
+    margin-bottom: .72rem;
+  }
+
+  .home-v2-section-head--residents h2 {
+    white-space: nowrap;
+    font-size: 2rem;
+    line-height: .94;
+  }
+
+  .home-v2-section-head--residents p {
+    margin-top: .3rem;
+    font-size: .53rem;
+    letter-spacing: .13em;
+    line-height: 1.35;
+  }
+
+  .home-resident-grid {
+    gap: .38rem;
+  }
+
+  .home-resident-card {
+    grid-template-columns: 4.2rem minmax(0, 1fr) 2.65rem;
+    min-height: 4.2rem;
+    border-radius: .48rem;
+  }
+
+  .home-resident-card__image img {
+    width: 4.2rem;
+    min-height: 4.2rem;
+  }
+
+  .home-resident-card__copy {
+    padding: .42rem .58rem;
+  }
+
+  .home-resident-card__copy h3 {
+    font-size: 1.08rem;
+  }
+
+  .home-resident-card__copy p {
+    margin-top: .14rem;
+    font-size: .72rem;
+  }
+
+  .home-card-arrow {
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-right: .28rem;
+    font-size: .86rem;
+  }
+
+  .home-resident-all {
+    min-height: 2.75rem;
+    margin-top: .45rem;
+  }
+
+  /* The approved mobile composition moves directly from Residents to footer. */
+  .home-v2-cta {
+    display: none;
+  }
+
+  .home-site-footer {
+    padding-top: 1rem;
+  }
+
+  .home-footer-grid {
+    gap: .72rem;
+    padding-bottom: .7rem;
+  }
+
+  .home-site-footer .brand {
+    gap: .5rem;
+  }
+
+  .home-site-footer .brand__logo {
+    width: 2.7rem;
+    height: 2.7rem;
+  }
+
+  body[data-page="home"] .home-site-footer .brand__name {
+    font-size: 1.35rem;
+  }
+
+  .home-footer-brand > p {
+    max-width: 19rem;
+    margin: .55rem auto 0;
+    font-size: .64rem;
+    line-height: 1.34;
+    text-align: center;
+  }
+
+  .home-footer-nav,
+  .home-footer-contact {
+    gap: .08rem;
+    font-size: .64rem;
+    line-height: 1.32;
+  }
+
+  .home-footer-heading {
+    margin-bottom: .2rem;
+    font-size: .6rem;
+  }
+
+  .home-footer-contact .button {
+    width: calc(100% - 2rem);
+    min-height: 2.3rem;
+    margin-top: .4rem;
+    margin-inline: auto;
+    padding-block: .48rem;
+  }
+
+  .home-footer-bottom {
+    padding: .5rem 0 .58rem;
+    font-size: .58rem;
+  }
+
+  .home-ornament {
+    width: 6.5rem;
+    height: 6.5rem;
+    opacity: .31;
+  }
+
+  .home-footer-brand .brand {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Desktop proportions measured from the approved full-page composition. */
+@media (min-width: 50.0625rem) {
+  body[data-page="home"] .shell,
+  body[data-page="home"] .header-inner {
+    width: min(calc(100% - 8rem), 82rem);
+  }
+
+  body[data-page="home"] .header-inner {
+    min-height: 5.9rem;
+  }
+
+  body[data-page="home"] .brand__logo,
+  body[data-page="home"] .site-header.is-compact .brand__logo {
+    width: 3.4rem;
+    height: 3.4rem;
+  }
+
+  body[data-page="home"] .brand__name {
+    font-size: 2rem;
+  }
+
+  body[data-page="home"] .main-nav a {
+    font-size: .9rem;
+  }
+
+  body[data-page="home"] .header-cta {
+    min-height: 3rem;
+    padding-inline: 1.55rem;
+    font-size: .9rem;
+  }
+
+  .home-v2-hero {
+    min-height: 39rem;
+  }
+
+  .home-v2-hero__copy {
+    width: min(43%, 36rem);
+  }
+
+  .home-v2-hero__shade {
+    background:
+      linear-gradient(90deg, rgb(18 13 11 / .97) 0%, rgb(18 13 11 / .88) 28%, rgb(18 13 11 / .38) 43%, rgb(18 13 11 / .08) 62%, rgb(18 13 11 / .02) 82%),
+      linear-gradient(0deg, rgb(18 13 11 / .24), transparent 48%);
+  }
+
+  .home-v2-hero h1 {
+    max-width: 36rem;
+    font-size: clamp(3.2rem, 4.8vw, 4.4rem);
+  }
+
+  .home-v2-hero__copy > p {
+    font-size: 1.15rem;
+  }
+
+  .home-v2-actions .button {
+    min-height: 3.2rem;
+    font-size: 1rem;
+  }
+
+  .home-v2-proof {
+    font-size: .8rem;
+  }
+
+  .home-v2-workshop {
+    padding: 3rem 0 1.5rem;
+  }
+
+  .home-v2-workshop__copy > p:not(.eyebrow) {
+    font-size: 1.05rem;
+  }
+
+  .home-v2-workshop__copy .button {
+    min-height: 3.1rem;
+    font-size: .95rem;
+  }
+
+  .home-process-prints {
+    min-height: 23.5rem;
+  }
+
+  .home-features {
+    margin-top: 1.8rem;
+  }
+
+  .home-feature {
+    min-height: 6.8rem;
+    padding-block: 1rem;
+  }
+
+  .home-feature__icon {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .home-feature__icon svg {
+    width: 1.9rem;
+    height: 1.9rem;
+  }
+
+  .home-feature b { font-size: 1.15rem; }
+  .home-feature small { font-size: .88rem; }
+
+  .home-v2-worlds {
+    padding: 1.9rem 0;
+  }
+
+  .home-v2-section-head {
+    margin-bottom: 1.3rem;
+  }
+
+  .home-world-card__copy {
+    min-height: 6.8rem;
+    padding: .85rem .8rem .95rem;
+  }
+
+  .home-world-card__copy b {
+    font-size: 1.5rem;
+  }
+
+  .home-world-card__copy small {
+    font-size: .9rem;
+  }
+
+  .home-v2-residents {
+    padding: 1.4rem 0 .8rem;
+  }
+
+  .home-v2-section-head--residents {
+    margin-bottom: .5rem;
+  }
+
+  .home-resident-card__image {
+    aspect-ratio: 2.18 / 1;
+  }
+
+  .home-resident-card__copy {
+    padding: .68rem .85rem .75rem;
+  }
+
+  .home-resident-card__copy h3 {
+    font-size: 1.5rem;
+  }
+
+  .home-resident-card__copy p {
+    font-size: .9rem;
+  }
+
+  .home-card-arrow {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0 .72rem .64rem 0;
+  }
+
+  .home-v2-cta {
+    min-height: 10.75rem;
+  }
+
+  .home-v2-cta__copy {
+    padding-block: 1rem;
+  }
+
+  .home-v2-cta h2 {
+    font-size: clamp(3rem, 4vw, 3.8rem);
+  }
+
+  .home-v2-cta p {
+    margin: .35rem 0 .8rem;
+  }
+
+  .home-v2-cta .button {
+    min-height: 2.8rem;
+  }
+
+  .home-site-footer {
+    padding-top: .85rem;
+  }
+
+  .home-footer-grid {
+    gap: 3rem;
+    padding-bottom: .7rem;
+  }
+
+  .home-footer-brand > p {
+    margin-top: .65rem;
+    font-size: .72rem;
+  }
+
+  .home-footer-nav,
+  .home-footer-contact {
+    gap: .25rem;
+    font-size: .74rem;
+  }
+
+  .home-footer-contact .button {
+    min-height: 2.4rem;
+    margin-top: .35rem;
+  }
+
+  .home-footer-bottom {
+    padding: .58rem 0 .68rem;
+  }
+}
+
 @media (max-width: 23rem) {
   body[data-page="home"] .shell,
   body[data-page="home"] .header-inner { width: min(calc(100% - 2rem), 82rem); }
