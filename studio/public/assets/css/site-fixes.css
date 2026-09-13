@@ -879,3 +879,10 @@ html:has(body.menu-open) { overflow: hidden; }
   .home-card-arrow { width: 44px !important; height: 44px !important; }
   .home-chip { min-height: 44px !important; }
 }
+
+/* Между заголовком героя и подзаголовком было 9px — строки читались одним
+   слипшимся блоком. */
+@media (max-width: 50rem) {
+  .home-v2-hero h1,
+  .home-redesign .home-v2-hero h1 { margin-bottom: .95rem !important; }
+}

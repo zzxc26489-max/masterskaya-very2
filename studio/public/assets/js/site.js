@@ -724,7 +724,7 @@ function setShell(active) {
       <div class="site-header home-site-header"><div class="header-inner">
         <a class="brand" href="/" aria-label="Мастерская Веры — главная">
           <img class="brand__logo" src="/media/brand/logo-mark.webp" alt="" width="96" height="96">
-          <span class="brand__name">Мастерская<br>Веры</span>
+          <span class="brand__name">Мастерская <br>Веры</span>
         </a>
         <nav class="main-nav" id="main-nav" aria-label="Основная навигация">
           ${shellNav.map(([id, href, label]) => `<a class="${id === active ? 'is-active' : ''}"${id === active ? ' aria-current="page"' : ''} href="${href}">${label}</a>`).join('')}
@@ -745,7 +745,7 @@ function setShell(active) {
           <div class="home-footer-brand">
             <a class="brand" href="/">
               <img class="brand__logo" src="/media/brand/logo-mark.webp" alt="" width="96" height="96">
-              <span class="brand__name">Мастерская<br>Веры</span>
+              <span class="brand__name">Мастерская <br>Веры</span>
             </a>
             <p>Авторские фигурки ручной работы. Каждый Житель — в единственном экземпляре.</p>
           </div>
@@ -1233,7 +1233,7 @@ function home() {
       <div class="home-v2-hero__shade"></div>
       <div class="shell home-v2-hero__layout">
         <div class="home-v2-hero__copy">
-          <h1><span>Сказки, которые</span><span>можно взять в руки</span></h1>
+          <h1><span>Сказки, которые</span> <span>можно взять в руки</span></h1>
           <p>Авторские фигурки ручной работы</p>
           <div class="home-v2-actions">
             <a class="button button--forest" href="/residents.html">Смотреть готовые работы <span aria-hidden="true">→</span></a>
@@ -1252,7 +1252,7 @@ function home() {
         <div class="home-v2-workshop__grid">
           <div class="home-v2-workshop__copy">
             <p class="eyebrow">Познакомьтесь с мастерской</p>
-            <h2>Как рождается<br>фигурка</h2>
+            <h2>Как рождается <br>фигурка</h2>
             <p>Вера создаёт каждого Жителя вручную — от каркаса до последнего мазка. У каждой работы есть имя, характер и собственная история.</p>
             <a class="button button--forest" href="/about.html">О мастерской <span aria-hidden="true">→</span></a>
           </div>
@@ -1355,7 +1355,7 @@ function home() {
         <header class="home-v2-section-head home-v2-section-head--steps">
           <div>
             <p class="eyebrow">Как это работает</p>
-            <h2>Путь от письма<br>до вашей полки</h2>
+            <h2>Путь от письма <br>до вашей полки</h2>
           </div>
           <p class="home-steps-lede">Никаких форм заказа и менеджеров: вы пишете Вере, она отвечает сама. Готового Жителя можно забрать сразу, нового — обсудить и дождаться.</p>
         </header>
