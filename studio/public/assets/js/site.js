@@ -928,8 +928,8 @@ const HOME_WORLD_COPY = {
   winter: ['Зимние легенды', 'Там, где живёт волшебство зимних вечеров', '/media/scenes/nutcracker-ernst.webp', '52% center'],
   forest: ['Тайны древнего леса', 'Среди корней и мха рождаются свои истории', '/media/scenes/forest-dragon.webp', '72% center'],
   dragons: ['Древние существа', 'Те, кто помнит забытые времена', '/media/scenes/azimondias.webp', '66% center'],
-  russian: ['Русские сказки', 'Любимые герои в новом воплощении', '/media/scenes/little-humpbacked-horse.webp', '72% center'],
-  home: ['Домашние легенды', 'Истории, которые живут рядом', '/media/scenes/rocking-horse.webp', '50% center']
+  russian: ['Русские сказки', 'Любимые герои в новом воплощении', '/media/scenes/little-humpbacked-horse.webp', '70% center'],
+  home: ['Домашние легенды', 'Истории, которые живут рядом', '/media/scenes/rocking-horse.webp', '66% center']
 };
 
 function homeWorldCard(collection, index) {
@@ -945,6 +945,12 @@ function homeWorldCard(collection, index) {
   </article>`;
 }
 
+function homeFeatureIcon(type) {
+  if (type === 'hand') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-4 0v4-5a2 2 0 0 0-4 0v5-3a2 2 0 0 0-4 0v5-1a2 2 0 0 0-4 0v3c0 4.4 3.6 8 8 8h2a8 8 0 0 0 8-8v-3a2 2 0 0 0-2-2Z"/></svg>`;
+  if (type === 'palette') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0 0 18h1.5a1.5 1.5 0 0 0 0-3H12a2 2 0 0 1 0-4h3a6 6 0 0 0 0-12h-3Z"/><path d="M7.5 10h.01M9.5 6.5h.01M14 6h.01M17 9h.01"/></svg>`;
+  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 6-7 12L5 9l7-6Z"/><path d="m5 9 7 2 7-2M12 3v8"/></svg>`;
+}
+
 function homeResidentCard(resident) {
   if (!resident) return '';
   const [statusText, statusClass] = statusCopy(resident.availability);
@@ -958,6 +964,7 @@ function homeResidentCard(resident) {
       <span class="status ${esc(statusClass)} home-resident-card__status">${esc(statusText)}</span>
       <p class="home-resident-card__world">${esc(collectionFor(resident).name)}</p>
       <h3>${esc(resident.shortName || resident.name)}</h3>
+      ${resident.excerpt ? `<p class="home-resident-card__note">${esc(resident.excerpt)}</p>` : ''}
       <p class="home-resident-card__price">${esc(priceLabel(resident))}${stock ? ` <span>· ${esc(stock)}</span>` : ''}</p>
     </div>
     <a class="home-card-arrow" href="/chronicle.html?resident=${encodeURIComponent(resident.slug)}" aria-label="Открыть Хронику: ${esc(resident.shortName || resident.name)}">
@@ -966,24 +973,76 @@ function homeResidentCard(resident) {
   </article>`;
 }
 
+// На широком экране витрина — горизонтальная галерея, там влезают все.
+// На телефоне карточки идут в столбик, и двенадцать подряд превращают
+// главную в каталог — поэтому сначала показываем шесть.
+const HOME_RESIDENT_PHONE_LIMIT = 6;
+
 // Чипы над витриной прячут карточки на месте, без перерисовки и без похода
-// на сервер — на главной их всего шесть.
+// на сервер — на главной их дюжина.
 function bindHomeResidentFilters() {
   const chips = [...document.querySelectorAll('[data-home-resident-filter]')];
   const cards = [...document.querySelectorAll('[data-home-resident]')];
   if (!chips.length || !cards.length) return;
   const empty = document.querySelector('[data-home-resident-empty]');
-  chips.forEach((chip) => chip.addEventListener('click', () => {
-    const wanted = chip.dataset.homeResidentFilter;
-    chips.forEach((item) => item.setAttribute('aria-pressed', String(item === chip)));
-    let shown = 0;
+  const more = document.querySelector('[data-home-resident-more]');
+  const phone = window.matchMedia('(max-width: 50rem)');
+  let filter = 'all';
+  let expanded = false;
+
+  const apply = () => {
+    const limit = phone.matches && !expanded ? HOME_RESIDENT_PHONE_LIMIT : Infinity;
+    let matched = 0;
     cards.forEach((card) => {
-      const match = wanted === 'all' || card.dataset.availability === wanted;
-      card.hidden = !match;
-      if (match) shown += 1;
+      const fits = filter === 'all' || card.dataset.availability === filter;
+      if (fits) matched += 1;
+      card.hidden = !fits || matched > limit;
     });
-    if (empty) empty.hidden = shown > 0;
+    if (empty) empty.hidden = matched > 0;
+    if (more) {
+      const rest = matched - limit;
+      more.hidden = !(rest > 0);
+      more.textContent = `Показать ещё ${rest > 0 ? rest : ''}`.trim();
+    }
+  };
+
+  chips.forEach((chip) => chip.addEventListener('click', () => {
+    filter = chip.dataset.homeResidentFilter;
+    expanded = false;
+    chips.forEach((item) => item.setAttribute('aria-pressed', String(item === chip)));
+    apply();
   }));
+  more?.addEventListener('click', () => { expanded = true; apply(); });
+  phone.addEventListener('change', apply);
+  apply();
+}
+
+// Блоки проявляются по мере прокрутки. Элементы внутри одного блока идут
+// с небольшой задержкой друг за другом — карточки «разбираются» слева
+// направо, а не всплывают разом. Первый экран не анимируем: он уже виден,
+// когда скрипт отработал, и мигание там читалось бы как подтормаживание.
+// Главная пользуется общим механизмом появления ([data-reveal] в site.css):
+// здесь только расставляем метки и задержку, чтобы элементы внутри блока
+// проявлялись друг за другом, а не всплывали разом.
+function markHomeReveal() {
+  const groups = [
+    ['.home-v2-workshop__copy > *', 70],
+    ['.home-process-print', 110],
+    ['.home-feature', 90],
+    ['.home-v2-worlds .home-v2-section-head > *', 70],
+    ['.home-world-card', 85],
+    ['.home-v2-residents .home-v2-section-head > *', 70],
+    ['.home-resident-bar > *', 80],
+    ['.home-resident-card', 55],
+    ['.home-v2-cta__copy > *', 90],
+    ['.home-footer-grid > *', 80]
+  ];
+  groups.forEach(([selector, step]) => {
+    [...document.querySelectorAll(selector)].forEach((element, index) => {
+      element.setAttribute('data-reveal', '');
+      element.style.setProperty('--reveal-delay', `${Math.min(index, 7) * step}ms`);
+    });
+  });
 }
 
 function bindHomeWorldCarousel() {
@@ -1087,17 +1146,17 @@ function home() {
             <a class="button button--forest" href="/about.html">О мастерской <span aria-hidden="true">→</span></a>
           </div>
           <div class="home-process-prints" aria-label="Как рождается Житель">
-            <figure class="home-process-print home-process-print--one"><img src="/media/process/02-foil.webp" alt="Основа будущего Жителя из проволоки и фольги" fetchpriority="low"><figcaption><span>01</span><b>Основа</b><small>Сначала рождается движение</small></figcaption></figure>
-            <figure class="home-process-print home-process-print--two"><img src="/media/process/06-unpainted.webp" alt="Житель после ручной лепки" fetchpriority="low"><figcaption><span>02</span><b>Характер</b><small>Форма обретает свои черты</small></figcaption></figure>
-            <figure class="home-process-print home-process-print--three"><img src="/media/process/08-finished.webp" alt="Готовый сине-белый дракон" fetchpriority="low"><figcaption><span>03</span><b>Последний штрих</b><small>Роспись завершает историю</small></figcaption></figure>
+            <figure class="home-process-print home-process-print--one"><img src="/media/process/02-foil.webp" alt="Основа будущего Жителя из проволоки и фольги" fetchpriority="low"></figure>
+            <figure class="home-process-print home-process-print--two"><img src="/media/process/06-unpainted.webp" alt="Житель после ручной лепки" fetchpriority="low"></figure>
+            <figure class="home-process-print home-process-print--three"><img src="/media/process/08-finished.webp" alt="Готовый сине-белый дракон" fetchpriority="low"></figure>
             <span class="home-process-note home-process-note--start" aria-hidden="true">Сначала<br>идея</span>
             <span class="home-process-note home-process-note--finish" aria-hidden="true">А потом жизнь</span>
           </div>
         </div>
         <div class="home-features">
-          <div class="home-feature"><span class="home-feature__number">01</span><span><b>Ручная лепка</b><small>Каждая фигурка создаётся вручную, без форм</small></span></div>
-          <div class="home-feature"><span class="home-feature__number">02</span><span><b>Авторская роспись</b><small>Уникальные цвета и характеры</small></span></div>
-          <div class="home-feature"><span class="home-feature__number">03</span><span><b>Один экземпляр</b><small>Таких больше не будет</small></span></div>
+          <div class="home-feature"><span class="home-feature__icon">${homeFeatureIcon('hand')}</span><span><b>Ручная лепка</b><small>Каждая фигурка создаётся вручную, без форм</small></span></div>
+          <div class="home-feature"><span class="home-feature__icon">${homeFeatureIcon('palette')}</span><span><b>Авторская роспись</b><small>Уникальные цвета и характеры</small></span></div>
+          <div class="home-feature"><span class="home-feature__icon">${homeFeatureIcon('diamond')}</span><span><b>Один экземпляр</b><small>Таких больше не будет</small></span></div>
         </div>
       </div>
     </section>
@@ -1141,6 +1200,7 @@ function home() {
         </div>
         <div class="home-resident-grid">${residents.map(homeResidentCard).join('')}</div>
         <p class="home-resident-empty" data-home-resident-empty hidden>Здесь сейчас пусто — посмотрите всех Жителей Мастерской.</p>
+        <button class="home-resident-more" type="button" data-home-resident-more hidden>Показать ещё</button>
         <a class="button button--forest home-resident-all" href="/residents.html">Смотреть всех жителей <span aria-hidden="true">→</span></a>
       </div>
     </section>
@@ -1158,6 +1218,8 @@ function home() {
   document.title = 'Мастерская Веры — авторские фигурки ручной работы';
   bindHomeWorldCarousel();
   bindHomeResidentFilters();
+  markHomeReveal();
+  enableAtmosphereMotion();
 }
 
 function residentWorldSection(collection) {
