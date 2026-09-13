@@ -439,3 +439,85 @@ html:has(body.menu-open) { overflow: hidden; }
   .world-chapter__gift { font-size: .8rem; }
   .world-chapter__count { margin-top: .7rem; font-size: .74rem; }
 }
+
+/* ——— Хроника Жителя ———
+   Человек пришёл сюда решать: берёт или нет. Статус, цена и кнопка стояли
+   ниже 817-пиксельного героя — до них нужно было домотать. */
+.chronicle-hero__offer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .7rem 1.1rem;
+  margin-top: 1.4rem;
+}
+
+.chronicle-hero__price {
+  color: #f8ead5;
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.chronicle-hero__stock {
+  color: #d8c3a3;
+  font-size: .92rem;
+  font-weight: 600;
+}
+
+.chronicle-hero__actions { margin-top: 1.3rem; }
+.chronicle-hero__actions .button { min-width: 15rem; }
+
+/* Панель снизу: поднимается, когда предложение из героя ушло за край. */
+.chronicle-dock {
+  position: fixed;
+  z-index: 55;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-top: 1px solid rgb(183 138 79 / .55);
+  background: rgb(18 13 11 / .96);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 -1rem 2.5rem rgb(0 0 0 / .4);
+}
+
+.chronicle-dock[hidden] { display: none; }
+.chronicle-dock__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: .75rem;
+}
+
+.chronicle-dock__copy { display: grid; flex: 1 1 auto; gap: .1rem; min-width: 0; }
+.chronicle-dock__copy b {
+  overflow: hidden;
+  color: #f8ead5;
+  font: 500 1.3rem/1.15 var(--display);
+  letter-spacing: -.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chronicle-dock__copy span { color: #e8c98f; font-size: .95rem; font-weight: 600; }
+/* Кнопки на телефоне по умолчанию тянутся во всю ширину — в этой панели
+   они раздавливали имя и цену, ради которых панель и появляется. */
+.chronicle-dock .button {
+  flex: 0 0 auto;
+  width: auto !important;
+  min-width: 0;
+  min-height: 2.9rem;
+}
+
+@media (max-width: 50rem) {
+  .chronicle-hero__offer { gap: .5rem .8rem; margin-top: 1.1rem; }
+  .chronicle-hero__price { font-size: 1.25rem; }
+  .chronicle-hero__actions { margin-top: 1rem; }
+  .chronicle-hero__actions .button { width: 100%; min-width: 0; }
+  .chronicle-dock__inner { padding-block: .6rem; }
+  .chronicle-dock__copy b { font-size: 1.1rem; }
+  .chronicle-dock__copy span { font-size: .85rem; }
+  .chronicle-dock .button { min-height: 2.7rem; padding-inline: 1.05rem; font-size: .82rem; }
+  .chronicle-dock__inner { gap: .7rem; }
+  /* Панель перекрывает кнопку «Наверх» — уводим её выше. */
+  .scroll-top { bottom: 5.4rem; }
+}

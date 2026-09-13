@@ -1790,17 +1790,36 @@ function chronicle() {
   const [status, className] = statusCopy(resident.availability);
   let primaryAction = '';
   if (resident.availability === 'available') {
-    primaryAction = `<a class="button button--wine" href="${esc(purchaseLink(resident))}" target="_blank" rel="noreferrer">Написать Вере</a>`;
+    primaryAction = `<a class="button button--forest" href="${esc(purchaseLink(resident))}" target="_blank" rel="noreferrer">Написать Вере</a>`;
   } else if (resident.availability === 'in-progress') {
-    primaryAction = `<a class="button button--wine" href="/contact.html?resident=${encodeURIComponent(resident.slug)}">Узнать о работе</a>`;
+    primaryAction = `<a class="button button--forest" href="/contact.html?resident=${encodeURIComponent(resident.slug)}">Узнать о работе</a>`;
   }
 
   paint(app, `<main id="main" class="theme-${esc(collection.theme)}">
     <section class="chronicle-hero">
       <img class="chronicle-hero__scene" src="${esc(resident.sceneImage || collection.sceneImage || collection.image)}" alt="${esc(resident.name)} в мире «${esc(collection.name)}»">
       <div class="chronicle-hero__shade"></div>${atmosphereMarkup(collection.theme)}
-      <div class="shell"><p class="eyebrow eyebrow--light">Хроника Жителя · ${esc(collection.name)}</p><h1>${esc(resident.name)}</h1><p class="lede lede--light">${esc(resident.excerpt)}</p></div>
+      <div class="shell">
+        <p class="eyebrow eyebrow--light">Хроника Жителя · ${esc(collection.name)}</p>
+        <h1>${esc(resident.name)}</h1>
+        <p class="lede lede--light">${esc(resident.excerpt)}</p>
+        <div class="chronicle-hero__offer">
+          <span class="status ${className}">${status}</span>
+          ${['available', 'in-progress'].includes(resident.availability) ? `<span class="chronicle-hero__price">${esc(priceLabel(resident))}</span>` : ''}
+          ${stockLabel(resident) ? `<span class="chronicle-hero__stock">${esc(stockLabel(resident))}</span>` : ''}
+        </div>
+        ${primaryAction ? `<div class="chronicle-hero__actions">${primaryAction}</div>` : ''}
+      </div>
     </section>
+    ${primaryAction ? `<div class="chronicle-dock" data-chronicle-dock hidden>
+      <div class="shell chronicle-dock__inner">
+        <div class="chronicle-dock__copy">
+          <b>${esc(resident.shortName || resident.name)}</b>
+          <span>${esc(['available', 'in-progress'].includes(resident.availability) ? priceLabel(resident) : status)}</span>
+        </div>
+        ${primaryAction}
+      </div>
+    </div>` : ''}
     <section class="section section--paper"><div class="shell resident-detail">
       <figure class="resident-detail__image"><img src="${esc(resident.heroImage)}" alt="${esc(resident.name)}"></figure>
       <div class="resident-detail__copy"><span class="status ${className}">${status}</span><h2>${esc(resident.name)}</h2><p class="lede">${esc(resident.story)}</p>
@@ -1815,7 +1834,22 @@ function chronicle() {
   document.title = `${resident.name} — Хроника Мастерской Веры`;
   setCanonical(`resident=${encodeURIComponent(resident.slug || resident.id)}`);
   bindLightbox();
+  bindChronicleDock();
   enableAtmosphereMotion();
+}
+
+// Цена и кнопка живут в первом экране, но стоит его пролистать — и решение
+// принимать не на чем. Панель снизу поднимает их обратно, как только
+// предложение из героя ушло за верхний край.
+function bindChronicleDock() {
+  const dock = document.querySelector('[data-chronicle-dock]');
+  const offer = document.querySelector('.chronicle-hero__offer');
+  if (!dock || !offer) return;
+  if (!('IntersectionObserver' in window)) { dock.hidden = false; return; }
+  const observer = new IntersectionObserver(([entry]) => {
+    dock.hidden = entry.isIntersecting;
+  }, { rootMargin: '-20% 0px 0px 0px' });
+  observer.observe(offer);
 }
 
 // A resident's page must never be a dead end. A sold or reserved one still
