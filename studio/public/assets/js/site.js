@@ -92,47 +92,15 @@ function purchaseLink(resident) {
 
 // What separates one world from another, in plain words a first-time visitor
 // can act on: what lives here, how it feels, and who it suits as a gift.
+// Кто живёт в каждом Мире — короткая подсказка на карточке Мира на главной:
+// там Жителей не видно, и по одному названию не понять, что внутри.
 const WORLD_TRAITS = {
-  winter: {
-    mood: 'Ожидание праздника',
-    lives: 'Щелкунчики, мышиные короли и зимние сцены',
-    palette: 'Синий бархат, снег и золото мундиров',
-    gift: 'На Новый год и Рождество — тем, кто любит праздник',
-    air: 'Здесь идёт снег'
-  },
-  forest: {
-    mood: 'Тишина и внимательный взгляд',
-    lives: 'Лесные драконы, грибы и молчаливые существа',
-    palette: 'Мох, тёплая кора и живые огни',
-    gift: 'Тем, кто любит лес, книги и тихие вечера',
-    air: 'Здесь в темноте летают светлячки'
-  },
-  dragons: {
-    mood: 'Древность и спокойная сила',
-    lives: 'Драконы, грифоны и авторские создания Веры',
-    palette: 'Чешуя, старый камень и дыхание огня',
-    gift: 'Тем, у кого есть своя легенда',
-    air: 'Здесь стелется дым и поднимаются угли'
-  },
-  russian: {
-    mood: 'Вечерняя сказка у огня',
-    lives: 'Сирин, Змей Горыныч, Конёк-Горбунок и русалки',
-    palette: 'Золото корон, гжельская синь и вязь',
-    gift: 'Тем, кто вырос на этих сказках',
-    air: 'Здесь по фону идёт славянский узор'
-  },
-  home: {
-    mood: 'Тихий солнечный день',
-    lives: 'Курочка, лошадка-качалка и другие домашние Жители',
-    palette: 'Лён, солнечное дерево и тёплый свет',
-    gift: 'На новоселье и просто для уюта в доме',
-    air: 'Здесь в солнечном луче кружится пыль'
-  }
+  winter: { lives: 'Щелкунчики, мышиные короли и зимние сцены' },
+  forest: { lives: 'Лесные драконы, грибы и молчаливые существа' },
+  dragons: { lives: 'Драконы, грифоны и авторские создания Веры' },
+  russian: { lives: 'Сирин, Змей Горыныч, Конёк-Горбунок и русалки' },
+  home: { lives: 'Курочка, лошадка-качалка и другие домашние Жители' }
 };
-
-function worldTraits(theme) {
-  return WORLD_TRAITS[theme] || WORLD_TRAITS.dragons;
-}
 
 function residentWord(count) {
   const tail = count % 100;
@@ -826,7 +794,6 @@ function worldCard(collection, index = 0) {
     .sort((left, right) => (left.worldOrder ?? 99) - (right.worldOrder ?? 99));
   const count = residentsInWorld.length;
   const free = residentsInWorld.filter((resident) => resident.availability === 'available').length;
-  const traits = WORLD_TRAITS[collection.theme] || {};
   const stageResident = residentsInWorld.find((resident) => resident.sceneImage) || residentsInWorld[0];
   return `<article class="world-chapter theme-${esc(collection.theme)}" data-world="${esc(collection.theme)}" data-reveal>
     <img class="world-chapter__scene" src="${esc(stageResident?.sceneImage || collection.sceneImage || collection.image)}" alt="" loading="lazy">
@@ -838,7 +805,6 @@ function worldCard(collection, index = 0) {
       <p class="eyebrow eyebrow--light">Мир Мастерской</p>
       <h3>${esc(collection.name)}</h3>
       <p>${esc(collection.description)}</p>
-      ${traits.gift ? `<span class="world-chapter__gift"><i aria-hidden="true"></i>${esc(traits.gift)}</span>` : ''}
       <span class="world-chapter__count">${count} ${pluralResidents(count)}${free ? ` · ${free} свободны` : ''}</span>
       <span class="text-link text-link--light">Войти в мир <b aria-hidden="true">↗</b></span>
     </div>
@@ -915,7 +881,6 @@ function homeWorldCard(collection, index) {
         <b>${esc(title)}</b>
         <small>${esc(description)}</small>
         ${traits.lives ? `<span class="home-world-card__lives"><i aria-hidden="true"></i>${esc(traits.lives)}</span>` : ''}
-        ${traits.gift ? `<span class="home-world-card__gift">${esc(traits.gift)}</span>` : ''}
         <span class="home-world-card__enter">Войти в мир <b aria-hidden="true">→</b></span>
       </span>
     </a>
@@ -1473,7 +1438,7 @@ function residents() {
 
 function collections() {
   paint(app, `<main id="main">
-    <section class="page-hero page-hero--atlas"><div class="shell"><p class="eyebrow eyebrow--light">Атлас Мастерской</p><h1>Миры Мастерской</h1><p class="lede lede--light">Не фильтры каталога, а отдельные сцены: лес дышит мхом и огоньками, зима — снегом, русская сказка — деревом и вязью. У каждого Мира свои Жители, свой воздух и свой повод стать подарком.</p></div></section>
+    <section class="page-hero page-hero--atlas"><div class="shell"><p class="eyebrow eyebrow--light">Атлас Мастерской</p><h1>Миры Мастерской</h1><p class="lede lede--light">Не фильтры каталога, а отдельные сцены: лес дышит мхом и огоньками, зима — снегом, русская сказка — деревом и вязью. У каждого Мира свои Жители и свой воздух — заходите и смотрите, кто вам ближе.</p></div></section>
     <section class="section section--night worlds-section"><div class="shell"><div class="world-atlas world-atlas--full">${content.collections.map(worldCard).join('')}</div></div></section>
   </main>`);
   document.title = 'Миры Мастерской — Мастерская Веры';
@@ -1582,7 +1547,6 @@ function collectionPage() {
   const residentsInWorld = content.residents
     .filter((resident) => resident.collectionId === collection.id)
     .sort((left, right) => (left.worldOrder ?? 99) - (right.worldOrder ?? 99));
-  const traits = worldTraits(collection.theme);
   const available = residentsInWorld.filter((resident) => resident.availability === 'available');
   // В шапку Мира берём кадр его Жителя: сцены из media/worlds — пустые
   // декорации без фигурок, а человек открывает Мир, чтобы увидеть работы.
@@ -1604,22 +1568,6 @@ function collectionPage() {
         <div class="world-stage__facts">
           <span class="world-badge">${residentsInWorld.length} ${residentWord(residentsInWorld.length)}</span>
           ${available.length ? `<span class="world-badge world-badge--free">${available.length} можно забрать домой</span>` : ''}
-        </div>
-      </div>
-    </section>
-
-    <section class="section world-character">
-      <div class="shell">
-        <header class="section-head section-head--light" data-reveal>
-          <div>
-            <p class="eyebrow eyebrow--light">Чем этот Мир не похож на другие</p>
-            <h2>${esc(traits.mood)}</h2>
-          </div>
-        </header>
-        <div class="world-traits" data-reveal>
-          <div class="world-trait"><b>Кто здесь живёт</b><span>${esc(traits.lives)}</span></div>
-          <div class="world-trait"><b>Цвета Мира</b><span>${esc(traits.palette)}</span></div>
-          <div class="world-trait"><b>Кому подойдёт в подарок</b><span>${esc(traits.gift)}</span></div>
         </div>
       </div>
     </section>

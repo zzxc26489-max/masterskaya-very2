@@ -1014,15 +1014,12 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
    flat fill, so each world reads as a different place. The page itself goes
    dark so the ambience behind the content stays visible. */
 .world-page { background: #0f0c0a; }
-.world-page .world-character,
 .world-page .world-residents-section,
 .world-page .world-invite {
   background: transparent;
   color: #f6ead6;
   padding: clamp(3rem, 5.5vw, 5rem) 0;
 }
-.world-page .world-residents-section { padding-top: clamp(1rem, 2vw, 2rem); }
-.world-page .world-character h2,
 .world-page .world-residents-section h2 { color: #fff2df; }
 .world-page .site-footer { background: rgb(12 9 8 / .92); }
 
@@ -1051,33 +1048,6 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   color: #dcecd0;
 }
 .world-badge--air { color: var(--world-accent, #e8c98f); border-color: currentColor; }
-
-.world-traits {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.4rem;
-}
-.world-trait {
-  padding: 1.5rem 1.6rem;
-  border: 1px solid rgb(255 238 211 / .16);
-  border-radius: 1.1rem;
-  background: rgb(22 16 13 / .5);
-  backdrop-filter: blur(8px);
-}
-.world-trait b {
-  display: block;
-  margin-bottom: .6rem;
-  color: var(--world-accent, #e8c98f);
-  font: 600 .7rem/1.3 var(--body);
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
-.world-trait span {
-  display: block;
-  color: rgb(246 234 214 / .84);
-  font-size: .92rem;
-  line-height: 1.6;
-}
 
 .world-invite__panel {
   padding: clamp(2.2rem, 5vw, 3.6rem);
@@ -1829,7 +1799,6 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
   .world-stage__intro { min-height: 25rem; padding: 3rem 0 2rem; }
   .world-back { margin-bottom: 1.5rem; }
   .world-stage__intro h1 { font-size: clamp(2.6rem, 11vw, 5rem); }
-  .world-traits { grid-template-columns: 1fr; gap: .9rem; }
   .lexicon-grid { grid-template-columns: repeat(2, 1fr); }
   .worth-grid { grid-template-columns: 1fr; }
   .world-stage__intro > p:last-child { font-size: .88rem; }

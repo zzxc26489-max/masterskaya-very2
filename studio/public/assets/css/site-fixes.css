@@ -368,54 +368,6 @@ html:has(body.menu-open) { overflow: hidden; }
    Герой занимал 666px — целый экран под двумя строками текста. */
 
 
-/* Карточка Мира получила то же, что на главной: кто там живёт, кому такой
-   Житель в подарок и сколько из них свободны. */
-.world-chapter__lives {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: .55rem;
-  align-items: start;
-  max-width: 28rem;
-  margin-top: .9rem;
-  padding-top: .8rem;
-  border-top: 1px solid rgb(183 138 79 / .32);
-  color: #d8c3a3;
-  font-size: .92rem;
-  line-height: 1.5;
-}
-
-.world-chapter__lives i {
-  width: .4rem;
-  height: .4rem;
-  margin-top: .5rem;
-  border-radius: 50%;
-  background: #b78a4f;
-}
-
-/* «Кто живёт» здесь не выводим: на этой странице развёрнутое описание Мира
-   уже перечисляет его Жителей, и строка дублировала бы саму себя. */
-.world-chapter__gift {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: .55rem;
-  align-items: start;
-  max-width: 28rem;
-  margin-top: .9rem;
-  padding-top: .8rem;
-  border-top: 1px solid rgb(183 138 79 / .32);
-  color: #d8c3a3;
-  font-size: .9rem;
-  line-height: 1.5;
-}
-
-.world-chapter__gift i {
-  width: .4rem;
-  height: .4rem;
-  margin-top: .5rem;
-  border-radius: 50%;
-  background: #b78a4f;
-}
-
 .world-chapter__count {
   display: inline-flex;
   align-items: center;
@@ -435,8 +387,6 @@ html:has(body.menu-open) { overflow: hidden; }
 }
 
 @media (max-width: 50rem) {
-  .world-chapter__lives { margin-top: .7rem; padding-top: .65rem; font-size: .85rem; }
-  .world-chapter__gift { font-size: .8rem; }
   .world-chapter__count { margin-top: .7rem; font-size: .74rem; }
 }
 
@@ -780,7 +730,6 @@ html:has(body.menu-open) { overflow: hidden; }
   .contact-list li,
   .meta-list dd,
   .text-link,
-  .world-chapter__gift,
   .world-chapter__count,
   .home-world-card__lives,
   .home-world-card__tally,
@@ -915,58 +864,6 @@ html:has(body.menu-open) { overflow: hidden; }
 
 .world-resident__scene img { filter: saturate(.98) contrast(1.02) brightness(1.06) !important; }
 
-/* ——— Карточки «чем этот Мир не похож на другие» ———
-   Три плоских прямоугольника с тонкой серой рамкой. Теперь у них золотая
-   кромка, тёплая подложка и отклик на курсор — как у карточек Миров на
-   главной. */
-.world-trait {
-  position: relative;
-  padding: 1.6rem 1.7rem 1.7rem;
-  border: 1px solid rgb(183 138 79 / .45);
-  border-radius: 1rem;
-  background:
-    radial-gradient(circle at 18% 0%, rgb(232 201 143 / .1), transparent 58%),
-    rgb(26 19 16 / .82);
-  transition: transform .35s var(--ease), border-color .3s var(--ease), box-shadow .35s var(--ease);
-}
-
-.world-trait::before {
-  content: '';
-  position: absolute;
-  top: 1.7rem;
-  left: 0;
-  width: 2px;
-  height: 1.15rem;
-  background: var(--world-accent, #b78a4f);
-}
-
-.world-trait b {
-  margin-bottom: .7rem;
-  font-size: .74rem;
-  letter-spacing: .16em;
-}
-
-.world-trait span {
-  color: #d8c3a3;
-  font-size: 1rem;
-  line-height: 1.55;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .world-trait:hover {
-    transform: translateY(-.4rem);
-    border-color: rgb(232 201 143 / .85);
-    box-shadow: 0 1.4rem 2.8rem rgb(0 0 0 / .4);
-  }
-}
-
-@media (max-width: 50rem) {
-  .world-traits { grid-template-columns: 1fr; gap: .7rem; }
-  .world-trait { padding: 1.1rem 1.2rem 1.2rem; }
-  .world-trait::before { top: 1.25rem; }
-  .world-trait span { font-size: .95rem; }
-}
-
 @media (max-width: 50rem) {
   /* На узком экране кадр режется по бокам, и Житель оказывался ровно под
      текстовой колонкой: сдвигаем композицию так, чтобы он читался выше
@@ -984,14 +881,12 @@ html:has(body.menu-open) { overflow: hidden; }
    готовая композиция: прибита к верху во всю ширину, низ добирает ровный
    ночной цвет. Адрес приходит из переменной, поэтому новый Мир
    подключается одной строкой. */
-.world-character,
 .world-residents-section,
 .world-invite {
   position: relative;
   isolation: isolate;
 }
 
-.world-character::before,
 .world-residents-section::before,
 .world-invite::before {
   content: '';
@@ -1021,7 +916,6 @@ html:has(body.menu-open) { overflow: hidden; }
   .theme-dragons { --world-bg: url('../../media/patterns/dragons-bg-mobile.webp'); }
   .theme-home { --world-bg: url('../../media/patterns/home-bg-mobile.webp'); }
 
-  .world-character::before,
   .world-residents-section::before,
   .world-invite::before {
     background:

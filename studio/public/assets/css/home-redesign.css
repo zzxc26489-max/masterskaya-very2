@@ -2268,12 +2268,6 @@ body .home-site-footer .brand__name { color: #f8ead5; }
   background: #b78a4f;
 }
 
-.home-world-card__gift {
-  color: #a99277;
-  font-size: .82rem;
-  line-height: 1.45;
-}
-
 .home-world-card__enter {
   margin-top: .3rem;
   color: #e8c98f;
@@ -2289,7 +2283,6 @@ body .home-site-footer .brand__name { color: #f8ead5; }
   .home-world-card__copy b { font-size: 1.5rem; }
   .home-world-card__copy small { font-size: .86rem; }
   .home-world-card__lives { font-size: .8rem; }
-  .home-world-card__gift { display: none; }
 }
 
 @media (max-width: 50rem) {
