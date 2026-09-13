@@ -256,3 +256,69 @@
   .resident-card__image { aspect-ratio: 4 / 3.2; }
   .resident-card .price { font-size: .98rem; }
 }
+
+/* ——— Внутренние страницы на телефоне ———
+   После того как шапка и подвал стали общими, внутренние страницы достались
+   в наследство от первой версии: высокая шапка, полупустой герой и светлая
+   полоса фильтров поперёк тёмной страницы. */
+@media (max-width: 50rem) {
+  /* Шапка занимала 99px — почти четверть первого экрана — из-за крупного
+     логотипа и названия в две строки. */
+  .header-inner {
+    min-height: 4.4rem !important;
+    gap: 1rem;
+  }
+
+  .brand__logo,
+  .site-header.is-compact .brand__logo {
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+  }
+
+  .brand__name {
+    font-size: 1.15rem !important;
+    line-height: 1.05 !important;
+  }
+
+  /* Герой съедал 425px, из них половина — пустота под коротким абзацем. */
+  .page-hero { padding: 2.6rem 0 2.4rem; }
+  .page-hero h1 { font-size: clamp(2.4rem, 10.5vw, 3.2rem); }
+  .page-hero .lede { font-size: .95rem; line-height: 1.5; }
+
+  /* Полоса фильтров была светлой вставкой поперёк тёмной страницы и резалась
+     по правому краю без намёка, что её листают. Теперь она в тон странице,
+     с золотыми контурами и растворяющимся правым краем. */
+  .filter-dock {
+    top: 4.4rem;
+    border-bottom-color: rgb(183 138 79 / .45);
+    background: rgb(18 13 11 / .94);
+    backdrop-filter: blur(14px);
+  }
+
+  .filters {
+    padding-block: .6rem;
+    -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent);
+    mask-image: linear-gradient(90deg, #000 88%, transparent);
+  }
+
+  .filter-button {
+    min-height: 2.45rem;
+    padding: .45rem .95rem;
+    border-color: rgb(183 138 79 / .55);
+    color: #e8c98f;
+    font-size: .78rem;
+  }
+
+  .filter-button:hover { border-color: #e8c98f; color: #f8ead5; }
+  .filter-button[aria-pressed='true'] {
+    border-color: #e8c98f;
+    background: #17451f;
+    color: #fbf4e7;
+  }
+
+  /* Между заголовком Мира и первой карточкой зияло полтораста пикселей. */
+  .residents-world__head { gap: .9rem; }
+  .residents-world__inner { padding-block: 2.2rem 2.4rem; }
+  .residents-world__head h2 { font-size: clamp(2.1rem, 9.5vw, 2.9rem); }
+  .residents-world__head p { font-size: .92rem; line-height: 1.5; }
+}
