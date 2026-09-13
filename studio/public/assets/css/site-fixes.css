@@ -363,3 +363,79 @@
    повисало посреди экрана отдельно от шапки. */
 html:has(body.menu-open) { overflow: hidden; }
 .main-nav { overscroll-behavior: contain; }
+
+/* ——— Страница Миров ———
+   Герой занимал 666px — целый экран под двумя строками текста. */
+.page-hero--atlas { padding: clamp(3rem, 6vw, 5.5rem) 0 clamp(2.6rem, 5vw, 4.5rem); }
+
+/* Карточка Мира получила то же, что на главной: кто там живёт, кому такой
+   Житель в подарок и сколько из них свободны. */
+.world-chapter__lives {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: .55rem;
+  align-items: start;
+  max-width: 28rem;
+  margin-top: .9rem;
+  padding-top: .8rem;
+  border-top: 1px solid rgb(183 138 79 / .32);
+  color: #d8c3a3;
+  font-size: .92rem;
+  line-height: 1.5;
+}
+
+.world-chapter__lives i {
+  width: .4rem;
+  height: .4rem;
+  margin-top: .5rem;
+  border-radius: 50%;
+  background: #b78a4f;
+}
+
+/* «Кто живёт» здесь не выводим: на этой странице развёрнутое описание Мира
+   уже перечисляет его Жителей, и строка дублировала бы саму себя. */
+.world-chapter__gift {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: .55rem;
+  align-items: start;
+  max-width: 28rem;
+  margin-top: .9rem;
+  padding-top: .8rem;
+  border-top: 1px solid rgb(183 138 79 / .32);
+  color: #d8c3a3;
+  font-size: .9rem;
+  line-height: 1.5;
+}
+
+.world-chapter__gift i {
+  width: .4rem;
+  height: .4rem;
+  margin-top: .5rem;
+  border-radius: 50%;
+  background: #b78a4f;
+}
+
+.world-chapter__count {
+  display: inline-flex;
+  align-items: center;
+  margin-top: .9rem;
+  padding: .3rem .7rem;
+  border: 1px solid rgb(183 138 79 / .55);
+  border-radius: 999px;
+  background: rgb(18 13 11 / .5);
+  color: #e8c98f;
+  font-size: .78rem;
+  font-weight: 600;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .world-chapter { transition: box-shadow .4s var(--ease); }
+  .world-chapter:hover { box-shadow: 0 1.6rem 3.2rem rgb(0 0 0 / .4); }
+}
+
+@media (max-width: 50rem) {
+  .world-chapter__lives { margin-top: .7rem; padding-top: .65rem; font-size: .85rem; }
+  .world-chapter__gift { font-size: .8rem; }
+  .world-chapter__count { margin-top: .7rem; font-size: .74rem; }
+}

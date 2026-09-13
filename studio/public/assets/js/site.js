@@ -825,6 +825,8 @@ function worldCard(collection, index = 0) {
     .filter((resident) => resident.collectionId === collection.id)
     .sort((left, right) => (left.worldOrder ?? 99) - (right.worldOrder ?? 99));
   const count = residentsInWorld.length;
+  const free = residentsInWorld.filter((resident) => resident.availability === 'available').length;
+  const traits = WORLD_TRAITS[collection.theme] || {};
   const stageResident = residentsInWorld.find((resident) => resident.sceneImage) || residentsInWorld[0];
   return `<article class="world-chapter theme-${esc(collection.theme)}" data-world="${esc(collection.theme)}" data-reveal>
     <img class="world-chapter__scene" src="${esc(stageResident?.sceneImage || collection.sceneImage || collection.image)}" alt="" loading="lazy">
@@ -836,7 +838,8 @@ function worldCard(collection, index = 0) {
       <p class="eyebrow eyebrow--light">Мир Мастерской</p>
       <h3>${esc(collection.name)}</h3>
       <p>${esc(collection.description)}</p>
-      <span class="world-chapter__count">${count} ${count === 1 ? 'Житель' : count < 5 ? 'Жителя' : 'Жителей'}</span>
+      ${traits.gift ? `<span class="world-chapter__gift"><i aria-hidden="true"></i>${esc(traits.gift)}</span>` : ''}
+      <span class="world-chapter__count">${count} ${pluralResidents(count)}${free ? ` · ${free} свободны` : ''}</span>
       <span class="text-link text-link--light">Войти в мир <b aria-hidden="true">↗</b></span>
     </div>
   </article>`;
@@ -1470,7 +1473,7 @@ function residents() {
 
 function collections() {
   paint(app, `<main id="main">
-    <section class="page-hero page-hero--atlas"><div class="shell"><p class="eyebrow eyebrow--light">Атлас Мастерской</p><h1>Пять Миров.<br>Пять разных ощущений.</h1><p class="lede lede--light">Не фильтры каталога, а отдельные сцены: лес дышит мхом и огоньками, зима — снегом, русская сказка — деревом и вязью.</p></div></section>
+    <section class="page-hero page-hero--atlas"><div class="shell"><p class="eyebrow eyebrow--light">Атлас Мастерской</p><h1>Миры Мастерской</h1><p class="lede lede--light">Не фильтры каталога, а отдельные сцены: лес дышит мхом и огоньками, зима — снегом, русская сказка — деревом и вязью. У каждого Мира свои Жители, свой воздух и свой повод стать подарком.</p></div></section>
     <section class="section section--night worlds-section"><div class="shell"><div class="world-atlas world-atlas--full">${content.collections.map(worldCard).join('')}</div></div></section>
   </main>`);
   document.title = 'Миры Мастерской — Мастерская Веры';
