@@ -819,3 +819,63 @@ html:has(body.menu-open) { overflow: hidden; }
   /* Подзаголовок витрины на главной. */
   .home-v2-section-head--residents p { font-size: .7rem !important; }
 }
+
+/* ——— Зоны нажатия на телефоне ———
+   Норма — 44px. Ссылки-стрелки были 18–27px: в них целятся пальцем и
+   промахиваются, особенно в «← Все Миры» высотой 18px. */
+@media (max-width: 50rem) {
+  .text-link,
+  .world-back,
+  .home-footer-handle,
+  .home-footer-nav a,
+  .main-nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .filter-button,
+  .home-chip,
+  .home-world-control,
+  .home-card-arrow,
+  .world-slider__rail button { min-height: 44px; }
+
+  .home-world-control { width: 44px; height: 44px; }
+  .home-card-arrow { width: 44px; height: 44px; }
+  .brand { min-height: 44px; }
+
+  /* Точки каруселей: сама точка остаётся маленькой, зона вокруг — нет. */
+  .home-world-dots button,
+  .world-slider__dots button { width: 44px; height: 44px; }
+}
+
+/* ——— Галерея Хроники ———
+   Ячейка схлопывалась в 2px, пока ленивое фото не загрузилось: страница
+   прыгала, а на её месте висела кнопка высотой в пару пикселей, ловившая
+   случайные тапы. Место под кадр теперь резервируется заранее. */
+.gallery > button,
+.gallery__video {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #201713;
+}
+
+.gallery > button img,
+.gallery__video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Остатки: у этих целей нашлись более специфичные правила — в том числе
+   мои собственные, поставленные раньше в этом же файле. */
+@media (max-width: 50rem) {
+  .home-world-dots button,
+  .home-world-dots button.is-active { width: 44px !important; height: 44px !important; }
+  .home-footer-nav a,
+  .home-footer-contact a:not(.button),
+  .home-footer-handle { min-height: 44px !important; }
+  .home-card-arrow { width: 44px !important; height: 44px !important; }
+  .home-chip { min-height: 44px !important; }
+}
