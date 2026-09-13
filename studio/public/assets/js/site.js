@@ -1237,7 +1237,7 @@ function home() {
           <p>Авторские фигурки ручной работы</p>
           <div class="home-v2-actions">
             <a class="button button--forest" href="/residents.html">Смотреть готовые работы <span aria-hidden="true">→</span></a>
-            <a class="button button--gold-outline" href="/contact.html">Заказать своего</a>
+            <a class="button button--gold-outline" href="/contact.html">Заказать свою фигурку</a>
           </div>
           <div class="home-v2-proof">1 экземпляр <i></i> ручная лепка <i></i> авторская роспись</div>
         </div>
@@ -1438,7 +1438,7 @@ function residentWorldSection(collection) {
 
 function residents() {
   paint(app, `<main id="main">
-    <section class="page-hero page-hero--residents"><div class="shell"><p class="eyebrow eyebrow--light">Все работы Веры</p><h1>Жители Мастерской</h1><p class="lede lede--light">Готовых можно приобрести, проданные остаются в Хрониках, а будущих — увидеть в процессе рождения.</p></div></section>
+    <section class="page-hero page-hero--residents"><div class="shell"><p class="eyebrow eyebrow--light">Все работы Веры</p><h1>Жители Мастерской</h1><p class="lede lede--light">Свободных можно забрать сразу, будущие рождаются прямо сейчас, а проданные остаются в Хрониках.</p></div></section>
     <div class="filter-dock"><div class="shell filters" data-filters>
       <button class="filter-button" aria-pressed="true" data-filter="all">Все Миры</button>
       ${content.collections.map((collection) => `<button class="filter-button" aria-pressed="false" data-filter="${esc(collection.id)}">${esc(collection.name)}</button>`).join('')}
@@ -1769,7 +1769,7 @@ function createResident() {
       <div class="creation-panel"><p class="eyebrow">Первый разговор</p><h2>С чего может начаться новый Житель</h2><p class="lede">Выберите близкое настроение. Это не обещание точной копии, а отправная точка для разговора с Верой.</p>
         <div class="option-grid" data-choice="base">${baseOptions.map((option, index) => `<button class="option ${index === 0 ? 'is-selected' : ''}" type="button" data-title="${option.title}" data-note="${option.note}" data-image="${option.image}"><img src="${option.image}" alt=""><span><b>${option.title}</b><small>${option.note}</small></span></button>`).join('')}</div>
         <p class="creation-note">Размер, материалы, сроки и стоимость Вера обсуждает лично после знакомства с идеей.</p>
-        <div class="contact-actions"><a class="button button--wine" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Написать в Telegram</a><a class="button button--line" href="https://www.instagram.com/vera.romanycheva.23" target="_blank" rel="noreferrer">Instagram</a></div>
+        <div class="contact-actions"><a class="button button--wine" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Написать в Telegram</a><a class="button button--line" href="https://t.me/masterskayaver" target="_blank" rel="noreferrer">Канал Мастерской</a></div>
       </div>
     </div></section>
   </main>`);
@@ -1949,7 +1949,7 @@ function contact() {
   paint(app, `<main id="main">
     <section class="page-hero page-hero--contact"><div class="shell"><p class="eyebrow eyebrow--light">Связь с Мастерской</p><h1>Написать Вере</h1><p class="lede lede--light">О готовой работе, будущем Жителе или доставке — без посредников.</p></div></section>
     <section class="section section--paper"><div class="shell contact-grid">
-      <div class="contact-card"><p class="eyebrow">Telegram</p><h2>Самый быстрый способ связаться</h2><p>${resident ? `Вы спрашиваете о работе «${esc(resident.name)}». Сообщение уже будет подготовлено.` : 'Вера лично ответит на вопросы о наличии, стоимости, сроках и индивидуальной работе.'}</p><div class="contact-actions"><a class="button button--wine" href="https://t.me/vera120700?text=${telegramText}" target="_blank" rel="noreferrer">Открыть Telegram</a><a class="button button--line" href="https://www.instagram.com/vera.romanycheva.23" target="_blank" rel="noreferrer">Instagram</a></div><p class="contact-channel">Смотреть готовые работы и процесс: <a class="text-link" href="https://t.me/masterskayaver" target="_blank" rel="noreferrer">t.me/masterskayaver →</a></p></div>
+      <div class="contact-card"><p class="eyebrow">Telegram</p><h2>Самый быстрый способ</h2><p>${resident ? `Вы спрашиваете о работе «${esc(resident.name)}». Сообщение уже будет подготовлено.` : 'Вера лично ответит на вопросы о наличии, стоимости, сроках и индивидуальной работе.'}</p><div class="contact-actions"><a class="button button--wine" href="https://t.me/vera120700?text=${telegramText}" target="_blank" rel="noreferrer">Открыть Telegram</a><a class="button button--line" href="https://t.me/masterskayaver" target="_blank" rel="noreferrer">Канал Мастерской</a></div><p class="contact-channel">В канале — готовые работы и процесс, в личных сообщениях — ответы на вопросы.</p></div>
       <div class="contact-card contact-card--dark"><p class="eyebrow eyebrow--light">Что можно уточнить</p><ul class="contact-list"><li><span>01</span>Есть ли Житель в наличии</li><li><span>02</span>Стоимость и доставка</li><li><span>03</span>Идея индивидуальной работы</li><li><span>04</span>Подарочный набор</li></ul></div>
     </div></section>
     <section id="write" class="section section--paper contact-form-section"><div class="shell">
@@ -1971,7 +1971,7 @@ function contact() {
         </label>
         <div class="contact-form__foot">
           <button class="button button--forest" type="submit" data-inquiry-submit>Отправить Вере</button>
-          <p class="contact-form__note" data-inquiry-note role="status" aria-live="polite">Ответ придёт лично от Веры — обычно в течение дня.</p>
+          <p class="contact-form__note" data-inquiry-note role="status" aria-live="polite">Ответит Вера лично — она читает все письма сама.</p>
         </div>
       </form>
     </div></section>
