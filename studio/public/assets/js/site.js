@@ -1122,8 +1122,8 @@ function home() {
       <div class="home-v2-hero__shade"></div>
       <div class="shell home-v2-hero__layout">
         <div class="home-v2-hero__copy">
-          <h1><span>Мастерская</span><span>сказочных созданий</span></h1>
-          <p>Заберите кусочек сказки домой —<br>каждое создание здесь в единственном экземпляре.</p>
+          <h1><span>Сказки, которые</span><span>можно взять в руки</span></h1>
+          <p>Драконы, щелкунчики и лесные существа —<br>вылеплены и расписаны вручную.</p>
           <div class="home-v2-actions">
             <a class="button button--forest" href="/residents.html">Смотреть готовые работы <span aria-hidden="true">→</span></a>
             <a class="button button--gold-outline" href="/contact.html">Заказать своего</a>
