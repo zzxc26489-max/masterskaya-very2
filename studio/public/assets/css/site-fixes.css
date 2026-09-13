@@ -696,3 +696,46 @@ html:has(body.menu-open) { overflow: hidden; }
   .contact-form__foot .button { width: 100%; min-width: 0; }
   .contact-form__note { font-size: .85rem; }
 }
+
+/* ——— Страница «Жители» на телефоне ———
+   Семнадцать карточек в один столбец плюс пять полноэкранных заголовков
+   Миров давали 13 370px — почти шестнадцать экранов. Человек, который
+   просто хочет посмотреть работы, мотал их две минуты. */
+@media (max-width: 50rem) {
+  .resident-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: .7rem; }
+
+  .resident-card { border-radius: .8rem; }
+  .resident-card__image { aspect-ratio: 1 !important; }
+  /* В узкой карточке сначала имя, потом цена: «3 000 ₽ · Щелкунчик»
+     читается задом наперёд. */
+  .resident-card__body {
+    display: flex;
+    flex-direction: column;
+    padding: .6rem .7rem .75rem;
+  }
+
+  .resident-card__body h3 { order: 1; margin-bottom: .35rem; }
+  .resident-card__meta { order: 2; }
+  .resident-card__meta { gap: .3rem .5rem; }
+  .resident-card h3 { font-size: 1.12rem; line-height: 1.05; }
+
+  /* В колонке шириной ~170px описание и две кнопки не живут: вместо них
+     работает сама карточка — она ведёт в Хронику, где есть и цена, и
+     кнопка в первом экране, и панель снизу. */
+  .resident-card__body > p { display: none; }
+  .resident-card__body .cluster { display: none; }
+  .resident-card .status { min-height: 1.35rem; padding: .12rem .45rem; font-size: .68rem; }
+  .resident-card .price { font-size: .92rem; }
+  .resident-card .stock { font-size: .74rem; }
+
+  /* Подпись Мира поверх фотографии была 9px — нечитаемо. */
+  .resident-card__world { font-size: .66rem; letter-spacing: .12em; }
+
+  /* Заголовок Мира занимал по половине экрана каждый — пять раз подряд. */
+  .residents-world { min-height: 0; padding: 0; }
+  .residents-world__inner { padding-block: 1.8rem 2rem; }
+  .residents-world__head { gap: .7rem; }
+  .residents-world__head h2 { margin-bottom: .4rem; }
+  .residents-world__head p:not(.eyebrow) { font-size: .9rem; line-height: 1.5; }
+  .residents-world__head .button { width: 100%; }
+}
