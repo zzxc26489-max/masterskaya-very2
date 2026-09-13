@@ -1952,6 +1952,30 @@ function contact() {
       <div class="contact-card"><p class="eyebrow">Telegram</p><h2>Самый быстрый способ связаться</h2><p>${resident ? `Вы спрашиваете о работе «${esc(resident.name)}». Сообщение уже будет подготовлено.` : 'Вера лично ответит на вопросы о наличии, стоимости, сроках и индивидуальной работе.'}</p><div class="contact-actions"><a class="button button--wine" href="https://t.me/vera120700?text=${telegramText}" target="_blank" rel="noreferrer">Открыть Telegram</a><a class="button button--line" href="https://www.instagram.com/vera.romanycheva.23" target="_blank" rel="noreferrer">Instagram</a></div><p class="contact-channel">Смотреть готовые работы и процесс: <a class="text-link" href="https://t.me/masterskayaver" target="_blank" rel="noreferrer">t.me/masterskayaver →</a></p></div>
       <div class="contact-card contact-card--dark"><p class="eyebrow eyebrow--light">Что можно уточнить</p><ul class="contact-list"><li><span>01</span>Есть ли Житель в наличии</li><li><span>02</span>Стоимость и доставка</li><li><span>03</span>Идея индивидуальной работы</li><li><span>04</span>Подарочный набор</li></ul></div>
     </div></section>
+    <section id="write" class="section section--paper contact-form-section"><div class="shell">
+      <header class="section-head" data-reveal><div><p class="eyebrow">Если удобнее письмом</p><h2>Оставьте сообщение</h2><p class="lede">Вера прочитает его сама и ответит тем способом, который вы укажете. Это то же самое письмо, что в Telegram, — просто без мессенджера.</p></div></header>
+      <form class="contact-form" data-inquiry-form novalidate data-reveal>
+        <div class="contact-form__row">
+          <label class="field">
+            <span class="field__label">Как вас зовут</span>
+            <input class="field__input" type="text" name="name" required maxlength="120" autocomplete="name" placeholder="Имя">
+          </label>
+          <label class="field">
+            <span class="field__label">Как ответить</span>
+            <input class="field__input" type="text" name="contact" required maxlength="250" placeholder="Telegram, почта или телефон">
+          </label>
+        </div>
+        <label class="field">
+          <span class="field__label">О ком или о чём речь</span>
+          <textarea class="field__input field__input--area" name="message" required maxlength="3000" rows="5" placeholder="${resident ? `Хочу узнать о Жителе «${esc(resident.name)}»` : 'Расскажите, кто приглянулся или кого хочется — можно просто настроением'}">${resident ? `Здравствуйте! Хочу узнать о Жителе «${esc(resident.name)}».` : ''}</textarea>
+        </label>
+        <div class="contact-form__foot">
+          <button class="button button--forest" type="submit" data-inquiry-submit>Отправить Вере</button>
+          <p class="contact-form__note" data-inquiry-note role="status" aria-live="polite">Ответ придёт лично от Веры — обычно в течение дня.</p>
+        </div>
+      </form>
+    </div></section>
+
     <section class="section section--night"><div class="shell">
       <header class="section-head section-head--light" data-reveal><div><p class="eyebrow eyebrow--light">Прежде чем писать</p><h2>Доставка и оплата</h2></div></header>
       <div class="facts facts--wide facts--light" data-reveal>
@@ -1963,7 +1987,65 @@ function contact() {
     </div></section>
   </main>`);
   document.title = 'Связаться с Верой — Мастерская Веры';
+  bindInquiryForm();
   enableAtmosphereMotion();
+}
+
+// Форма писала прямо в админку и до сих пор была единственным, чего на
+// сайте не хватало: сервер принимал заявки, админка их показывала, а
+// отправить их было неоткуда.
+function bindInquiryForm() {
+  const form = document.querySelector('[data-inquiry-form]');
+  if (!form) return;
+  const note = form.querySelector('[data-inquiry-note]');
+  const submit = form.querySelector('[data-inquiry-submit]');
+  const idle = note.textContent;
+
+  const say = (text, state) => {
+    note.textContent = text;
+    note.dataset.state = state || '';
+  };
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const payload = {
+      name: String(data.get('name') || '').trim(),
+      contact: String(data.get('contact') || '').trim(),
+      message: String(data.get('message') || '').trim()
+    };
+    // Проверяем на месте: у сервера тот же набор обязательных полей, но
+    // ждать ответа ради «заполните имя» незачем.
+    const missing = Object.entries(payload).find(([, value]) => !value);
+    if (missing) {
+      say('Заполните имя, способ связи и сообщение — иначе Вере будет некуда ответить.', 'error');
+      form.querySelector(`[name="${missing[0]}"]`)?.focus();
+      return;
+    }
+
+    submit.disabled = true;
+    say('Отправляем…', '');
+    try {
+      const response = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || 'Не получилось отправить.');
+      }
+      form.reset();
+      say('Письмо у Веры. Она ответит тем способом, который вы указали.', 'done');
+    } catch (error) {
+      // Сайт может стоять на статическом хостинге, где принимать заявки
+      // некому, — тогда честно отправляем человека в Telegram.
+      say(`${error.message} Напишите Вере в Telegram — так точно дойдёт.`, 'error');
+    } finally {
+      submit.disabled = false;
+      window.setTimeout(() => note.dataset.state === 'done' && say(idle, ''), 9000);
+    }
+  });
 }
 
 function bindLightbox() {

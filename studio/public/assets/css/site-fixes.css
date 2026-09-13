@@ -625,3 +625,74 @@ html:has(body.menu-open) { overflow: hidden; }
 .page-hero { padding: clamp(3rem, 6vw, 5.5rem) 0 clamp(2.6rem, 5vw, 4.5rem); }
 .page-hero h1 { font-size: clamp(2.6rem, 5.2vw, 4.6rem); }
 .page-hero .lede { max-width: 44rem; }
+
+/* ——— Форма заявки ———
+   Сервер принимал заявки, админка их показывала, а отправить было неоткуда:
+   на сайте не было ни одного поля ввода. */
+.contact-form {
+  display: grid;
+  gap: 1rem;
+  max-width: 52rem;
+}
+
+.contact-form__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field { display: grid; gap: .45rem; }
+.field__label {
+  color: #7a5d34;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.field__input {
+  width: 100%;
+  min-height: 3.2rem;
+  padding: .8rem 1rem;
+  border: 1px solid #d9c4a4;
+  border-radius: .8rem;
+  background: #fffdf8;
+  color: #261a15;
+  font-size: 1rem;
+  transition: border-color .25s, box-shadow .25s;
+}
+
+.field__input::placeholder { color: #a99277; }
+.field__input:hover { border-color: #b78a4f; }
+.field__input:focus-visible {
+  border-color: #17451f;
+  outline: 0;
+  box-shadow: 0 0 0 3px rgb(23 69 31 / .16);
+}
+
+.field__input--area { min-height: 9rem; resize: vertical; line-height: 1.55; }
+
+.contact-form__foot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .8rem 1.2rem;
+  margin-top: .3rem;
+}
+
+.contact-form__foot .button { min-width: 13rem; }
+.contact-form__note {
+  margin: 0;
+  color: #76665a;
+  font-size: .9rem;
+  line-height: 1.5;
+}
+
+.contact-form__note[data-state='done'] { color: #1f5a2a; font-weight: 600; }
+.contact-form__note[data-state='error'] { color: #8a2f2f; font-weight: 600; }
+
+@media (max-width: 50rem) {
+  .contact-form__row { grid-template-columns: 1fr; }
+  .contact-form__foot .button { width: 100%; min-width: 0; }
+  .contact-form__note { font-size: .85rem; }
+}
