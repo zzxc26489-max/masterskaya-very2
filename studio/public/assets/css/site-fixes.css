@@ -200,3 +200,59 @@
 @media (max-width: 34rem) {
   .filters { padding-inline: .68rem; }
 }
+
+/* ——— Карточка Жителя на странице «Жители» ———
+   Содержимое у неё было правильное с самого начала, не хватало оправы:
+   рамка терялась, карточка лежала плоско и никак не отвечала на курсор,
+   тогда как витрина на главной уже поднимается и светлеет кромкой. */
+.resident-card {
+  border-color: #d9c4a4;
+  border-radius: 1rem;
+  box-shadow: 0 1rem 2.5rem rgb(23 13 8 / .12);
+}
+
+.resident-card__image { aspect-ratio: 4 / 3.6; }
+
+/* Цена — то, за чем сюда пришли: тот же вес и цвет, что на главной.
+   Вишня остаётся для акцентов внутри текста, а не для цифры. */
+.resident-card .price {
+  color: #261a15;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.resident-card .stock {
+  color: #76665a;
+  font-size: .88rem;
+  font-weight: 600;
+}
+
+.resident-card__world {
+  letter-spacing: .18em;
+  text-shadow: 0 .25rem .8rem rgb(18 13 11 / .7);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .resident-card {
+    transition:
+      transform .38s var(--ease),
+      box-shadow .38s var(--ease),
+      border-color .3s var(--ease);
+  }
+
+  .resident-card:hover {
+    transform: translateY(-.45rem);
+    border-color: #b78a4f;
+    box-shadow: 0 1.5rem 2.8rem rgb(38 26 21 / .22);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resident-card { transition: none !important; }
+  .resident-card:hover { transform: none !important; }
+}
+
+@media (max-width: 50rem) {
+  .resident-card__image { aspect-ratio: 4 / 3.2; }
+  .resident-card .price { font-size: .98rem; }
+}
