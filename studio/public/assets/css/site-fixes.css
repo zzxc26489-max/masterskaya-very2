@@ -739,3 +739,83 @@ html:has(body.menu-open) { overflow: hidden; }
   .residents-world__head p:not(.eyebrow) { font-size: .9rem; line-height: 1.5; }
   .residents-world__head .button { width: 100%; }
 }
+
+/* ——— Кегль на телефоне ———
+   Аудит на 390px: надзаголовки 10,88px в 39 местах, подписи в meta-list
+   9,44px, метка на фотографии Жителя 7,68px, имена в переключателе работ
+   9,92px. Для капса на телефоне комфортный минимум — 11–12px, для обычного
+   текста 13–14px. */
+@media (max-width: 50rem) {
+  /* Класс продублирован намеренно: у нескольких размеров нашлись более
+     специфичные источники вроде .resident-card .status, и одиночный класс
+     до них не дотягивался. */
+  .eyebrow.eyebrow { font-size: .75rem; letter-spacing: .16em; }
+  .status.status { font-size: .72rem; min-height: 1.5rem; }
+  .resident-card__world.resident-card__world { font-size: .7rem; }
+  .world-badge.world-badge { font-size: .74rem; }
+  .field__label.field__label { font-size: .74rem; letter-spacing: .14em; }
+  .meta-list dt,
+  dl.meta-list dt { font-size: .74rem !important; letter-spacing: .14em; }
+  .world-resident__scene span,
+  .world-resident__scene span.world-resident__note { font-size: .72rem !important; }
+  small { font-size: .82rem; }
+
+  /* Подписи в карточке Хроники: «Мир», «Стоимость», «Характер». */
+  .meta-list dt { font-size: .72rem; letter-spacing: .14em; }
+  .meta-list dd { font-size: .95rem; }
+
+  /* Метка поверх фотографии Жителя на странице Мира. */
+  .world-resident__scene span { font-size: .68rem !important; letter-spacing: .1em; }
+
+  /* Переключатель работ внутри Мира — по нему же и попадают пальцем. */
+  .world-switch button span,
+  .world-resident-switch span { font-size: .8rem; }
+
+  /* Бейджи статуса нигде не должны опускаться ниже 11px. */
+  .status { font-size: .7rem; }
+
+  /* Обычный текст: описания, факты, пункты списков, ссылки-стрелки. */
+  .fact span,
+  .facts span,
+  .contact-list li,
+  .meta-list dd,
+  .text-link,
+  .world-chapter__gift,
+  .world-chapter__count,
+  .home-world-card__lives,
+  .home-world-card__tally,
+  .home-resident-card__price { font-size: .84rem; }
+
+  .home-footer-heading { font-size: .76rem; }
+}
+
+/* Остатки мелкого текста, у которых нашлись более специфичные источники
+   в home-redesign.css и в блоках страницы Мира. */
+@media (max-width: 50rem) {
+  .home-redesign .eyebrow,
+  .home-v2-section-head .eyebrow,
+  .home-v2-workshop__copy .eyebrow { font-size: .75rem !important; letter-spacing: .16em !important; }
+
+  .home-v2-section-head--residents p { font-size: .66rem !important; letter-spacing: .14em; }
+
+  .world-resident__scene span,
+  .world-stage span:not(.status) { font-size: .74rem !important; }
+
+  .world-switch button span,
+  .world-switch span,
+  [class*='switch'] button span { font-size: .82rem !important; }
+
+  dl dt { font-size: .74rem !important; letter-spacing: .14em; }
+
+  .create-option small,
+  span > small { font-size: .82rem !important; }
+}
+
+@media (max-width: 50rem) {
+  /* Имена работ в переключателе Мира — по ним же и попадают пальцем. */
+  .world-slider__rail button span,
+  .world-slider__rail span { font-size: .84rem !important; }
+
+  /* Подзаголовок витрины на главной. */
+  .home-v2-section-head--residents p { font-size: .7rem !important; }
+}
