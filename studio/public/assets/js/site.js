@@ -726,7 +726,7 @@ function setShell(active) {
     header.innerHTML = `<a class="skip-link" href="#main">Перейти к содержанию</a>
       <div class="site-header home-site-header"><div class="header-inner">
         <a class="brand" href="/" aria-label="Мастерская Веры — главная">
-          <img class="brand__logo" src="/media/brand/logo-mark-dark.webp" alt="" width="96" height="96">
+          <img class="brand__logo" src="/media/brand/logo-mark.webp" alt="" width="96" height="96">
           <span class="brand__name">Мастерская<br>Веры</span>
         </a>
         <nav class="main-nav" id="main-nav" aria-label="Основная навигация">
@@ -747,7 +747,7 @@ function setShell(active) {
         <div class="home-footer-grid">
           <div class="home-footer-brand">
             <a class="brand" href="/">
-              <img class="brand__logo" src="/media/brand/logo-mark-dark.webp" alt="" width="96" height="96">
+              <img class="brand__logo" src="/media/brand/logo-mark.webp" alt="" width="96" height="96">
               <span class="brand__name">Мастерская<br>Веры</span>
             </a>
             <p>Авторские фигурки ручной работы. Каждый Житель — в единственном экземпляре.</p>
@@ -932,12 +932,6 @@ const HOME_WORLD_COPY = {
   home: ['Домашние легенды', 'Истории, которые живут рядом', '/media/scenes/rocking-horse.webp', '50% center']
 };
 
-function homeFeatureIcon(type) {
-  if (type === 'hand') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-4 0v4-5a2 2 0 0 0-4 0v5-3a2 2 0 0 0-4 0v5-1a2 2 0 0 0-4 0v3c0 4.4 3.6 8 8 8h2a8 8 0 0 0 8-8v-3a2 2 0 0 0-2-2Z"/></svg>`;
-  if (type === 'palette') return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0 0 18h1.5a1.5 1.5 0 0 0 0-3H12a2 2 0 0 1 0-4h3a6 6 0 0 0 0-12h-3Z"/><path d="M7.5 10h.01M9.5 6.5h.01M14 6h.01M17 9h.01"/></svg>`;
-  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 6-7 12L5 9l7-6Z"/><path d="m5 9 7 2 7-2M12 3v8"/></svg>`;
-}
-
 function homeWorldCard(collection, index) {
   const [title, description, image, focus = 'center'] = HOME_WORLD_COPY[collection.theme] || [collection.name, collection.description, collection.sceneImage || collection.image];
   return `<article class="home-world-card theme-${esc(collection.theme)}" data-home-world-card>
@@ -962,7 +956,9 @@ function homeResidentCard(resident) {
       <h3>${esc(resident.shortName || resident.name)}</h3>
       <p>${esc(price)}</p>
     </div>
-    <a class="home-card-arrow" href="/chronicle.html?resident=${encodeURIComponent(resident.slug)}" aria-label="Открыть Хронику: ${esc(resident.shortName || resident.name)}">→</a>
+    <a class="home-card-arrow" href="/chronicle.html?resident=${encodeURIComponent(resident.slug)}" aria-label="Открыть Хронику: ${esc(resident.shortName || resident.name)}">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+    </a>
   </article>`;
 }
 
@@ -1003,11 +999,13 @@ function bindHomeWorldCarousel() {
 }
 
 function home() {
-  const residents = [
-    byId(content.residents, 'forest-dragon'),
-    byId(content.residents, 'nutcracker-ernst'),
-    byId(content.residents, 'gorynych-green')
+  const residentOrder = [
+    'forest-dragon', 'nutcracker-ernst', 'gorynych-green', 'mouse-king',
+    'gorynych-amber', 'forest-mushrooms', 'chicken-sun', 'rocking-horse',
+    'puss-in-boots', 'sirin', 'little-humpbacked-horse', 'girl-with-nutcracker',
+    'mouse-queen', 'baby-dragon', 'soul-regan', 'mermaid'
   ];
+  const residents = residentOrder.map((id) => byId(content.residents, id)).filter(Boolean);
 
   paint(app, `<main id="main" class="home-redesign">
     <section class="home-v2-hero">
@@ -1039,17 +1037,17 @@ function home() {
             <a class="button button--forest" href="/about.html">О мастерской <span aria-hidden="true">→</span></a>
           </div>
           <div class="home-process-prints" aria-label="Как рождается Житель">
-            <figure class="home-process-print home-process-print--one"><img src="/media/process/01-wire.webp" alt="Проволочный каркас дракона" fetchpriority="low"></figure>
-            <figure class="home-process-print home-process-print--two"><img src="/media/process/03-first-clay.webp" alt="Ручная лепка дракона из глины" fetchpriority="low"></figure>
-            <figure class="home-process-print home-process-print--three"><img src="/media/process/08-finished.webp" alt="Готовый сине-белый дракон" fetchpriority="low"></figure>
+            <figure class="home-process-print home-process-print--one"><img src="/media/process/02-foil.webp" alt="Основа будущего Жителя из проволоки и фольги" fetchpriority="low"><figcaption><span>01</span><b>Основа</b><small>Сначала рождается движение</small></figcaption></figure>
+            <figure class="home-process-print home-process-print--two"><img src="/media/process/06-unpainted.webp" alt="Житель после ручной лепки" fetchpriority="low"><figcaption><span>02</span><b>Характер</b><small>Форма обретает свои черты</small></figcaption></figure>
+            <figure class="home-process-print home-process-print--three"><img src="/media/process/08-finished.webp" alt="Готовый сине-белый дракон" fetchpriority="low"><figcaption><span>03</span><b>Последний штрих</b><small>Роспись завершает историю</small></figcaption></figure>
             <span class="home-process-note home-process-note--start" aria-hidden="true">Сначала<br>идея</span>
             <span class="home-process-note home-process-note--finish" aria-hidden="true">А потом жизнь</span>
           </div>
         </div>
         <div class="home-features">
-          <div class="home-feature"><span class="home-feature__icon">${homeFeatureIcon('hand')}</span><span><b>Ручная лепка</b><small>Каждая фигурка создаётся вручную, без форм</small></span></div>
-          <div class="home-feature"><span class="home-feature__icon">${homeFeatureIcon('palette')}</span><span><b>Авторская роспись</b><small>Уникальные цвета и характеры</small></span></div>
-          <div class="home-feature"><span class="home-feature__icon">${homeFeatureIcon('diamond')}</span><span><b>Один экземпляр</b><small>Таких больше не будет</small></span></div>
+          <div class="home-feature"><span class="home-feature__number">01</span><span><b>Ручная лепка</b><small>Каждая фигурка создаётся вручную, без форм</small></span></div>
+          <div class="home-feature"><span class="home-feature__number">02</span><span><b>Авторская роспись</b><small>Уникальные цвета и характеры</small></span></div>
+          <div class="home-feature"><span class="home-feature__number">03</span><span><b>Один экземпляр</b><small>Таких больше не будет</small></span></div>
         </div>
       </div>
     </section>
