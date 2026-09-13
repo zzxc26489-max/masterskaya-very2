@@ -1557,18 +1557,23 @@ function collectionPage() {
 
   paint(app, `<main id="main">
     <section class="world-stage theme-${esc(collection.theme)}" style="--world-accent:${esc(collection.accent)}" data-parallax>
-      <img class="world-stage__scene" src="${esc(stageResident?.sceneImage || collection.sceneImage || collection.image)}" alt="${stageResident ? esc(`${stageResident.shortName || stageResident.name} в мире «${collection.name}»`) : ''}" fetchpriority="high">
-      <div class="world-stage__shade"></div>
-      ${atmosphereMarkup(collection.theme)}
-      <div class="shell world-stage__intro">
-        <a class="world-back" href="/collections.html">← Все Миры</a>
-        <p class="eyebrow eyebrow--light">Мир Мастерской</p>
-        <h1>${esc(collection.name)}</h1>
-        <p>${esc(collection.description)}</p>
-        <div class="world-stage__facts">
-          <span class="world-badge">${residentsInWorld.length} ${residentWord(residentsInWorld.length)}</span>
-          ${available.length ? `<span class="world-badge world-badge--free">${available.length} можно забрать домой</span>` : ''}
+      <div class="shell world-stage__grid">
+        <div class="world-stage__intro">
+          <a class="world-back" href="/collections.html">← Все Миры</a>
+          <p class="eyebrow eyebrow--light">Мир Мастерской</p>
+          <h1>${esc(collection.name)}</h1>
+          <p>${esc(collection.description)}</p>
+          <div class="world-stage__facts">
+            <span class="world-badge">${residentsInWorld.length} ${residentWord(residentsInWorld.length)}</span>
+            ${available.length ? `<span class="world-badge world-badge--free">${available.length} можно забрать домой</span>` : ''}
+          </div>
         </div>
+        <figure class="world-stage__frame">
+          <img class="world-stage__scene" src="${esc(stageResident?.sceneImage || collection.sceneImage || collection.image)}" alt="${stageResident ? esc(`${stageResident.shortName || stageResident.name} в мире «${collection.name}»`) : ''}" fetchpriority="high">
+          <div class="world-stage__shade"></div>
+          ${atmosphereMarkup(collection.theme)}
+          ${stageResident ? `<figcaption>${esc(stageResident.shortName || stageResident.name)}</figcaption>` : ''}
+        </figure>
       </div>
     </section>
 

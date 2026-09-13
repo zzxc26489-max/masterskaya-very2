@@ -864,44 +864,35 @@ html:has(body.menu-open) { overflow: hidden; }
 
 .world-resident__scene img { filter: saturate(.98) contrast(1.02) brightness(1.06) !important; }
 
-@media (max-width: 50rem) {
-  /* На узком экране кадр режется по бокам, и Житель оказывался ровно под
-     текстовой колонкой: сдвигаем композицию так, чтобы он читался выше
-     заголовка, а текст ложился на свободную часть. */
-  .world-stage__scene { object-position: 62% 22% !important; }
-  .world-stage__shade {
-    background:
-      linear-gradient(0deg, #0f0c0a 0, rgb(8 7 6 / .88) 26%, rgb(8 7 6 / .5) 46%, transparent 72%) !important;
-  }
-}
-
 /* ——— Фон Мира ———
-   Орнаментальная подложка под тёмными секциями Мира. Рамка идёт по краям,
-   центр чистый — текст ложится в него, а не на узор. Картинка не тайл, а
-   готовая композиция: прибита к верху во всю ширину, низ добирает ровный
-   ночной цвет. Адрес приходит из переменной, поэтому новый Мир
-   подключается одной строкой. */
-.world-residents-section,
-.world-invite {
-  position: relative;
-  isolation: isolate;
+   Подложка лежала полосами: на секции «Жители» и на приглашении, а шапка
+   была отдельной тёмной плитой во всю ширину. Получалось, что снег шёл
+   только по фотографии наверху и обрывался, как только начинался узор, —
+   потому что непрозрачная подложка закрывала общий воздух страницы.
+
+   Теперь узор — это фон всей страницы Мира: он лежит на том же
+   фиксированном слое `.world-air`, что и снег, но под ним. Снег идёт
+   поверх узора сверху донизу и нигде не обрывается, а секции больше
+   ничего не закрывают. Картинка не тайл, а готовая композиция: рамка по
+   краям, чистый центр. Широкие подложки сняты 16:9, мобильные 9:16 — ровно
+   в пропорции экрана, поэтому слой берёт их `cover`: рамка ложится по всем
+   четырём краям экрана и стоит на месте, пока читатель прокручивает
+   страницу. Адрес приходит из переменной, поэтому новый Мир подключается
+   одной строкой. */
+.world-page .world-air {
+  background:
+    var(--world-bg, none) center center / cover no-repeat,
+    #120d0b;
 }
 
-.world-residents-section::before,
-.world-invite::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  background:
-    /* Мягкая тень под заголовком: без неё надзаголовок ложится прямо на
-       узор в левом верхнем углу и теряет контраст. */
-    radial-gradient(ellipse 62% 42% at 26% 18%, rgb(18 13 11 / .8), transparent 70%),
-    linear-gradient(0deg, #120d0b 0, rgb(18 13 11 / .35) 42%, transparent 78%),
-    var(--world-bg, none) top center / 100% auto no-repeat,
-    #120d0b;
-  opacity: .82;
-}
+/* Узор не должен спорить с текстом: общий воздух Мира и так кладёт сверху
+   цветную заливку, а виньетка добирает края. */
+.world-page .world-air__wash { opacity: .55; }
+
+/* Плоская заливка секций закрывала и узор, и снег. */
+.world-page .world-stage,
+.world-page .world-residents-section,
+.world-page .world-invite { background: transparent !important; }
 
 .theme-russian { --world-bg: url('../../media/patterns/russian-bg.webp'); }
 .theme-winter { --world-bg: url('../../media/patterns/winter-bg.webp'); }
@@ -915,12 +906,166 @@ html:has(body.menu-open) { overflow: hidden; }
   .theme-forest { --world-bg: url('../../media/patterns/forest-bg-mobile.webp'); }
   .theme-dragons { --world-bg: url('../../media/patterns/dragons-bg-mobile.webp'); }
   .theme-home { --world-bg: url('../../media/patterns/home-bg-mobile.webp'); }
+}
 
-  .world-residents-section::before,
-  .world-invite::before {
-    background:
-      linear-gradient(0deg, #120d0b 0, rgb(18 13 11 / .4) 46%, transparent 80%),
-      var(--world-bg, none) top center / 100% auto no-repeat,
-      #120d0b;
+/* ——— Шапка Мира: работа в рамке на узоре ———
+   Шапка была тёмной плитой во всю ширину: фотография закрывала верх
+   страницы целиком, и узор, ради которого он и делался, начинался только
+   ниже. Теперь фон Мира виден с первого экрана, а работа стоит на нём
+   кадром в рамке — как картина на стене, а не как обои. */
+.world-stage { overflow: visible !important; }
+
+.world-stage__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(1.6rem, 3.5vw, 3.4rem);
+  align-items: center;
+  padding-top: clamp(2.6rem, 5vw, 4.6rem);
+  padding-bottom: clamp(2.6rem, 5vw, 4.6rem);
+}
+
+.world-page .world-stage__intro {
+  min-height: 0 !important;
+  padding: 0 !important;
+}
+
+.world-stage__frame {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid rgb(183 138 79 / .42);
+  border-radius: 1.3rem;
+  aspect-ratio: 4 / 5;
+  box-shadow: 0 1.8rem 4rem rgb(0 0 0 / .5);
+}
+
+.world-page .world-stage__scene,
+.world-page .world-stage__shade {
+  position: absolute;
+  inset: 0 !important;
+  width: 100%;
+  height: 100% !important;
+}
+
+/* Кадр гасили до brightness(.56), потому что по нему шёл текст. Текст
+   ушёл в свою колонку — гасить больше нечего. */
+.world-page .world-stage__scene {
+  z-index: 0;
+  filter: saturate(.98) contrast(1.03) brightness(1.05) !important;
+  object-position: 62% center !important;
+}
+
+/* От шторы осталась только полоса под подписью у нижнего края. */
+.world-page .world-stage__shade {
+  z-index: 1;
+  background: linear-gradient(0deg, rgb(8 7 6 / .82) 0, rgb(8 7 6 / .3) 18%, transparent 42%) !important;
+}
+
+.world-stage__frame > .atmosphere { z-index: 2; }
+
+.world-stage__frame figcaption {
+  position: absolute;
+  z-index: 3;
+  right: 1.1rem;
+  bottom: .95rem;
+  left: 1.1rem;
+  color: rgb(255 239 218 / .82);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+/* Заголовок и текст теперь лежат на узоре, а не на затемнённом фото.
+   Подложка под ними мягкая и без края: сплошной прямоугольник читался как
+   вторая плита и возвращал ровно то, от чего уходили. */
+.world-stage__intro::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -4rem -5rem;
+  background: radial-gradient(70% 60% at 38% 50%, rgb(12 9 8 / .72) 0, rgb(12 9 8 / .42) 52%, transparent 100%);
+}
+
+.world-page .world-stage__intro { position: relative; isolation: isolate; }
+
+@media (max-width: 62rem) {
+  .world-stage__grid {
+    grid-template-columns: 1fr;
+    gap: clamp(1.4rem, 4vw, 2.2rem);
   }
+
+  /* Сначала имя Мира на его узоре, потом работа: человек должен понять,
+     куда зашёл, прежде чем смотреть. */
+  .world-stage__frame { aspect-ratio: 5 / 4; }
+  .world-page .world-stage__scene { object-position: 62% 36% !important; }
+  .world-stage__intro::before { inset: -2rem -1.6rem; }
+}
+
+/* ——— Карточки Миров: видно работу, а не темноту ———
+   Фотографию гасили трижды: brightness(.7) на самом кадре, плотная штора
+   поверх (до .97 у нижнего края) и воздух Мира сверху. На телефоне
+   Щелкунчик и лесной дракон читались как тёмное пятно. Та же правка, что
+   уже сделана в шапке Мира: кадр возвращён к нормальной яркости, а штора
+   осталась только там, где под ней лежит текст. */
+.world-chapter__scene {
+  filter: saturate(.95) contrast(1.04) brightness(1.06) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .world-chapter:hover .world-chapter__scene {
+    filter: saturate(1.06) contrast(1.05) brightness(1.14) !important;
+  }
+}
+
+.world-chapter__shade {
+  background:
+    linear-gradient(0deg, rgb(10 8 7 / .66) 0, rgb(10 8 7 / .3) 30%, transparent 56%),
+    linear-gradient(90deg, rgb(10 8 7 / .5), rgb(10 8 7 / .12) 44%, transparent 64%) !important;
+}
+
+.world-chapter:not(:first-child) .world-chapter__shade {
+  background:
+    linear-gradient(0deg, rgb(10 8 7 / .68) 0, rgb(10 8 7 / .32) 32%, transparent 58%),
+    linear-gradient(90deg, rgb(10 8 7 / .3), transparent 48%) !important;
+}
+
+@media (max-width: 50rem) {
+  /* Текст занимает всю ширину карточки, поэтому боковая штора здесь лишняя:
+     она гасила кадр и ничего не защищала. Остаётся только нижняя. */
+  .world-chapter__shade,
+  .world-chapter:not(:first-child) .world-chapter__shade {
+    background:
+      linear-gradient(0deg, rgb(9 7 6 / .7) 0, rgb(9 7 6 / .34) 26%, transparent 54%) !important;
+  }
+
+  /* Кадр режется по высоте, и работа оказывалась ровно под текстовым
+     блоком: композиция сдвинута вверх, в чистую половину карточки. */
+  .world-chapter__scene { object-position: 66% 30% !important; }
+}
+
+/* Заголовок Мира ложится на саму работу: у Щелкунчика это белое лицо и
+   золото мундира, и буквы на них терялись. Тень по букве держит контраст
+   там, где штора уже почти прозрачная. */
+.world-chapter__copy h3,
+.world-chapter__copy > p:not(.eyebrow),
+.world-chapter__copy .eyebrow,
+.world-chapter__number {
+  text-shadow: 0 .12em .5em rgb(8 6 5 / .85);
+}
+
+/* Общая штора карточки рассчитана на тёмный кадр. У «Домашних легенд» фон
+   светлый — лён и солнце, — и там же, где на других Мирах текст лежал на
+   темноте, он лёг на свет: номер и надзаголовок почти пропадали. Поэтому
+   подложка привязана не к карточке, а к самому текстовому блоку: она
+   расходится от нижнего левого угла и растворяется по краям, поэтому
+   работает одинаково и на тёмном кадре, и на светлом. */
+.world-chapter__copy::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -3.4rem -2.6rem -3rem -2.6rem;
+  background: radial-gradient(150% 125% at 18% 100%, rgb(8 6 5 / .9) 0, rgb(8 6 5 / .74) 46%, transparent 80%);
 }
