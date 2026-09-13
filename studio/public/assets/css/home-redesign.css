@@ -751,7 +751,7 @@ body[data-page="home"] .home-site-footer .brand__name { color: #f8ead5; }
   .home-v2-actions { position: absolute; right: 0; bottom: 2.65rem; left: 0; width: 100%; gap: .4rem; }
   .home-v2-actions .button { width: 100%; min-height: 2.8rem; font-size: .76rem; }
   .home-v2-proof { position: absolute; right: 0; bottom: .7rem; left: 0; justify-content: center; margin: 0; font-size: .52rem; }
-  .home-v2-note { top: 10.6rem; right: .6rem; width: 5.4rem; font-size: .95rem; }
+  .home-v2-note { top: 13.2rem; right: .6rem; width: 5.4rem; font-size: .95rem; }
 
   .home-v2-workshop { padding: 2.5rem 0 0; }
   .home-v2-workshop__grid { grid-template-columns: 1fr; gap: 1.35rem; }
@@ -949,11 +949,13 @@ body[data-page="home"] .home-site-footer .brand__name { color: #f8ead5; }
     line-height: 1.38;
   }
 
+  /* Подзаголовок занимает три строки — надпись уходит ниже него,
+     на тёмную часть фотографии. */
   .home-v2-note {
-    top: 5.6rem;
-    right: .05rem;
+    top: 13.4rem;
+    right: .4rem;
     width: 5.6rem;
-    font-size: 1.16rem;
+    font-size: 1.05rem;
   }
 
   .home-v2-actions {
