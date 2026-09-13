@@ -1978,3 +1978,174 @@ body[data-page="home"] .home-site-footer .brand__name { color: #f8ead5; }
   .home-faq__item summary { min-height: 3.4rem; padding: .85rem 1.1rem; font-size: .98rem; }
   .home-faq__answer { padding: 0 1.1rem 1rem; font-size: .9rem; }
 }
+
+/* ——— Хроники: те, кто уже уехал к Хранителю ——— */
+.home-v2-chronicles {
+  position: relative;
+  padding: clamp(3.4rem, 5vw, 5.2rem) 0;
+  border-bottom: 1px solid #b78a4f;
+  background:
+    radial-gradient(circle at 78% 12%, rgb(120 39 43 / .18), transparent 42%),
+    #16100d;
+  color: #f8ead5;
+}
+
+.home-chronicles {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(1.6rem, 3vw, 3rem);
+  align-items: start;
+}
+
+.home-chronicle {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid rgb(183 138 79 / .5);
+  border-radius: 1rem;
+  background: #1a1310;
+}
+
+.home-chronicle__image {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background: #221913;
+}
+
+.home-chronicle__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .7s var(--ease);
+}
+
+.home-chronicle__status {
+  position: absolute;
+  top: .85rem;
+  left: .85rem;
+  box-shadow: 0 .4rem 1rem rgb(23 13 8 / .3);
+}
+
+.home-chronicle__copy { padding: 1.3rem 1.5rem 1.5rem; }
+.home-chronicle__copy h3 {
+  margin-bottom: .5rem;
+  color: #f8ead5;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.home-chronicle__quote {
+  margin-bottom: .9rem;
+  color: #d8c3a3;
+  font: italic 500 1.12rem/1.5 var(--display);
+}
+
+.home-chronicle-stories {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+}
+
+.home-chronicle-story {
+  padding: 1.2rem 1.4rem 1.3rem;
+  border: 1px solid rgb(183 138 79 / .32);
+  border-radius: .9rem;
+  background: rgb(26 19 16 / .7);
+  transition: border-color .3s var(--ease), transform .3s var(--ease);
+}
+
+.home-chronicle-story h3 {
+  margin-bottom: .45rem;
+  color: #f8ead5;
+  font-size: 1.45rem;
+  line-height: 1.1;
+}
+
+.home-chronicle-story p {
+  margin-bottom: .7rem;
+  color: #d8c3a3;
+  font-size: .95rem;
+  line-height: 1.6;
+}
+
+.home-chronicle-note {
+  margin: .2rem 0 0;
+  color: #a99277;
+  font-size: .88rem;
+  line-height: 1.6;
+}
+
+/* ——— Отклик карточек на курсор ———
+   Приподнимаем и подсвечиваем кромку: на тёмном это читается как «золото
+   поймало свет». Фотография внутри тянется чуть медленнее карточки, от
+   этого движение кажется глубже, а не плоским сдвигом. */
+@media (hover: hover) and (pointer: fine) {
+  .home-world-card,
+  .home-resident-card,
+  .home-chronicle,
+  .home-step,
+  .home-faq__item {
+    transition:
+      transform .38s var(--ease),
+      box-shadow .38s var(--ease),
+      border-color .3s var(--ease);
+  }
+
+  .home-world-card:hover,
+  .home-chronicle:hover {
+    transform: translateY(-.45rem);
+    border-color: rgb(232 201 143 / .85);
+    box-shadow: 0 1.6rem 3rem rgb(0 0 0 / .45);
+  }
+
+  .home-resident-card:hover {
+    transform: translateY(-.45rem);
+    border-color: #b78a4f;
+    box-shadow: 0 1.5rem 2.8rem rgb(38 26 21 / .22);
+  }
+
+  .home-chronicle:hover .home-chronicle__image img { transform: scale(1.05); }
+
+  .home-chronicle-story:hover {
+    transform: translateY(-.3rem);
+    border-color: rgb(232 201 143 / .7);
+  }
+
+  /* Шаги не карточки — им хватает подсветки номера и линии слева. */
+  .home-step { transition: background-color .3s var(--ease); }
+  .home-step:hover { background: rgb(183 138 79 / .07); }
+  .home-step__number { transition: color .3s var(--ease), transform .3s var(--ease); }
+  .home-step:hover .home-step__number { color: #7a5d34; transform: translateY(-.15rem); }
+
+  .home-card-arrow { transition: background-color .25s, color .25s, transform .3s var(--ease); }
+  .home-resident-card:hover .home-card-arrow { background: #17451f; border-color: #17451f; color: #fbf4e7; }
+  .home-chip { transition: transform .25s var(--ease), border-color .25s, background-color .25s, color .25s; }
+  .home-chip:hover { transform: translateY(-.1rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-world-card,
+  .home-resident-card,
+  .home-chronicle,
+  .home-chronicle-story,
+  .home-step { transition: none !important; }
+
+  .home-world-card:hover,
+  .home-resident-card:hover,
+  .home-chronicle:hover,
+  .home-chronicle-story:hover { transform: none !important; }
+}
+
+@media (max-width: 62rem) {
+  .home-chronicles { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 50rem) {
+  .home-chronicle__copy { padding: 1rem 1.1rem 1.2rem; }
+  .home-chronicle__copy h3 { font-size: 1.6rem; }
+  .home-chronicle__quote { font-size: 1rem; }
+  .home-chronicle-story { padding: 1rem 1.1rem 1.1rem; }
+  .home-chronicle-story h3 { font-size: 1.25rem; }
+  .home-chronicle-story p { font-size: .89rem; }
+  .home-chronicle-note { font-size: .82rem; }
+}

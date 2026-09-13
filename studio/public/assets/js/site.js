@@ -1099,6 +1099,9 @@ function markHomeReveal() {
     ['.home-v2-residents .home-v2-section-head > *', 70],
     ['.home-resident-bar > *', 80],
     ['.home-resident-card', 55],
+    ['.home-v2-chronicles .home-v2-section-head > *', 70],
+    ['.home-chronicle', 80],
+    ['.home-chronicle-story', 90],
     ['.home-v2-section-head--steps > *', 80],
     ['.home-step', 95],
     ['.home-steps-actions > *', 80],
@@ -1222,6 +1225,7 @@ function home() {
     .filter((resident) => resident.availability === 'available')
     .map((resident) => Number(resident.price))
     .filter((price) => price > 0);
+  const keeperFound = content.residents.find((resident) => resident.availability === 'archive');
   const summary = [
     freeCount ? `Свободны сейчас: ${freeCount}` : '',
     workCount ? `Рождаются: ${workCount}` : '',
@@ -1314,6 +1318,39 @@ function home() {
         <p class="home-resident-empty" data-home-resident-empty hidden>Здесь сейчас пусто — посмотрите всех Жителей Мастерской.</p>
         <button class="home-resident-more" type="button" data-home-resident-more hidden>Показать ещё</button>
         <a class="button button--forest home-resident-all" href="/residents.html">Смотреть всех жителей <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <section id="chronicles" class="home-v2-chronicles">
+      <div class="shell">
+        <header class="home-v2-section-head home-v2-section-head--dark">
+          <div>
+            <p class="eyebrow eyebrow--light">Истории, которые остались</p>
+            <h2>Хроники Мастерской</h2>
+          </div>
+          <a href="/residents.html">Все Жители <span aria-hidden="true">→</span></a>
+        </header>
+        <div class="home-chronicles">
+          ${keeperFound ? `<article class="home-chronicle home-chronicle--keeper">
+            <a class="home-chronicle__image" href="/chronicle.html?resident=${encodeURIComponent(keeperFound.slug)}">
+              <img src="${esc(keeperFound.sceneImage || keeperFound.heroImage)}" alt="${esc(keeperFound.shortName || keeperFound.name)} — Житель, нашедший Хранителя" loading="lazy">
+              <span class="status status--archive home-chronicle__status">Нашёл Хранителя</span>
+            </a>
+            <div class="home-chronicle__copy">
+              <h3>${esc(keeperFound.shortName || keeperFound.name)}</h3>
+              <p class="home-chronicle__quote">${esc(keeperFound.chronicle?.character || keeperFound.excerpt || '')}</p>
+              <a class="text-link text-link--light" href="/chronicle.html?resident=${encodeURIComponent(keeperFound.slug)}">Читать Хронику <b aria-hidden="true">↗</b></a>
+            </div>
+          </article>` : ''}
+          <div class="home-chronicle-stories">
+            ${content.stories.slice(0, 2).map((story) => `<article class="home-chronicle-story">
+              <h3>${esc(story.title)}</h3>
+              <p>${esc(story.lead)}</p>
+              <a class="text-link text-link--light" href="/process.html">Как это было <b aria-hidden="true">↗</b></a>
+            </article>`).join('')}
+            <p class="home-chronicle-note">Каждого Жителя, который уехал к своему Хранителю, Мастерская запоминает: повторить его нельзя, но история остаётся здесь.</p>
+          </div>
+        </div>
       </div>
     </section>
 
