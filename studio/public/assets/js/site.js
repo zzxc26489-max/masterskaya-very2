@@ -1584,12 +1584,16 @@ function collectionPage() {
     .sort((left, right) => (left.worldOrder ?? 99) - (right.worldOrder ?? 99));
   const traits = worldTraits(collection.theme);
   const available = residentsInWorld.filter((resident) => resident.availability === 'available');
+  // В шапку Мира берём кадр его Жителя: сцены из media/worlds — пустые
+  // декорации без фигурок, а человек открывает Мир, чтобы увидеть работы.
+  const stageResident = residentsInWorld.find((resident) => resident.availability === 'available' && resident.sceneImage)
+    || residentsInWorld.find((resident) => resident.sceneImage);
   document.body.classList.add(`theme-${collection.theme}`, 'world-page');
   mountWorldAir(collection.theme);
 
   paint(app, `<main id="main">
     <section class="world-stage theme-${esc(collection.theme)}" style="--world-accent:${esc(collection.accent)}" data-parallax>
-      <img class="world-stage__scene" src="${esc(collection.sceneImage || collection.image)}" alt="" fetchpriority="high">
+      <img class="world-stage__scene" src="${esc(stageResident?.sceneImage || collection.sceneImage || collection.image)}" alt="${stageResident ? esc(`${stageResident.shortName || stageResident.name} в мире «${collection.name}»`) : ''}" fetchpriority="high">
       <div class="world-stage__shade"></div>
       ${atmosphereMarkup(collection.theme)}
       <div class="shell world-stage__intro">
@@ -1600,7 +1604,6 @@ function collectionPage() {
         <div class="world-stage__facts">
           <span class="world-badge">${residentsInWorld.length} ${residentWord(residentsInWorld.length)}</span>
           ${available.length ? `<span class="world-badge world-badge--free">${available.length} можно забрать домой</span>` : ''}
-          <span class="world-badge world-badge--air">${esc(traits.air)}</span>
         </div>
       </div>
     </section>
