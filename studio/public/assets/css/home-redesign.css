@@ -456,7 +456,48 @@ body[data-page="home"] .menu-toggle > span:not(.sr-only) { background: #261a15; 
 }
 
 .home-v2-section-head--residents > a { grid-column: 3; grid-row: 1; color: #7a5d34; }
-.home-resident-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
+.home-resident-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .8rem 1.4rem;
+  margin-bottom: 1.5rem;
+}
+
+.home-resident-summary {
+  margin: 0;
+  color: #4f3d32;
+  font-size: .95rem;
+  font-weight: 600;
+}
+
+.home-resident-filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-left: auto; }
+.home-chip {
+  min-height: 2.4rem;
+  padding: .45rem 1.1rem;
+  border: 1px solid #d9c4a4;
+  border-radius: 999px;
+  background: #fbf4e7;
+  color: #4f3d32;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .25s, background-color .25s, color .25s;
+}
+
+.home-chip:hover { border-color: #b78a4f; color: #261a15; }
+.home-chip[aria-pressed='true'] { border-color: #1f4d26; background: #1f4d26; color: #fbf4e7; }
+.home-resident-empty {
+  margin: 1.5rem 0 0;
+  color: #76665a;
+  font-size: .95rem;
+}
+
+.home-resident-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
 .home-resident-card {
   position: relative;
   display: grid;
@@ -468,7 +509,22 @@ body[data-page="home"] .menu-toggle > span:not(.sr-only) { background: #261a15; 
   box-shadow: 0 1rem 2.5rem rgb(23 13 8 / .12);
 }
 
-.home-resident-card__image { grid-column: 1 / -1; aspect-ratio: 4 / 3; overflow: hidden; }
+.home-resident-card[hidden] { display: none; }
+.home-resident-card__image {
+  position: relative;
+  grid-column: 1 / -1;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+/* На широком экране бейдж лежит поверх фотографии, на узком — становится
+   обычной строкой в тексте карточки (см. мобильный блок ниже). */
+.home-resident-card__status {
+  position: absolute;
+  top: .7rem;
+  left: .7rem;
+  box-shadow: 0 .4rem 1rem rgb(23 13 8 / .25);
+}
 .home-resident-card__image img {
   width: 100%;
   height: 100%;
@@ -478,8 +534,24 @@ body[data-page="home"] .menu-toggle > span:not(.sr-only) { background: #261a15; 
 
 .home-resident-card:hover .home-resident-card__image img { transform: scale(1.035); }
 .home-resident-card__copy { padding: .85rem 1rem 1rem; }
-.home-resident-card__copy h3 { color: #261a15; font-size: 1.5rem; line-height: 1; }
-.home-resident-card__copy p { margin-top: .3rem; color: #261a15; font-size: .78rem; font-weight: 600; }
+.home-resident-card__copy h3 { margin-top: .15rem; color: #261a15; font-size: 1.5rem; line-height: 1; }
+.home-resident-card__world {
+  margin: 0;
+  color: #7a5d34;
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.home-resident-card__price {
+  margin-top: .35rem;
+  color: #261a15;
+  font-size: .95rem;
+  font-weight: 700;
+}
+
+.home-resident-card__price span { color: #76665a; font-weight: 600; }
 .home-card-arrow {
   align-self: end;
   display: grid;
@@ -717,6 +789,21 @@ body[data-page="home"] .home-site-footer .brand__name { color: #f8ead5; }
   .home-resident-card__copy { padding: .6rem .75rem; }
   .home-resident-card__copy h3 { font-size: 1.18rem; }
   .home-resident-card__copy p { font-size: .66rem; }
+  .home-resident-card__status {
+    position: static;
+    min-height: 1.4rem;
+    margin-bottom: .2rem;
+    padding: .15rem .5rem;
+    font-size: .62rem;
+    box-shadow: none;
+  }
+
+  .home-resident-card__world { display: none; }
+  .home-resident-card__price { font-size: .82rem; }
+  .home-resident-bar { gap: .7rem; margin-bottom: 1rem; }
+  .home-resident-summary { font-size: .82rem; }
+  .home-resident-filters { width: 100%; margin-left: 0; }
+  .home-chip { min-height: 2.6rem; padding: .45rem .8rem; font-size: .74rem; }
   .home-card-arrow { width: 2.75rem; height: 2.75rem; margin: 0 .25rem 0 0; }
   .home-resident-all { display: flex; width: 100%; margin-top: .75rem; }
 

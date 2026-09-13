@@ -953,17 +953,40 @@ function homeWorldCard(collection, index) {
 
 function homeResidentCard(resident) {
   if (!resident) return '';
-  const price = resident.availability === 'in-progress' ? 'В работе' : priceLabel(resident);
-  return `<article class="home-resident-card">
+  const [statusText, statusClass] = statusCopy(resident.availability);
+  const stock = stockLabel(resident);
+  return `<article class="home-resident-card" data-home-resident data-availability="${esc(resident.availability)}">
     <a class="home-resident-card__image" href="/chronicle.html?resident=${encodeURIComponent(resident.slug)}">
-      <img src="${esc(resident.sceneImage || resident.heroImage)}" alt="${esc(resident.shortName || resident.name)} в своём мире">
+      <img src="${esc(resident.sceneImage || resident.heroImage)}" alt="${esc(resident.shortName || resident.name)} в своём мире" loading="lazy">
     </a>
     <div class="home-resident-card__copy">
+      <span class="status ${esc(statusClass)} home-resident-card__status">${esc(statusText)}</span>
+      <p class="home-resident-card__world">${esc(collectionFor(resident).name)}</p>
       <h3>${esc(resident.shortName || resident.name)}</h3>
-      <p>${esc(price)}</p>
+      <p class="home-resident-card__price">${esc(priceLabel(resident))}${stock ? ` <span>· ${esc(stock)}</span>` : ''}</p>
     </div>
     <a class="home-card-arrow" href="/chronicle.html?resident=${encodeURIComponent(resident.slug)}" aria-label="Открыть Хронику: ${esc(resident.shortName || resident.name)}">→</a>
   </article>`;
+}
+
+// Чипы над витриной прячут карточки на месте, без перерисовки и без похода
+// на сервер — на главной их всего шесть.
+function bindHomeResidentFilters() {
+  const chips = [...document.querySelectorAll('[data-home-resident-filter]')];
+  const cards = [...document.querySelectorAll('[data-home-resident]')];
+  if (!chips.length || !cards.length) return;
+  const empty = document.querySelector('[data-home-resident-empty]');
+  chips.forEach((chip) => chip.addEventListener('click', () => {
+    const wanted = chip.dataset.homeResidentFilter;
+    chips.forEach((item) => item.setAttribute('aria-pressed', String(item === chip)));
+    let shown = 0;
+    cards.forEach((card) => {
+      const match = wanted === 'all' || card.dataset.availability === wanted;
+      card.hidden = !match;
+      if (match) shown += 1;
+    });
+    if (empty) empty.hidden = shown > 0;
+  }));
 }
 
 function bindHomeWorldCarousel() {
@@ -1002,12 +1025,40 @@ function bindHomeWorldCarousel() {
   }, { passive: true });
 }
 
+// Витрина на главной — четыре свободных Жителя и два рождающихся: проданных
+// сюда не берём, но показать, что работа идёт, важнее ещё двух ценников.
+// Оба фильтра над витриной обязаны что-то находить, поэтому квоты жёсткие.
+const HOME_SHOWCASE = [['available', 4], ['in-progress', 2]];
+
+// Сначала по одному Жителю из каждого Мира, и только потом вторые — иначе
+// витрина забивается одним Миром и выглядит уже, чем Мастерская на самом деле.
+function spreadAcrossWorlds(residents, limit) {
+  const seen = new Set();
+  const first = [];
+  const rest = [];
+  residents.forEach((resident) => {
+    if (seen.has(resident.collectionId)) rest.push(resident);
+    else { seen.add(resident.collectionId); first.push(resident); }
+  });
+  return [...first, ...rest].slice(0, limit);
+}
+
 function home() {
-  const residents = [
-    byId(content.residents, 'forest-dragon'),
-    byId(content.residents, 'nutcracker-ernst'),
-    byId(content.residents, 'gorynych-green')
-  ];
+  const residents = HOME_SHOWCASE.flatMap(([availability, limit]) => spreadAcrossWorlds(
+    content.residents.filter((resident) => resident.availability === availability),
+    limit
+  ));
+  const freeCount = content.residents.filter((resident) => resident.availability === 'available').length;
+  const workCount = content.residents.filter((resident) => resident.availability === 'in-progress').length;
+  const openPrices = content.residents
+    .filter((resident) => resident.availability === 'available')
+    .map((resident) => Number(resident.price))
+    .filter((price) => price > 0);
+  const summary = [
+    freeCount ? `Свободны сейчас: ${freeCount}` : '',
+    workCount ? `Рождаются: ${workCount}` : '',
+    openPrices.length ? `Цены от ${Math.min(...openPrices).toLocaleString('ru-RU')} ₽` : ''
+  ].filter(Boolean).join(' · ');
 
   paint(app, `<main id="main" class="home-redesign">
     <section class="home-v2-hero">
@@ -1083,7 +1134,16 @@ function home() {
           </div>
           <a href="/residents.html">Смотреть всех жителей <span aria-hidden="true">→</span></a>
         </header>
+        <div class="home-resident-bar">
+          <p class="home-resident-summary">${esc(summary)}</p>
+          <div class="home-resident-filters" role="group" aria-label="Показать Жителей">
+            <button class="home-chip" type="button" aria-pressed="true" data-home-resident-filter="all">Все</button>
+            <button class="home-chip" type="button" aria-pressed="false" data-home-resident-filter="available">Можно приобрести</button>
+            <button class="home-chip" type="button" aria-pressed="false" data-home-resident-filter="in-progress">В работе</button>
+          </div>
+        </div>
         <div class="home-resident-grid">${residents.map(homeResidentCard).join('')}</div>
+        <p class="home-resident-empty" data-home-resident-empty hidden>Здесь сейчас пусто — посмотрите всех Жителей Мастерской.</p>
         <a class="button button--forest home-resident-all" href="/residents.html">Смотреть всех жителей <span aria-hidden="true">→</span></a>
       </div>
     </section>
@@ -1100,6 +1160,7 @@ function home() {
   </main>`);
   document.title = 'Мастерская Веры — авторские фигурки ручной работы';
   bindHomeWorldCarousel();
+  bindHomeResidentFilters();
 }
 
 function residentWorldSection(collection) {
