@@ -375,11 +375,20 @@ body[data-page="home"] .menu-toggle > span:not(.sr-only) { background: #261a15; 
   font-weight: 600;
 }
 
+/* Пять карточек в ряд делали огромные Миры мелкими картинками. Теперь это
+   лента по три: карточка вдвое шире, в неё помещается описание, кто там
+   живёт и сколько Жителей — а остальные Миры листаются. */
 .home-world-track {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 1rem;
+  display: flex;
+  gap: 1.15rem;
+  overflow-x: auto;
+  padding-bottom: .4rem;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
 }
+
+.home-world-track::-webkit-scrollbar { display: none; }
+.home-world-card { flex: 0 0 calc((100% - 2.3rem) / 3); scroll-snap-align: center; }
 
 .home-world-card {
   min-width: 0;
@@ -391,10 +400,24 @@ body[data-page="home"] .menu-toggle > span:not(.sr-only) { background: #261a15; 
 }
 .home-world-card:hover { border-color: rgb(183 138 79 / .9); }
 
-.home-world-card > a { display: grid; height: 100%; grid-template-rows: minmax(0, 1fr) auto; }
+.home-world-card > a { display: grid; height: 100%; grid-template-rows: auto minmax(0, 1fr); }
+.home-world-card__frame { position: relative; display: block; overflow: hidden; }
+.home-world-card__tally {
+  position: absolute;
+  right: .7rem;
+  bottom: .7rem;
+  padding: .28rem .6rem;
+  border: 1px solid rgb(183 138 79 / .6);
+  border-radius: 999px;
+  background: rgb(18 13 11 / .78);
+  color: #e8c98f;
+  font-size: .72rem;
+  font-weight: 600;
+}
+
 .home-world-card img {
   width: 100%;
-  aspect-ratio: .83;
+  aspect-ratio: 1.12;
   object-fit: cover;
   object-position: var(--home-world-focus, center);
   filter: saturate(.94) contrast(1.04);
@@ -424,9 +447,60 @@ body[data-page="home"] .menu-toggle > span:not(.sr-only) { background: #261a15; 
   line-height: 1.45;
 }
 
-.home-world-control,
-.home-world-dots,
 .home-world-all { display: none; }
+
+.home-world-carousel { position: relative; }
+.home-world-control {
+  position: absolute;
+  top: 38%;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid rgb(183 138 79 / .75);
+  border-radius: 50%;
+  background: rgb(18 13 11 / .82);
+  color: #e8c98f;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color .25s, border-color .25s, transform .25s var(--ease);
+}
+
+.home-world-control:hover { background: #17451f; border-color: #e8c98f; transform: scale(1.06); }
+.home-world-control--prev { left: -1.1rem; }
+.home-world-control--next { right: -1.1rem; }
+
+.home-world-dots {
+  display: flex;
+  justify-content: center;
+  gap: .15rem;
+  margin-top: 1rem;
+}
+
+.home-world-dots button {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.home-world-dots button::before {
+  content: '';
+  width: .45rem;
+  height: .45rem;
+  border: 1px solid #b78a4f;
+  border-radius: 50%;
+  background: transparent;
+  transition: background-color .25s, transform .25s var(--ease);
+}
+
+.home-world-dots button.is-active::before { background: #e8c98f; border-color: #e8c98f; transform: scale(1.25); }
 
 .home-v2-residents {
   position: relative;
@@ -1079,12 +1153,12 @@ body[data-page="home"] .home-site-footer .brand__name { color: #f8ead5; }
   /* Соседние Миры выглядывают по краям — так видно, что карусель можно
      листать, и сколько всего Миров в Мастерской. */
   .home-world-track {
-    gap: .7rem;
-    padding: 0 11% .1rem;
+    gap: .6rem;
+    padding: 0 5.5% .1rem;
   }
 
   .home-world-card {
-    flex: 0 0 78%;
+    flex: 0 0 88%;
     border-radius: .55rem;
     transition: opacity .45s var(--ease), transform .45s var(--ease), border-color .25s ease;
   }
@@ -2148,4 +2222,77 @@ body[data-page="home"] .home-site-footer .brand__name { color: #f8ead5; }
   .home-chronicle-story h3 { font-size: 1.25rem; }
   .home-chronicle-story p { font-size: .89rem; }
   .home-chronicle-note { font-size: .82rem; }
+}
+
+
+/* ——— Карточка Мира: описание, кто живёт, кому в подарок ——— */
+.home-world-card__copy {
+  display: grid;
+  align-content: start;
+  gap: .5rem;
+  min-height: 0;
+  padding: 1.15rem 1.15rem 1.3rem;
+  text-align: left;
+}
+
+.home-world-card__copy b {
+  margin: 0;
+  color: #f8ead5;
+  font: 500 1.75rem/1 var(--display);
+  letter-spacing: -.03em;
+}
+
+.home-world-card__copy small {
+  color: #d8c3a3;
+  font-size: .92rem;
+  line-height: 1.5;
+}
+
+.home-world-card__lives {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: .55rem;
+  align-items: start;
+  padding-top: .6rem;
+  border-top: 1px solid rgb(183 138 79 / .3);
+  color: #c4ac8c;
+  font-size: .86rem;
+  line-height: 1.5;
+}
+
+.home-world-card__lives i {
+  width: .4rem;
+  height: .4rem;
+  margin-top: .48rem;
+  border-radius: 50%;
+  background: #b78a4f;
+}
+
+.home-world-card__gift {
+  color: #a99277;
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+.home-world-card__enter {
+  margin-top: .3rem;
+  color: #e8c98f;
+  font-size: .85rem;
+  font-weight: 600;
+}
+
+.home-world-card__enter b { transition: transform .3s var(--ease); display: inline-block; }
+.home-world-card:hover .home-world-card__enter b { transform: translateX(.25rem); }
+
+@media (max-width: 62rem) {
+  .home-world-card__copy { padding: 1rem 1rem 1.15rem; gap: .42rem; }
+  .home-world-card__copy b { font-size: 1.5rem; }
+  .home-world-card__copy small { font-size: .86rem; }
+  .home-world-card__lives { font-size: .8rem; }
+  .home-world-card__gift { display: none; }
+}
+
+@media (max-width: 50rem) {
+  .home-world-card img { aspect-ratio: 1.2; }
+  .home-world-card__copy { min-height: 0; }
 }

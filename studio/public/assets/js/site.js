@@ -934,15 +934,38 @@ const HOME_WORLD_COPY = {
 
 function homeWorldCard(collection, index) {
   const [title, description, image, focus = 'center'] = HOME_WORLD_COPY[collection.theme] || [collection.name, collection.description, collection.sceneImage || collection.image];
+  const traits = WORLD_TRAITS[collection.theme] || {};
+  const inWorld = content.residents.filter((resident) => resident.collectionId === collection.id);
+  const free = inWorld.filter((resident) => resident.availability === 'available').length;
+  // Счётчик берём из данных: он же показывает, что Мир живой и наполняется.
+  const tally = [
+    inWorld.length ? `${inWorld.length} ${pluralResidents(inWorld.length)}` : '',
+    free ? `${free} свободны` : ''
+  ].filter(Boolean).join(' · ');
   return `<article class="home-world-card theme-${esc(collection.theme)}" data-home-world-card>
     <a href="/collection.html?world=${encodeURIComponent(collection.slug)}" aria-label="Открыть мир «${esc(title)}»">
-      <img src="${esc(image)}" alt="${esc(title)}" fetchpriority="low" style="--home-world-focus: ${esc(focus)}">
+      <span class="home-world-card__frame">
+        <img src="${esc(image)}" alt="${esc(title)}" fetchpriority="low" style="--home-world-focus: ${esc(focus)}">
+        ${tally ? `<span class="home-world-card__tally">${esc(tally)}</span>` : ''}
+      </span>
       <span class="home-world-card__copy">
         <b>${esc(title)}</b>
         <small>${esc(description)}</small>
+        ${traits.lives ? `<span class="home-world-card__lives"><i aria-hidden="true"></i>${esc(traits.lives)}</span>` : ''}
+        ${traits.gift ? `<span class="home-world-card__gift">${esc(traits.gift)}</span>` : ''}
+        <span class="home-world-card__enter">Войти в мир <b aria-hidden="true">→</b></span>
       </span>
     </a>
   </article>`;
+}
+
+function pluralResidents(count) {
+  const tail = count % 100;
+  if (tail > 10 && tail < 20) return 'Жителей';
+  const last = count % 10;
+  if (last === 1) return 'Житель';
+  if (last > 1 && last < 5) return 'Жителя';
+  return 'Жителей';
 }
 
 // Иконки-гравюры: тонкая линия с проработанной деталью, а не пиктограмма
@@ -1141,19 +1164,28 @@ function bindHomeWorldCarousel() {
   };
   const show = (next) => {
     current = (next + cards.length) % cards.length;
-    cards[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    // Двигаем саму ленту, а не страницу: scrollIntoView тащил к карусели
+    // весь документ, и читателя выдёргивало сюда с любого места главной.
+    const card = cards[current];
+    track.scrollTo({
+      left: card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2,
+      behavior: 'smooth'
+    });
     paint();
   };
   paint();
 
-  const sliding = window.matchMedia('(max-width: 62rem)');
+  // Лента едет там, где её есть куда листать — теперь это все размеры,
+  // включая широкий экран: карточки Миров стали втрое крупнее и в ряд
+  // помещаются три из пяти.
+  const slidable = () => track.scrollWidth - track.clientWidth > 8;
   const calm = window.matchMedia('(prefers-reduced-motion: reduce)');
   let stepTimer = 0;
   let resumeTimer = 0;
   const stop = () => { window.clearInterval(stepTimer); stepTimer = 0; };
   const play = () => {
     stop();
-    if (!sliding.matches || calm.matches) return;
+    if (!slidable() || calm.matches) return;
     stepTimer = window.setInterval(() => {
       if (document.hidden) return;
       show(current + 1);
@@ -1173,7 +1205,7 @@ function bindHomeWorldCarousel() {
   carousel.addEventListener('focusout', play);
   track.addEventListener('pointerdown', () => hold(), { passive: true });
   track.addEventListener('touchstart', () => hold(), { passive: true });
-  sliding.addEventListener('change', play);
+  window.addEventListener('resize', play, { passive: true });
   document.addEventListener('visibilitychange', () => (document.hidden ? stop() : play()));
   play();
 
