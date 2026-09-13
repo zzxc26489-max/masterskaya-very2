@@ -977,3 +977,40 @@ html:has(body.menu-open) { overflow: hidden; }
       linear-gradient(0deg, #0f0c0a 0, rgb(8 7 6 / .88) 26%, rgb(8 7 6 / .5) 46%, transparent 72%) !important;
   }
 }
+
+/* ——— Фон Мира ———
+   Орнаментальная подложка под тёмными секциями Мира. Рамка идёт по краям,
+   центр чистый — текст ложится в него, а не на цветы. Картинка прибита к
+   секции целиком (не тайл), поэтому на длинных секциях она растягивается
+   по ширине и прижимается к верху: низ добирает ровный ночной цвет. */
+.theme-russian .world-character,
+.theme-russian .world-residents-section {
+  position: relative;
+  isolation: isolate;
+}
+
+.theme-russian .world-character::before,
+.theme-russian .world-residents-section::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    /* Мягкая тень под заголовком: без неё надзаголовок ложится прямо на
+       цветы в левом верхнем углу и теряет контраст. */
+    radial-gradient(ellipse 62% 42% at 26% 18%, rgb(18 13 11 / .82), transparent 70%),
+    linear-gradient(0deg, #120d0b 0, rgb(18 13 11 / .35) 42%, transparent 78%),
+    url('/media/patterns/russian-bg.webp') top center / 100% auto no-repeat,
+    #120d0b;
+  opacity: .82;
+}
+
+@media (max-width: 50rem) {
+  .theme-russian .world-character::before,
+  .theme-russian .world-residents-section::before {
+    background:
+      linear-gradient(0deg, #120d0b 0, rgb(18 13 11 / .4) 46%, transparent 80%),
+      url('/media/patterns/russian-bg-mobile.webp') top center / 100% auto no-repeat,
+      #120d0b;
+  }
+}
