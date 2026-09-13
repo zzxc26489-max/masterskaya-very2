@@ -366,7 +366,7 @@ html:has(body.menu-open) { overflow: hidden; }
 
 /* ——— Страница Миров ———
    Герой занимал 666px — целый экран под двумя строками текста. */
-.page-hero--atlas { padding: clamp(3rem, 6vw, 5.5rem) 0 clamp(2.6rem, 5vw, 4.5rem); }
+
 
 /* Карточка Мира получила то же, что на главной: кто там живёт, кому такой
    Житель в подарок и сколько из них свободны. */
@@ -521,3 +521,107 @@ html:has(body.menu-open) { overflow: hidden; }
   /* Панель перекрывает кнопку «Наверх» — уводим её выше. */
   .scroll-top { bottom: 5.4rem; }
 }
+
+/* ——— О мастерской ———
+   Страница состояла из героя на 666px и одного блока: ни цифр, ни принципов,
+   ни единой анимации появления. */
+
+
+.about-numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1.2rem;
+  margin: 0;
+}
+
+.about-numbers > div {
+  padding: 1.4rem 1.5rem 1.5rem;
+  border: 1px solid rgb(183 138 79 / .45);
+  border-radius: 1rem;
+  background: #1a1310;
+}
+
+.about-numbers dt {
+  margin-bottom: .5rem;
+  color: #e8c98f;
+  font: 500 3.2rem/1 var(--display);
+  letter-spacing: -.04em;
+}
+
+.about-numbers dd {
+  margin: 0;
+  color: #d8c3a3;
+  font-size: .95rem;
+  line-height: 1.55;
+}
+
+.about-principle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 0;
+  border-top: 1px solid #d9c4a4;
+}
+
+.about-principle {
+  position: relative;
+  padding: 1.8rem clamp(1rem, 2vw, 2rem) 1.6rem;
+}
+
+.about-principle:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 1.8rem;
+  right: 0;
+  bottom: 1.6rem;
+  border-right: 1px solid #d9c4a4;
+}
+
+.about-principle__number {
+  display: block;
+  margin-bottom: .8rem;
+  color: #b78a4f;
+  font: 500 2.3rem/1 var(--display);
+  letter-spacing: -.03em;
+}
+
+.about-principle h3 {
+  margin-bottom: .5rem;
+  color: #261a15;
+  font-size: 1.5rem;
+  line-height: 1.05;
+}
+
+.about-principle p {
+  color: #76665a;
+  font-size: .95rem;
+  line-height: 1.6;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .about-numbers > div { transition: transform .35s var(--ease), border-color .3s var(--ease); }
+  .about-numbers > div:hover { transform: translateY(-.35rem); border-color: rgb(232 201 143 / .8); }
+  .about-principle { transition: background-color .3s var(--ease); }
+  .about-principle:hover { background: rgb(183 138 79 / .07); }
+}
+
+@media (max-width: 50rem) {
+  .about-numbers { grid-template-columns: 1fr; gap: .7rem; }
+  .about-numbers > div { padding: 1.1rem 1.2rem 1.2rem; }
+  .about-numbers dt { font-size: 2.5rem; }
+  .about-numbers dd { font-size: .88rem; }
+  .about-principle-grid { grid-template-columns: 1fr; }
+  .about-principle { padding: 1.3rem 0 1.2rem; }
+  .about-principle::after { display: none !important; }
+  .about-principle:not(:last-child) { border-bottom: 1px solid #d9c4a4; }
+  .about-principle__number { margin-bottom: .5rem; font-size: 1.9rem; }
+  .about-principle h3 { font-size: 1.3rem; }
+  .about-principles .cluster .button { width: 100%; }
+}
+
+
+/* ——— Шапки внутренних страниц ———
+   Все они наследовали padding в 11rem: экран целиком под заголовком и парой
+   строк, а содержимое страницы начиналось за краем первого экрана. */
+.page-hero { padding: clamp(3rem, 6vw, 5.5rem) 0 clamp(2.6rem, 5vw, 4.5rem); }
+.page-hero h1 { font-size: clamp(2.6rem, 5.2vw, 4.6rem); }
+.page-hero .lede { max-width: 44rem; }

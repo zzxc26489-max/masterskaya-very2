@@ -1896,11 +1896,49 @@ function chronicleNextStep(resident, collection) {
 }
 
 function about() {
+  // Цифры считаются из данных: страница о мастерской не должна обещать
+  // больше, чем в ней на самом деле живёт.
+  const total = content.residents.length;
+  const free = content.residents.filter((resident) => resident.availability === 'available').length;
+  const worlds = content.collections.length;
+  const keepers = content.residents.filter((resident) => resident.availability === 'archive').length;
+
   paint(app, `<main id="main">
     <section class="page-hero page-hero--about"><div class="shell"><p class="eyebrow eyebrow--light">О Мастерской</p><h1>Там, где форма становится характером</h1><p class="lede lede--light">Вера лепит и расписывает фантазийных Жителей вручную — от первого каркаса до финального взгляда.</p></div></section>
-    <section class="section section--paper"><div class="shell about-grid"><figure class="about-image"><img src="/media/residents/forest-dragon/studio.webp?v=20260805g" alt="Готовая работа Веры" loading="lazy"></figure><div><p class="eyebrow">Руки и материал</p><h2>Работа начинается не с витрины, а с идеи и формы</h2><p class="lede">Полимерная глина, каркас из фольги и проволоки, ручная обработка, акриловая роспись, защитное покрытие и маленькие детали — путь каждого Жителя зависит от его характера.</p><div class="facts"><div class="fact"><b>Вручную</b><span>каждый этап проходит через руки Веры</span></div><div class="fact"><b>Лично</b><span>идеи и заказы обсуждаются напрямую</span></div><div class="fact"><b>Без копий</b><span>повторить работу один в один нельзя</span></div></div><div class="cluster cluster--top"><a class="button button--wine" href="/contact.html">Написать Вере</a><a class="button button--line" href="/process.html">Посмотреть процесс</a></div></div></div></section>
+
+    <section class="section section--paper"><div class="shell about-grid" data-reveal><figure class="about-image"><img src="/media/residents/forest-dragon/studio.webp?v=20260805g" alt="Готовая работа Веры" loading="lazy"></figure><div><p class="eyebrow">Руки и материал</p><h2>Работа начинается не с витрины, а с идеи и формы</h2><p class="lede">Полимерная глина, каркас из фольги и проволоки, ручная обработка, акриловая роспись, защитное покрытие и маленькие детали — путь каждого Жителя зависит от его характера.</p><div class="facts"><div class="fact"><b>Вручную</b><span>каждый этап проходит через руки Веры</span></div><div class="fact"><b>Лично</b><span>идеи и заказы обсуждаются напрямую</span></div><div class="fact"><b>Без копий</b><span>повторить работу один в один нельзя</span></div></div><div class="cluster cluster--top"><a class="button button--forest" href="/contact.html">Написать Вере</a><a class="button button--line" href="/process.html">Посмотреть процесс</a></div></div></div></section>
+
+    <section class="section section--night about-tally"><div class="shell">
+      <header class="section-head section-head--light" data-reveal><div><p class="eyebrow eyebrow--light">Мастерская сегодня</p><h2>Из чего она состоит</h2></div></header>
+      <dl class="about-numbers" data-reveal>
+        <div><dt>${total}</dt><dd>Жителей уже рождены и описаны в Хрониках</dd></div>
+        <div><dt>${worlds}</dt><dd>${pluralWorlds(worlds)} — у каждого свой воздух и свои истории</dd></div>
+        <div><dt>${free}</dt><dd>свободны сейчас и ждут своего Хранителя</dd></div>
+        ${keepers ? `<div><dt>${keepers}</dt><dd>уже уехали к Хранителям — повторить их нельзя</dd></div>` : ''}
+      </dl>
+    </div></section>
+
+    <section class="section section--paper about-principles"><div class="shell">
+      <header class="section-head" data-reveal><div><p class="eyebrow">Как здесь работают</p><h2>Три вещи, которые не меняются</h2></div></header>
+      <div class="about-principle-grid">
+        <article class="about-principle" data-reveal><span class="about-principle__number">01</span><h3>Никаких форм и тиражей</h3><p>Каждый Житель лепится заново, поэтому двух одинаковых не бывает даже у одного персонажа: поза, взгляд и оттенки всегда получаются своими.</p></article>
+        <article class="about-principle" data-reveal><span class="about-principle__number">02</span><h3>Разговор вместо конструктора</h3><p>Вера отвечает сама — без менеджеров и анкет. Будущего Жителя обсуждают словами: характер, настроение, цвет, повод.</p></article>
+        <article class="about-principle" data-reveal><span class="about-principle__number">03</span><h3>У работы есть история</h3><p>Каждый Житель получает имя, характер и Хронику. Она остаётся на сайте и после того, как он уедет к своему Хранителю.</p></article>
+      </div>
+      <div class="cluster cluster--top" data-reveal><a class="button button--forest" href="/residents.html">Посмотреть Жителей <span aria-hidden="true">→</span></a><a class="button button--quiet" href="/create.html">Обсудить будущего Жителя</a></div>
+    </div></section>
   </main>`);
   document.title = 'О Мастерской — Мастерская Веры';
+  enableAtmosphereMotion();
+}
+
+function pluralWorlds(count) {
+  const tail = count % 100;
+  if (tail > 10 && tail < 20) return 'Миров';
+  const last = count % 10;
+  if (last === 1) return 'Мир';
+  if (last > 1 && last < 5) return 'Мира';
+  return 'Миров';
 }
 
 function contact() {
