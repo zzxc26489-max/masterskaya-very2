@@ -1533,3 +1533,52 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
   .home-resident-filters { width: 100%; margin-left: 0; }
   .home-resident-filters .home-chip { flex: 1 1 auto; }
 }
+
+/* ——— Атлас: переход от заголовка к Мирам ———
+   Между шапкой и первой карточкой зияло 75px на телефоне и 130px на
+   широком экране — ровно ничего, просто тёмное поле. Заголовок висел сам
+   по себе, Миры начинались сами по себе.
+
+   Отступы срезаны, а между ними встал мостик: строка с итогом (сколько
+   Миров, Жителей и сколько свободно — то же, что на «Жителях» делает
+   панель фильтров) и золотой завиток под ней. Теперь видно, что заголовок
+   и карточки — одна страница, а не два куска. */
+.page-hero--atlas { padding-bottom: clamp(1.4rem, 3vw, 2.4rem) !important; }
+body[data-page="collections"] .worlds-section { padding-top: 0 !important; }
+
+.atlas-tally {
+  margin: clamp(1.2rem, 2.6vw, 1.8rem) 0 0;
+  color: #e8c98f;
+  font-size: clamp(.82rem, 1.1vw, .95rem);
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+
+.atlas-tally::after {
+  content: '';
+  display: block;
+  height: clamp(1.4rem, 2.8vw, 2rem);
+  margin-top: clamp(1.1rem, 2.4vw, 1.7rem);
+  background: url('../../media/ornaments/seam-mark.webp') left center / auto 100% no-repeat;
+}
+
+/* ——— Переход от Мира к Миру в Атласе ———
+   Карточки лежали встык через ровный зазор: пять прямоугольников подряд,
+   и ничто не говорило, что это разные Миры. В зазор встал тот же золотой
+   завиток, что на «Жителях», — граница главы, а не отступ по умолчанию. */
+/* Вешать завиток на саму карточку нельзя: у неё overflow: hidden ради
+   скруглённых углов, и всё, что выходит за край, срезается. Поэтому он
+   отдельной ячейкой сетки между карточками. */
+.atlas-seam {
+  grid-column: 1 / -1;
+  height: clamp(1.3rem, 2.4vw, 1.8rem);
+  background: url('../../media/ornaments/seam-mark.webp') center / auto 100% no-repeat;
+  filter: drop-shadow(0 0 .4rem rgb(8 6 5 / .9));
+}
+
+/* Прощальный блок Атласа: страница обрывалась на последней карточке. */
+.atlas-outro { padding-top: clamp(2.4rem, 5vw, 4rem) !important; }
+
+@media (max-width: 50rem) {
+  .atlas-tally::after { background-position: center; }
+}
