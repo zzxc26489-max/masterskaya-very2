@@ -1523,3 +1523,13 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
   .residents-world + .residents-world__inner { padding-top: 3.4rem; }
   .residents-world + .residents-world .residents-world__inner { padding-top: 3.6rem; }
 }
+
+/* ——— Фильтры Жителей на главной ———
+   Ряд занимал всю ширину, а сами кнопки оставались по содержимому и
+   висели у левого края: справа — пустая треть строки. Кнопки растягиваются
+   на свободное место, сохраняя пропорции между собой: «Все» остаётся узкой,
+   «Можно приобрести» широкой, но вместе они заполняют строку. */
+@media (max-width: 62rem) {
+  .home-resident-filters { width: 100%; margin-left: 0; }
+  .home-resident-filters .home-chip { flex: 1 1 auto; }
+}
