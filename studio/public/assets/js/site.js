@@ -1670,11 +1670,21 @@ function chronicle() {
       <figure class="resident-detail__image"><img src="${esc(resident.heroImage)}" alt="${esc(resident.name)}"></figure>
       <div class="resident-detail__copy"><span class="status ${className}">${status}</span><h2>${esc(resident.name)}</h2><p class="lede">${esc(resident.story)}</p>
         <dl class="meta-list"><div><dt>Мир</dt><dd>${esc(collection.name)}</dd></div>${['available', 'in-progress'].includes(resident.availability) ? `<div><dt>Стоимость</dt><dd>${esc(priceLabel(resident))}</dd></div>` : ''}${stockLabel(resident) ? `<div><dt>В наличии</dt><dd>${esc(stockLabel(resident))}</dd></div>` : ''}<div><dt>Работа</dt><dd>${esc(techniqueCopy(resident.technique))}</dd></div><div><dt>Характер</dt><dd>${esc(resident.character)}</dd></div><div><dt>Где обитает</dt><dd>${esc(resident.habitat)}</dd></div></dl>
-        <div class="cluster">${primaryAction}<a class="button button--line" href="/residents.html">Все Жители</a></div>
+        <div class="cluster"><a class="button button--line" href="/residents.html">Все Жители</a><a class="button button--line" href="/collection.html?world=${encodeURIComponent(collection.slug || '')}">Другие из этого Мира</a></div>
       </div>
     </div></section>
     <section class="section"><div class="shell"><header class="section-head section-head--light"><div><p class="eyebrow eyebrow--light">Свиток Жителя</p><h2>Хроника в трёх частях</h2></div></header><div class="chronicle-grid"><div><p class="eyebrow">Истоки</p><h3>Откуда пришёл</h3><p>${esc(resident.chronicle?.origin)}</p></div><div><p class="eyebrow">Характер</p><h3>Какой он</h3><p>${esc(resident.chronicle?.character)}</p></div><div><p class="eyebrow">Путь</p><h3>Куда ведёт история</h3><p>${esc(resident.chronicle?.path)}</p></div></div></div></section>
     <section class="section section--night chronicle-gallery-section"><div class="shell"><header class="section-head section-head--light"><div><p class="eyebrow eyebrow--light">Настоящие фотографии</p><h2>Рассмотреть ближе</h2></div></header><div class="gallery">${resident.gallery.map((media, index) => isVideo(media) ? `<div class="gallery__video">${galleryMedia(media, `${resident.name} — видео ${index + 1}`)}</div>` : `<button type="button" data-lightbox="${esc(media)}" aria-label="Открыть фото ${index + 1}">${galleryMedia(media, `${resident.name} — фотография ${index + 1}`)}</button>`).join('')}</div></div></section>
+    ${['available', 'in-progress'].includes(resident.availability) ? `<section class="section section--paper chronicle-how"><div class="shell">
+      <header class="section-head" data-reveal><div><p class="eyebrow">Если решитесь</p><h2>Что будет после письма</h2></div></header>
+      <ol class="chronicle-how__steps" data-reveal>
+        <li><b>Отвечает Вера, не бот</b><span>Она читает сообщения сама и подтвердит, свободен ли ${esc(resident.shortName || resident.name)} и сколько он стоит.</span></li>
+        <li><b>Оплата</b><span>Перевод на карту, наличные при личной встрече или безопасная сделка через Авито-доставку.</span></li>
+        <li><b>Доставка</b><span>По всей России и, по возможности, в любую точку мира. Стоимость и способ отправки оплачивает заказчик — обсуждаете вместе после выбора.</span></li>
+        <li><b>Как приедет</b><span>Коробка, наполнитель, открытка и Свиток Жителя — встреча задумана частью истории, а не просто доставкой.</span></li>
+      </ol>
+      <p class="chronicle-how__note">Никаких форм заказа и предоплаты за разговор: сначала обсуждаете, потом решаете.</p>
+    </div></section>` : ''}
     ${chronicleNextStep(resident, collection)}
   </main>`);
   document.title = `${resident.name} — Хроника Мастерской Веры`;
