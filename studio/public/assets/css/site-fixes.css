@@ -952,7 +952,9 @@ html:has(body.menu-open) { overflow: hidden; }
   content: '';
   position: absolute;
   z-index: -1;
-  inset: -2rem -6rem;
+  /* Кверху подложка не выходит: шапка начинается сразу над шапкой Мира, и
+     затемнение доставало до неё тёмной полосой поверх светлой плашки. */
+  inset: 0 -6rem -2rem;
   background: radial-gradient(62% 54% at 50% 50%, rgb(12 9 8 / .74) 0, rgb(12 9 8 / .42) 55%, transparent 100%);
 }
 
@@ -1256,3 +1258,17 @@ body[data-page="collections"] .world-air__ornament { display: none; }
   .home-feature { grid-template-columns: 5.2rem 1fr !important; }
   .home-feature__icon { width: 5.2rem !important; height: 5.2rem !important; }
 }
+
+/* ——— Шапка всегда поверх страницы ———
+   На странице Мира у шапки стоял z-index: 1 — столько же, сколько у
+   содержимого страницы, и при равных значениях выигрывает то, что ниже в
+   разметке. Подложка под заголовком Мира заезжала тёмной полосой на
+   светлую плашку шапки. Шапка поднята выше всего, что идёт по странице;
+   выпадающее меню — её ребёнок, поэтому едет вместе с ней. */
+body.world-page .site-header,
+body.world-walk .site-header,
+body .site-header { z-index: 70; }
+
+body.world-page .site-header.is-compact,
+body.world-walk .site-header.is-compact,
+body .site-header.is-compact { z-index: 70; }

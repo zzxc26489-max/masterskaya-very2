@@ -1185,7 +1185,7 @@ function home() {
           </div>
         </div>
         <div class="home-features">
-          <div class="home-feature"><span class="home-feature__icon"><img src="/media/icons/icon-hands.webp" alt="" loading="lazy"></span><span><b>Ручная лепка</b><small>Каждая фигурка создаётся вручную, без форм</small></span></div>
+          <div class="home-feature"><span class="home-feature__icon"><img src="/media/icons/icon-sculpt.webp" alt="" loading="lazy"></span><span><b>Ручная лепка</b><small>Каждая фигурка создаётся вручную, без форм</small></span></div>
           <div class="home-feature"><span class="home-feature__icon"><img src="/media/icons/icon-paint.webp" alt="" loading="lazy"></span><span><b>Авторская роспись</b><small>Уникальные цвета и характеры</small></span></div>
           <div class="home-feature"><span class="home-feature__icon"><img src="/media/icons/icon-unique.webp" alt="" loading="lazy"></span><span><b>Один экземпляр</b><small>Таких больше не будет</small></span></div>
         </div>
