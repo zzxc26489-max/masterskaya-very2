@@ -1367,7 +1367,7 @@ function residents() {
       <button class="filter-button" aria-pressed="false" data-filter="archive">Архив</button>
     </div></div>
     <div data-resident-worlds>${content.collections.map(residentWorldSection).join('')}</div>
-    <section class="section section--paper"><div class="shell empty-state" hidden data-empty>В этом разделе пока нет Жителей. Выберите другой Мир или напишите Вере.</div></section>
+    <section class="section section--paper" hidden data-empty-section><div class="shell empty-state" data-empty>В этом разделе пока нет Жителей. Выберите другой Мир или напишите Вере.</div></section>
   </main>`);
   document.title = 'Жители — Мастерская Веры';
   document.querySelector('[data-filters]').addEventListener('click', (event) => {
@@ -1386,7 +1386,7 @@ function residents() {
       section.hidden = sectionVisible === 0;
       totalVisible += sectionVisible;
     });
-    document.querySelector('[data-empty]').hidden = totalVisible > 0;
+    document.querySelector('[data-empty-section]').hidden = totalVisible > 0;
   });
   enableAtmosphereMotion();
 }

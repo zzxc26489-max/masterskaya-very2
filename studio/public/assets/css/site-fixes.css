@@ -478,10 +478,11 @@ html:has(body.menu-open) { overflow: hidden; }
 }
 
 .about-numbers dt {
-  margin-bottom: .5rem;
+  margin-bottom: .35rem;
   color: #e8c98f;
-  font: 500 3.2rem/1 var(--display);
-  letter-spacing: -.04em;
+  font: 700 4.2rem/1 var(--body);
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: -.045em;
 }
 
 .about-numbers dd {
@@ -543,8 +544,8 @@ html:has(body.menu-open) { overflow: hidden; }
 @media (max-width: 50rem) {
   .about-numbers { grid-template-columns: 1fr; gap: .7rem; }
   .about-numbers > div { padding: 1.1rem 1.2rem 1.2rem; }
-  .about-numbers dt { font-size: 2.5rem; }
-  .about-numbers dd { font-size: .88rem; }
+  .about-numbers dt { font-size: 3.4rem !important; }
+  .about-numbers dd { font-size: .82rem; }
   .about-principle-grid { grid-template-columns: 1fr; }
   .about-principle { padding: 1.3rem 0 1.2rem; }
   .about-principle::after { display: none !important; }
@@ -736,7 +737,7 @@ html:has(body.menu-open) { overflow: hidden; }
   .world-switch span,
   [class*='switch'] button span { font-size: .82rem !important; }
 
-  dl dt { font-size: .74rem !important; letter-spacing: .14em; }
+  dl:not(.about-numbers) dt { font-size: .74rem !important; letter-spacing: .14em; }
 
   .create-option small,
   span > small { font-size: .82rem !important; }
@@ -1405,4 +1406,120 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
 .home-v2-workshop > .shell > .home-crest {
   padding-top: clamp(1.6rem, 3.5vw, 2.8rem);
   background: url('../../media/ornaments/divider.webp') top center / min(34rem, 70%) auto no-repeat;
+}
+
+/* ——— «Мастерская сегодня»: цифрами надо гордиться ———
+   Четыре числа стояли в столбик высокими карточками — экран пустого
+   тёмного поля на четыре строчки текста. Теперь два на два: блок стал
+   вдвое короче, а сами числа — вдвое крупнее относительно карточки.
+   Карточке добавлена тёплая подложка и золотая черта сверху, чтобы это
+   читалось как табличка на стене, а не как рамка по умолчанию. */
+.about-numbers {
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: .9rem;
+}
+
+.about-numbers > div {
+  position: relative;
+  overflow: hidden;
+  padding: 1.5rem 1.4rem 1.4rem;
+  background:
+    radial-gradient(120% 90% at 12% 0%, rgb(232 201 143 / .1), transparent 62%),
+    #1a1310;
+}
+
+.about-numbers > div::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 1.4rem;
+  width: 2.2rem;
+  height: 2px;
+  background: #b78a4f;
+}
+
+/* Тёмная полоса была ровным прямоугольником без единой детали — та самая
+   «база конструктора». Гравюрный разделитель под заголовком её размыкает. */
+.about-tally .section-head::after {
+  content: '';
+  display: block;
+  height: clamp(.8rem, 1.4vw, 1.1rem);
+  margin-top: clamp(1.2rem, 2.5vw, 1.8rem);
+  background: url('../../media/ornaments/divider.webp') center / contain no-repeat;
+}
+
+@media (max-width: 50rem) {
+  /* Два в ряд вместо четырёх в столбик: воздуха вдвое меньше, числа те же. */
+  .about-numbers { grid-template-columns: 1fr 1fr; gap: .7rem; }
+  .about-numbers > div { padding: 1.1rem 1rem 1.05rem; }
+  .about-numbers > div::before { left: 1rem; width: 1.8rem; }
+  .about-numbers dd { line-height: 1.45; }
+
+  /* Секция дышала на 75px сверху и снизу — на телефоне это треть экрана
+     пустоты до первой цифры. */
+  .about-tally { padding-block: 3rem !important; }
+  .about-tally .section-head { margin-bottom: 1.6rem !important; }
+}
+
+/* Счётчик «01 / 08» на кадрах процесса оставался 9,6px — единственное, что
+   пережило чистку мелкого текста на телефоне. Норма для капса — 11. */
+@media (max-width: 50rem) {
+  .process-stage__image figcaption { font-size: .72rem !important; }
+}
+
+/* ——— Переход от Мира к Миру ———
+   Полосы шли встык: узор одного Мира обрывался, и тут же начинался узор
+   следующего. Границы не было — были две картинки, склеенные по линии.
+
+   Теперь между ними шов: узор верхней полосы гаснет в ночной цвет, из
+   него же поднимается узор нижней, а по самой границе идёт гравюрный
+   разделитель. Переход читается как смена главы, а не как стык. */
+.residents-world + .residents-world { position: relative; }
+
+.residents-world + .residents-world::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: clamp(4rem, 9vw, 7rem);
+  background: linear-gradient(0deg, transparent, rgb(12 9 8 / .72) 55%, #0c0908);
+  pointer-events: none;
+}
+
+/* На всю ширину разделитель вырождается в волосок: у него пропорция 82:1,
+   и на телефоне от него остаётся три пикселя поверх плотного узора. На шве
+   стоит вырезанный из него центральный завиток — он читается и там. */
+.residents-world + .residents-world::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: clamp(1.2rem, 2.6vw, 2.1rem);
+  right: 0;
+  left: 0;
+  height: clamp(1.5rem, 3vw, 2.1rem);
+  background: url('../../media/ornaments/seam-mark.webp') center / auto 100% no-repeat;
+  filter: drop-shadow(0 0 .5rem rgb(8 6 5 / .95));
+  pointer-events: none;
+}
+
+/* Хвост предыдущей полосы гасим встречной тенью, иначе узор упирается в
+   шов на полном ходу. */
+.residents-world:has(+ .residents-world) .residents-world__shade {
+  background:
+    linear-gradient(0deg, rgb(12 9 8 / .95) 0, rgb(12 9 8 / .5) 7%, transparent 18%),
+    linear-gradient(90deg, rgb(8 7 6 / .8), rgb(8 7 6 / .34) 58%, transparent 82%),
+    linear-gradient(0deg, rgb(8 7 6 / .62), transparent 46%) !important;
+}
+
+@media (max-width: 50rem) {
+  .residents-world:has(+ .residents-world) .residents-world__shade {
+    background:
+      linear-gradient(0deg, rgb(12 9 8 / .95) 0, rgb(12 9 8 / .5) 6%, transparent 16%),
+      linear-gradient(0deg, rgb(8 7 6 / .72), rgb(8 7 6 / .3) 40%, transparent 72%) !important;
+  }
+
+  .residents-world + .residents-world__inner { padding-top: 3.4rem; }
+  .residents-world + .residents-world .residents-world__inner { padding-top: 3.6rem; }
 }
