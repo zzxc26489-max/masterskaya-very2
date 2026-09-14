@@ -238,7 +238,7 @@ body .menu-toggle > span:not(.sr-only) { background: #261a15; }
 .home-v2-workshop__copy > p:not(.eyebrow) {
   max-width: 27rem;
   margin-bottom: 1.4rem;
-  color: #76665a;
+  color: #726357;
   font-size: .92rem;
   line-height: 1.55;
 }
@@ -342,7 +342,7 @@ body .menu-toggle > span:not(.sr-only) { background: #261a15; }
 .home-feature__icon svg circle { fill: currentColor; stroke: none; opacity: .5; }
 
 .home-feature b { display: block; font-size: 1.05rem; line-height: 1.35; }
-.home-feature small { display: block; margin-top: .25rem; color: #76665a; font-size: .82rem; line-height: 1.4; }
+.home-feature small { display: block; margin-top: .25rem; color: #726357; font-size: .82rem; line-height: 1.4; }
 
 .home-v2-worlds {
   position: relative;
@@ -586,7 +586,7 @@ body .menu-toggle > span:not(.sr-only) { background: #261a15; }
 .home-chip[aria-pressed='true'] { border-color: #1f4d26; background: #1f4d26; color: #fbf4e7; }
 .home-resident-empty {
   margin: 1.5rem 0 0;
-  color: #76665a;
+  color: #726357;
   font-size: .95rem;
 }
 
@@ -669,7 +669,7 @@ body .menu-toggle > span:not(.sr-only) { background: #261a15; }
 
 .home-resident-card__note {
   margin-top: .4rem;
-  color: #76665a;
+  color: #726357;
   font-size: .84rem;
   line-height: 1.45;
   display: -webkit-box;
@@ -685,7 +685,7 @@ body .menu-toggle > span:not(.sr-only) { background: #261a15; }
   font-weight: 700;
 }
 
-.home-resident-card__price span { color: #76665a; font-weight: 600; }
+.home-resident-card__price span { color: #726357; font-weight: 600; }
 .home-card-arrow {
   align-self: end;
   display: grid;
@@ -1741,7 +1741,7 @@ body .home-site-footer .brand__name { color: #f8ead5; }
 
   .home-process-print figcaption small {
     margin-top: .2rem;
-    color: #76665a;
+    color: #726357;
     font-size: .72rem;
     line-height: 1.35;
   }
@@ -1888,7 +1888,7 @@ body .home-site-footer .brand__name { color: #f8ead5; }
 
 .home-steps-lede {
   margin: 0 0 .4rem;
-  color: #76665a;
+  color: #726357;
   font-size: 1.02rem;
   line-height: 1.6;
 }
@@ -1933,7 +1933,7 @@ body .home-site-footer .brand__name { color: #f8ead5; }
 }
 
 .home-step p {
-  color: #76665a;
+  color: #726357;
   font-size: .95rem;
   line-height: 1.6;
 }

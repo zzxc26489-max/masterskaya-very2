@@ -210,7 +210,7 @@
 }
 
 .resident-card .stock {
-  color: #76665a;
+  color: #726357;
   font-size: .88rem;
   font-weight: 600;
 }
@@ -528,7 +528,7 @@ html:has(body.menu-open) { overflow: hidden; }
 }
 
 .about-principle p {
-  color: #76665a;
+  color: #726357;
   font-size: .95rem;
   line-height: 1.6;
 }
@@ -618,7 +618,7 @@ html:has(body.menu-open) { overflow: hidden; }
 .contact-form__foot .button { min-width: 13rem; }
 .contact-form__note {
   margin: 0;
-  color: #76665a;
+  color: #726357;
   font-size: .9rem;
   line-height: 1.5;
 }
@@ -1272,3 +1272,62 @@ body .site-header { z-index: 70; }
 body.world-page .site-header.is-compact,
 body.world-walk .site-header.is-compact,
 body .site-header.is-compact { z-index: 70; }
+
+/* ——— Полосы Миров на «Жителях» ———
+   Третий раз одна и та же история: в полосе лежала сцена из media/worlds —
+   пустая декорация без фигурок, — притушенная до brightness(.62) и накрытая
+   двумя плотными шторами, потому что по ней шёл текст. Получался тёмный
+   прямоугольник, по которому Мир не узнать.
+
+   Теперь в полосе лежит орнамент этого Мира — тот же, что на его странице.
+   Человек, пришедший из «Зимних легенд», видит ту же подложку и понимает,
+   что это один Мир, а не два разных раздела. */
+.residents-world__scene { display: none; }
+
+.residents-world {
+  background:
+    var(--world-bg, none) center center / cover no-repeat,
+    #120d0b;
+}
+
+/* Штора осталась только под текстовой колонкой слева и у нижнего края —
+   там, где на узор действительно ложатся буквы. */
+.residents-world__shade {
+  background:
+    linear-gradient(90deg, rgb(8 7 6 / .8), rgb(8 7 6 / .34) 58%, transparent 82%),
+    linear-gradient(0deg, rgb(8 7 6 / .62), transparent 46%) !important;
+}
+
+@media (max-width: 50rem) {
+  /* Текст идёт во всю ширину — боковая штора здесь только гасит узор. */
+  .residents-world__shade {
+    background: linear-gradient(0deg, rgb(8 7 6 / .72), rgb(8 7 6 / .3) 40%, transparent 72%) !important;
+  }
+}
+
+/* ——— Контраст ———
+   Сквозная проверка всех страниц нашла места ниже нормы на светлом фоне.
+   Крупные номера шагов («Путь от письма до вашей полки», «Три вещи,
+   которые не меняются») давали 2,84 при норме 3 для крупного текста;
+   приглушённый текст — 4,34 при норме 4,5; подписи в конструкторе — 4,24.
+   Цвета притемнены минимально, до 3,07 и 4,5+: на глаз тот же тон.
+   Приглушённый #76665a заменён на #726357 по всем файлам сразу — он был
+   вписан руками в десяти местах, и точечная правка лечила бы одно из них. */
+.home-step__number,
+.about-principle__number { color: #b0844c; }
+
+.option small { color: #6d5f54; }
+
+/* ——— Прыжки по якорям ———
+   Шапка липкая, на «Жителях» под ней ещё и панель фильтров. Прыжок по
+   якорю ставил цель в ноль — прямо под эти панели, и заголовок раздела
+   оказывался закрыт. Отступ считается от переменной высоты шапки, чтобы
+   не разъезжаться, если шапка поменяется. */
+:target,
+#main,
+#world-residents,
+.residents-world { scroll-margin-top: calc(var(--shell-header, 4.4rem) + 1.5rem); }
+
+body[data-page="residents"] :target,
+body[data-page="residents"] #main,
+body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--shell-header, 4.4rem) + 6rem); }
