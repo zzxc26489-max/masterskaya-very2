@@ -1520,27 +1520,6 @@ function bindWorldWalk() {
   cards.forEach((card) => observer.observe(card));
 }
 
-function worldResidentSlide(resident, index) {
-  const [label, className] = statusCopy(resident.availability);
-  const world = collectionFor(resident);
-  return `<article class="world-resident ${index === 0 ? 'is-active' : ''}" data-world-slide data-index="${index}" aria-hidden="${index === 0 ? 'false' : 'true'}">
-    <figure class="world-resident__scene">
-      <img src="${esc(resident.sceneImage || resident.heroImage)}" alt="${esc(resident.name)} в мире «${esc(world.name)}»" ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}>
-      <span>Настоящая работа Веры · сцена Мира</span>
-    </figure>
-    <div class="world-resident__copy">
-      <div class="world-resident__meta"><span class="status ${className}">${label}</span><span>0${index + 1}</span></div>
-      <p class="eyebrow eyebrow--light">${esc(resident.type)}</p>
-      <h2>${esc(resident.shortName || resident.name)}</h2>
-      <p class="world-resident__excerpt">${esc(resident.excerpt)}</p>
-      <dl>
-        <div><dt>Характер</dt><dd>${esc(resident.character)}</dd></div>
-        <div><dt>Где обитает</dt><dd>${esc(resident.habitat)}</dd></div>
-      </dl>
-      <div class="cluster">${residentActions(resident)}</div>
-    </div>
-  </article>`;
-}
 
 function collectionPage() {
   const collection = byId(content.collections, query('world')) || content.collections[0];
@@ -1548,36 +1527,25 @@ function collectionPage() {
     .filter((resident) => resident.collectionId === collection.id)
     .sort((left, right) => (left.worldOrder ?? 99) - (right.worldOrder ?? 99));
   const available = residentsInWorld.filter((resident) => resident.availability === 'available');
-  // В шапку Мира берём кадр его Жителя: сцены из media/worlds — пустые
-  // декорации без фигурок, а человек открывает Мир, чтобы увидеть работы.
-  const stageResident = residentsInWorld.find((resident) => resident.availability === 'available' && resident.sceneImage)
-    || residentsInWorld.find((resident) => resident.sceneImage);
   document.body.classList.add(`theme-${collection.theme}`, 'world-page');
   mountWorldAir(collection.theme);
 
   paint(app, `<main id="main">
-    <section class="world-stage theme-${esc(collection.theme)}" style="--world-accent:${esc(collection.accent)}" data-parallax>
-      <div class="shell world-stage__grid">
-        <div class="world-stage__intro">
-          <a class="world-back" href="/collections.html">← Все Миры</a>
-          <p class="eyebrow eyebrow--light">Мир Мастерской</p>
-          <h1>${esc(collection.name)}</h1>
-          <p>${esc(collection.description)}</p>
-          <div class="world-stage__facts">
-            <span class="world-badge">${residentsInWorld.length} ${residentWord(residentsInWorld.length)}</span>
-            ${available.length ? `<span class="world-badge world-badge--free">${available.length} можно забрать домой</span>` : ''}
-          </div>
+    <section class="world-stage theme-${esc(collection.theme)}" style="--world-accent:${esc(collection.accent)}">
+      <div class="shell world-stage__intro">
+        <a class="world-back" href="/collections.html">← Все Миры</a>
+        <p class="eyebrow eyebrow--light">Мир Мастерской</p>
+        <h1>${esc(collection.name)}</h1>
+        <p>${esc(collection.description)}</p>
+        <div class="world-stage__facts">
+          <span class="world-badge">${residentsInWorld.length} ${residentWord(residentsInWorld.length)}</span>
+          ${available.length ? `<span class="world-badge world-badge--free">${available.length} можно забрать домой</span>` : ''}
         </div>
-        <figure class="world-stage__frame">
-          <img class="world-stage__scene" src="${esc(stageResident?.sceneImage || collection.sceneImage || collection.image)}" alt="${stageResident ? esc(`${stageResident.shortName || stageResident.name} в мире «${collection.name}»`) : ''}" fetchpriority="high">
-          <div class="world-stage__shade"></div>
-          ${atmosphereMarkup(collection.theme)}
-          ${stageResident ? `<figcaption>${esc(stageResident.shortName || stageResident.name)}</figcaption>` : ''}
-        </figure>
+        ${residentsInWorld.length ? `<a class="world-stage__down" href="#world-residents">Кто здесь живёт <b aria-hidden="true">↓</b></a>` : ''}
       </div>
     </section>
 
-    ${residentsInWorld.length ? `<section class="section world-residents-section">
+    ${residentsInWorld.length ? `<section class="section world-residents-section" id="world-residents">
       <div class="shell">
         <header class="section-head section-head--light" data-reveal>
           <div>
@@ -1586,17 +1554,7 @@ function collectionPage() {
           </div>
           <a class="text-link text-link--light" href="/residents.html">Все работы Веры →</a>
         </header>
-      </div>
-      <div class="shell world-slider" data-world-slider tabindex="0" aria-label="Жители мира «${esc(collection.name)}»">
-        <div class="world-slider__slides">${residentsInWorld.map(worldResidentSlide).join('')}</div>
-        <div class="world-slider__controls">
-          <button type="button" data-world-prev aria-label="Предыдущий Житель">←</button>
-          <div class="world-slider__count"><span data-world-current>01</span><i></i><span>${String(residentsInWorld.length).padStart(2, '0')}</span></div>
-          <button type="button" data-world-next aria-label="Следующий Житель">→</button>
-        </div>
-        <div class="world-slider__rail" role="tablist" aria-label="Выбор Жителя">
-          ${residentsInWorld.map((resident, index) => `<button class="${index === 0 ? 'is-active' : ''}" type="button" data-world-go="${index}" role="tab" aria-selected="${index === 0 ? 'true' : 'false'}"><img src="${esc(resident.sceneImage || resident.heroImage)}" alt=""><span>${esc(resident.shortName || resident.name)}</span></button>`).join('')}
-        </div>
+        <div class="resident-grid">${residentsInWorld.map(residentCard).join('')}</div>
       </div>
     </section>` : `<section class="section"><div class="shell empty-state empty-state--dark">Первые Жители этого Мира скоро появятся. Напишите Вере — она расскажет, кто здесь готовится.</div></section>`}
 
@@ -1614,72 +1572,9 @@ function collectionPage() {
   </main>`);
   document.title = `${collection.name} — Мастерская Веры`;
   setCanonical(`world=${encodeURIComponent(collection.slug || collection.id)}`);
-  bindWorldSlider();
   enableAtmosphereMotion();
 }
 
-function bindWorldSlider() {
-  const slider = document.querySelector('[data-world-slider]');
-  if (!slider) return;
-  const slides = [...slider.querySelectorAll('[data-world-slide]')];
-  const tabs = [...slider.querySelectorAll('[data-world-go]')];
-  const currentLabel = slider.querySelector('[data-world-current]');
-  let current = 0;
-  let pointerStart = null;
-
-  // Warm the other slides once the page is quiet. Deferring matters twice
-  // over: reading .src now would catch the paths before rewritePreviewPaths()
-  // has stitched the Pages subfolder back in (a 404 per slide on the preview),
-  // and the warm-up would be racing the photo the reader is actually looking
-  // at for bandwidth.
-  const warmSlides = () => slides.slice(1).forEach((slide) => {
-    const source = slide.querySelector('.world-resident__scene img');
-    if (!source) return;
-    const image = new Image();
-    image.src = source.currentSrc || source.src;
-  });
-  if ('requestIdleCallback' in window) requestIdleCallback(warmSlides, { timeout: 2000 });
-  else setTimeout(warmSlides, 800);
-
-  const show = (next, direction = 1) => {
-    const normalized = (next + slides.length) % slides.length;
-    if (normalized === current) return;
-    slider.dataset.direction = direction > 0 ? 'next' : 'prev';
-    slides.forEach((slide, index) => {
-      slide.classList.toggle('is-active', index === normalized);
-      slide.classList.toggle('is-before', index < normalized);
-      slide.classList.toggle('is-after', index > normalized);
-      slide.setAttribute('aria-hidden', String(index !== normalized));
-    });
-    tabs.forEach((tab, index) => {
-      tab.classList.toggle('is-active', index === normalized);
-      tab.setAttribute('aria-selected', String(index === normalized));
-    });
-    current = normalized;
-    currentLabel.textContent = String(current + 1).padStart(2, '0');
-  };
-
-  slider.querySelector('[data-world-prev]').addEventListener('click', () => show(current - 1, -1));
-  slider.querySelector('[data-world-next]').addEventListener('click', () => show(current + 1, 1));
-  tabs.forEach((tab) => tab.addEventListener('click', () => {
-    const next = Number(tab.dataset.worldGo);
-    show(next, next > current ? 1 : -1);
-  }));
-  slider.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft') show(current - 1, -1);
-    if (event.key === 'ArrowRight') show(current + 1, 1);
-  });
-  slider.addEventListener('pointerdown', (event) => {
-    pointerStart = { x: event.clientX, y: event.clientY };
-  });
-  slider.addEventListener('pointerup', (event) => {
-    if (!pointerStart) return;
-    const dx = event.clientX - pointerStart.x;
-    const dy = event.clientY - pointerStart.y;
-    pointerStart = null;
-    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy)) show(current + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
-  });
-}
 
 function process() {
   const azimondias = byId(content.residents, 'azimondias') || content.residents[0];

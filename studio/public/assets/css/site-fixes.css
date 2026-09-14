@@ -2,7 +2,6 @@
 :root { --resident-world-focus: center; }
 
 .resident-card__image img,
-.world-resident__photo img,
 .resident-detail__image img,
 .chronicle-hero__scene {
   width: 100%;
@@ -108,12 +107,6 @@
   height: 100% !important;
 }
 .world-stage { min-height: auto; }
-.world-slider { min-height: 56rem; }
-.world-resident__photo {
-  clip-path: none;
-  border: 1px solid rgb(255 238 211 / .2);
-}
-.world-resident__photo img { object-position: var(--resident-focus, center); }
 
 [data-site-footer],
 .site-footer {
@@ -186,14 +179,9 @@
   .gallery img,
   .gallery__video video { max-height: 70vh; }
 
-  .world-slider { min-height: 48rem; }
-  .world-resident__photo {
-    height: auto;
-    aspect-ratio: 3 / 2;
-  }
-  .world-resident__photo img {
-    object-position: var(--resident-focus-mobile, var(--resident-focus, center));
-  }
+  
+  
+  
   .footer-grid { position: relative; z-index: 2; }
 }
 
@@ -367,7 +355,6 @@ html:has(body.menu-open) { overflow: hidden; }
 /* ——— Страница Миров ———
    Герой занимал 666px — целый экран под двумя строками текста. */
 
-
 .world-chapter__count {
   display: inline-flex;
   align-items: center;
@@ -476,7 +463,6 @@ html:has(body.menu-open) { overflow: hidden; }
    Страница состояла из героя на 666px и одного блока: ни цифр, ни принципов,
    ни единой анимации появления. */
 
-
 .about-numbers {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
@@ -567,7 +553,6 @@ html:has(body.menu-open) { overflow: hidden; }
   .about-principle h3 { font-size: 1.3rem; }
   .about-principles .cluster .button { width: 100%; }
 }
-
 
 /* ——— Шапки внутренних страниц ———
    Все они наследовали padding в 11rem: экран целиком под заголовком и парой
@@ -706,8 +691,7 @@ html:has(body.menu-open) { overflow: hidden; }
   .field__label.field__label { font-size: .74rem; letter-spacing: .14em; }
   .meta-list dt,
   dl.meta-list dt { font-size: .74rem !important; letter-spacing: .14em; }
-  .world-resident__scene span,
-  .world-resident__scene span.world-resident__note { font-size: .72rem !important; }
+  
   small { font-size: .82rem; }
 
   /* Подписи в карточке Хроники: «Мир», «Стоимость», «Характер». */
@@ -715,11 +699,10 @@ html:has(body.menu-open) { overflow: hidden; }
   .meta-list dd { font-size: .95rem; }
 
   /* Метка поверх фотографии Жителя на странице Мира. */
-  .world-resident__scene span { font-size: .68rem !important; letter-spacing: .1em; }
+  
 
   /* Переключатель работ внутри Мира — по нему же и попадают пальцем. */
-  .world-switch button span,
-  .world-resident-switch span { font-size: .8rem; }
+  .world-switch button span { font-size: .8rem; }
 
   /* Бейджи статуса нигде не должны опускаться ниже 11px. */
   .status { font-size: .7rem; }
@@ -747,7 +730,6 @@ html:has(body.menu-open) { overflow: hidden; }
 
   .home-v2-section-head--residents p { font-size: .66rem !important; letter-spacing: .14em; }
 
-  .world-resident__scene span,
   .world-stage span:not(.status) { font-size: .74rem !important; }
 
   .world-switch button span,
@@ -762,8 +744,7 @@ html:has(body.menu-open) { overflow: hidden; }
 
 @media (max-width: 50rem) {
   /* Имена работ в переключателе Мира — по ним же и попадают пальцем. */
-  .world-slider__rail button span,
-  .world-slider__rail span { font-size: .84rem !important; }
+  
 
   /* Подзаголовок витрины на главной. */
   .home-v2-section-head--residents p { font-size: .7rem !important; }
@@ -786,16 +767,14 @@ html:has(body.menu-open) { overflow: hidden; }
   .filter-button,
   .home-chip,
   .home-world-control,
-  .home-card-arrow,
-  .world-slider__rail button { min-height: 44px; }
+  .home-card-arrow { min-height: 44px; }
 
   .home-world-control { width: 44px; height: 44px; }
   .home-card-arrow { width: 44px; height: 44px; }
   .brand { min-height: 44px; }
 
   /* Точки каруселей: сама точка остаётся маленькой, зона вокруг — нет. */
-  .home-world-dots button,
-  .world-slider__dots button { width: 44px; height: 44px; }
+  .home-world-dots button { width: 44px; height: 44px; }
 }
 
 /* ——— Галерея Хроники ———
@@ -856,13 +835,6 @@ html:has(body.menu-open) { overflow: hidden; }
 
 /* То же на карточке Жителя в слайдере: кадр открылся, подложка осталась
    под текстовой колонкой. */
-.world-resident__scene::after {
-  background:
-    linear-gradient(90deg, rgb(8 7 6 / .9) 0, rgb(8 7 6 / .6) 30%, rgb(8 7 6 / .14) 58%, transparent 78%),
-    linear-gradient(0deg, rgb(8 7 6 / .5), transparent 26%) !important;
-}
-
-.world-resident__scene img { filter: saturate(.98) contrast(1.02) brightness(1.06) !important; }
 
 /* ——— Фон Мира ———
    Подложка лежала полосами: на секции «Жители» и на приглашении, а шапка
@@ -880,6 +852,13 @@ html:has(body.menu-open) { overflow: hidden; }
    страницу. Адрес приходит из переменной, поэтому новый Мир подключается
    одной строкой. */
 .world-page .world-air {
+  /* `inset: 0` привязывает слой к видимой части окна, а она на телефоне
+     меняется, когда браузер прячет адресную строку: `cover` пересчитывался
+     на ходу, и узор заметно съезжал от одного касания прокрутки. Высота
+     задана в lvh — это окно с убранной строкой, величина постоянная, —
+     поэтому картинка стоит на месте всю прокрутку. */
+  inset: 0 0 auto;
+  height: 100lvh;
   background:
     var(--world-bg, none) center center / cover no-repeat,
     #120d0b;
@@ -908,101 +887,80 @@ html:has(body.menu-open) { overflow: hidden; }
   .theme-home { --world-bg: url('../../media/patterns/home-bg-mobile.webp'); }
 }
 
-/* ——— Шапка Мира: работа в рамке на узоре ———
-   Шапка была тёмной плитой во всю ширину: фотография закрывала верх
-   страницы целиком, и узор, ради которого он и делался, начинался только
-   ниже. Теперь фон Мира виден с первого экрана, а работа стоит на нём
-   кадром в рамке — как картина на стене, а не как обои. */
-.world-stage { overflow: visible !important; }
-
-.world-stage__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(1.6rem, 3.5vw, 3.4rem);
-  align-items: center;
-  padding-top: clamp(2.6rem, 5vw, 4.6rem);
-  padding-bottom: clamp(2.6rem, 5vw, 4.6rem);
-}
+/* ——— Шапка Мира: разворот-титул ———
+   Шапка была тёмной плитой во всю ширину, потом стала текстом рядом с
+   кадром в рамке — и оба раза спорила с узором, ради которого всё и
+   делалось. Теперь первый экран — это титул: узор Мира во всю площадь,
+   имя Мира по центру и стрелка вниз, к Жителям. Работы начинаются сразу
+   под ней и показываются во весь рост, а не кадром в углу. */
+.world-page .world-stage { overflow: visible !important; }
 
 .world-page .world-stage__intro {
-  min-height: 0 !important;
-  padding: 0 !important;
+  display: grid;
+  place-items: center;
+  min-height: min(72svh, 42rem) !important;
+  padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(2.6rem, 5vw, 4rem) !important;
+  text-align: center;
 }
 
-.world-stage__frame {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  margin: 0;
-  border: 1px solid rgb(183 138 79 / .42);
-  border-radius: 1.3rem;
-  aspect-ratio: 4 / 5;
-  box-shadow: 0 1.8rem 4rem rgb(0 0 0 / .5);
+.world-page .world-back {
+  justify-self: start;
+  align-self: start;
+  margin-bottom: 0;
 }
 
-.world-page .world-stage__scene,
-.world-page .world-stage__shade {
-  position: absolute;
-  inset: 0 !important;
-  width: 100%;
-  height: 100% !important;
+.world-page .world-stage__intro h1 {
+  max-width: 22ch;
+  margin: .5rem auto 0;
 }
 
-/* Кадр гасили до brightness(.56), потому что по нему шёл текст. Текст
-   ушёл в свою колонку — гасить больше нечего. */
-.world-page .world-stage__scene {
-  z-index: 0;
-  filter: saturate(.98) contrast(1.03) brightness(1.05) !important;
-  object-position: 62% center !important;
+.world-page .world-stage__intro > p:last-of-type {
+  max-width: 46ch;
+  margin: 1.1rem auto 0;
 }
 
-/* От шторы осталась только полоса под подписью у нижнего края. */
-.world-page .world-stage__shade {
-  z-index: 1;
-  background: linear-gradient(0deg, rgb(8 7 6 / .82) 0, rgb(8 7 6 / .3) 18%, transparent 42%) !important;
+.world-page .world-stage__facts {
+  justify-content: center;
+  margin-top: 1.6rem;
 }
 
-.world-stage__frame > .atmosphere { z-index: 2; }
-
-.world-stage__frame figcaption {
-  position: absolute;
-  z-index: 3;
-  right: 1.1rem;
-  bottom: .95rem;
-  left: 1.1rem;
-  color: rgb(255 239 218 / .82);
-  font-size: .68rem;
+/* Стрелка вниз — единственная подсказка, что страница продолжается: узор
+   занимает весь экран, и без неё край кажется концом страницы. */
+.world-stage__down {
+  display: inline-flex;
+  gap: .5rem;
+  align-items: center;
+  margin-top: clamp(1.8rem, 4vw, 3rem);
+  padding: .55rem .2rem;
+  color: rgb(255 239 218 / .74);
+  font-size: .74rem;
   font-weight: 700;
-  letter-spacing: .14em;
-  text-align: right;
+  letter-spacing: .16em;
   text-transform: uppercase;
 }
 
-/* Заголовок и текст теперь лежат на узоре, а не на затемнённом фото.
-   Подложка под ними мягкая и без края: сплошной прямоугольник читался как
-   вторая плита и возвращал ровно то, от чего уходили. */
-.world-stage__intro::before {
+.world-stage__down b { transition: transform .5s var(--ease); }
+.world-stage__down:hover { color: #fff0dc; }
+.world-stage__down:hover b { transform: translateY(.25rem); }
+
+/* Титул лежит прямо на узоре: мягкая подложка держит контраст там, где под
+   буквами оказались цветы или снег, и растворяется по краям, чтобы не
+   читаться второй плитой. */
+.world-page .world-stage__intro { position: relative; isolation: isolate; }
+
+.world-page .world-stage__intro::before {
   content: '';
   position: absolute;
   z-index: -1;
-  inset: -4rem -5rem;
-  background: radial-gradient(70% 60% at 38% 50%, rgb(12 9 8 / .72) 0, rgb(12 9 8 / .42) 52%, transparent 100%);
+  inset: -2rem -6rem;
+  background: radial-gradient(62% 54% at 50% 50%, rgb(12 9 8 / .74) 0, rgb(12 9 8 / .42) 55%, transparent 100%);
 }
 
-.world-page .world-stage__intro { position: relative; isolation: isolate; }
-
-@media (max-width: 62rem) {
-  .world-stage__grid {
-    grid-template-columns: 1fr;
-    gap: clamp(1.4rem, 4vw, 2.2rem);
-  }
-
-  /* Сначала имя Мира на его узоре, потом работа: человек должен понять,
-     куда зашёл, прежде чем смотреть. */
-  .world-stage__frame { aspect-ratio: 5 / 4; }
-  .world-page .world-stage__scene { object-position: 62% 36% !important; }
-  .world-stage__intro::before { inset: -2rem -1.6rem; }
-}
+/* Старый орнамент — плоская SVG-пластина в середине экрана. Заказчик
+   увидел её как «сзади нарисована снежинка»: на странице Мира под ней
+   теперь лежит настоящая подложка, и две картинки спорили друг с другом.
+   На главной и в Атласе пластина остаётся — там подложки нет. */
+.world-page .world-air__ornament { display: none; }
 
 /* ——— Карточки Миров: видно работу, а не темноту ———
    Фотографию гасили трижды: brightness(.7) на самом кадре, плотная штора
@@ -1069,3 +1027,17 @@ html:has(body.menu-open) { overflow: hidden; }
   inset: -3.4rem -2.6rem -3rem -2.6rem;
   background: radial-gradient(150% 125% at 18% 100%, rgb(8 6 5 / .9) 0, rgb(8 6 5 / .74) 46%, transparent 80%);
 }
+
+/* ——— Атлас: верх перестал быть отдельным тёмным пятном ———
+   У шапки «Миры Мастерской» была своя непрозрачная заливка, а ниже сквозь
+   карточки шёл воздух Мира — со сменой цвета и частиц при прокрутке.
+   Получалось, что страница начинается плитой и только потом оживает.
+   Заливка снята: воздух идёт с первого экрана. */
+.world-walk .page-hero--atlas { background: transparent !important; }
+
+/* Сняв заливку, мы открыли ту самую SVG-пластину — огромную снежинку во
+   весь экран. На странице Мира её заменила настоящая подложка, а в Атласе
+   заменить нечем: это список пяти Миров, и фон одного из них здесь был бы
+   неправдой. Пластину убираем — остаются цветовая заливка Мира и его
+   частицы, которые и так сменяются при прокрутке. */
+body[data-page="collections"] .world-air__ornament { display: none; }

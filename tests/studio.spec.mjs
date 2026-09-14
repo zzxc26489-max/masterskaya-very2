@@ -35,14 +35,12 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
     await expect(page.locator('[data-preview-title]')).toHaveText('Малыш-дракон');
     await page.goto('/collection.html?world=russian-tales', { waitUntil: 'networkidle' });
     await expect(page.getByRole('heading', { name: 'Русские сказки' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Змей Горыныч' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Змей Горыныч', exact: true })).toBeVisible();
     await expect(page.getByText('Азимондиас', { exact: true })).toHaveCount(0);
-    const activeScene = page.locator('[data-world-slide].is-active .world-resident__scene img');
-    const firstScene = await activeScene.getAttribute('src');
-    await page.locator('[data-world-next]').click();
-    await expect(page.locator('[data-world-current]')).toHaveText('02');
-    await expect(page.getByRole('heading', { name: 'Змей Горыныч II' })).toBeVisible();
-    await expect.poll(() => activeScene.getAttribute('src')).not.toBe(firstScene);
+    // Жители Мира лежат сплошным списком, а не в карусели: все карточки
+    // страницы видны сразу, без переключения.
+    await expect(page.locator('.world-residents-section .resident-card')).toHaveCount(5);
+    await expect(page.getByRole('heading', { name: 'Змей Горыныч II', exact: true })).toBeVisible();
     await expect(page.locator('.site-footer')).toBeVisible();
     if (viewport.width === 390) {
       const menu = page.locator('[data-menu-toggle]');

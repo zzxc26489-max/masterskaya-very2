@@ -120,24 +120,6 @@ function upgrade(data) {
     setImage(card.querySelector('.resident-card__image img'), resident);
   });
 
-  document.querySelectorAll('.world-resident').forEach((slide) => {
-    const resident = lookup.get(normalize(slide.querySelector('h2')?.textContent));
-    if (!resident) return;
-    slide.dataset.resident = resident.id;
-    slide.dataset.showcase = resident.showcase === false ? 'false' : 'true';
-    slide.style.setProperty('--resident-focus', focusFor(resident, { scene: true }));
-    slide.style.setProperty('--resident-focus-mobile', focusFor(resident, { scene: true, mobile: true }));
-    setImage(slide.querySelector('.world-resident__photo img'), resident);
-  });
-
-  document.querySelectorAll('.world-slider__rail button').forEach((button) => {
-    const resident = lookup.get(normalize(button.querySelector('span')?.textContent));
-    if (!resident) return;
-    button.dataset.resident = resident.id;
-    button.dataset.showcase = resident.showcase === false ? 'false' : 'true';
-    setImage(button.querySelector('img'), resident);
-  });
-
   const forest = lookup.get('forest-dragon');
   if (forest) {
     document.querySelectorAll('.manifesto-portrait img, .about-image img')
