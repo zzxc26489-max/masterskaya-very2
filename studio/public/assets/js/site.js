@@ -1166,9 +1166,8 @@ function home() {
     </section>
 
     <section id="workshop" class="home-v2-workshop">
-      <div class="home-ornament home-ornament--workshop-left" aria-hidden="true">${worldOrnament('forest')}</div>
-      <div class="home-ornament home-ornament--workshop-right" aria-hidden="true">${worldOrnament('forest')}</div>
       <div class="shell">
+        <img class="home-crest" src="/media/ornaments/crest-process.webp" alt="" loading="lazy">
         <div class="home-v2-workshop__grid">
           <div class="home-v2-workshop__copy">
             <p class="eyebrow">Познакомьтесь с мастерской</p>
@@ -1238,6 +1237,7 @@ function home() {
 
     <section id="chronicles" class="home-v2-chronicles">
       <div class="shell">
+        <img class="home-crest home-crest--dark" src="/media/ornaments/crest-chronicle.webp" alt="" loading="lazy">
         <header class="home-v2-section-head home-v2-section-head--dark">
           <div>
             <p class="eyebrow eyebrow--light">Истории, которые остались</p>
@@ -1270,8 +1270,8 @@ function home() {
     </section>
 
     <section id="order" class="home-v2-steps">
-      <div class="home-ornament home-ornament--steps-left" aria-hidden="true">${worldOrnament('forest')}</div>
       <div class="shell">
+        <img class="home-crest" src="/media/ornaments/crest-letter.webp" alt="" loading="lazy">
         <header class="home-v2-section-head home-v2-section-head--steps">
           <div>
             <p class="eyebrow">Как это работает</p>
