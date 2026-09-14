@@ -1179,3 +1179,80 @@ body[data-page="collections"] .world-air__ornament { display: none; }
 
   .world-stage__down { padding-block: .9rem; }
 }
+
+/* ——— Виньетка Мира ———
+   Гравированный картуш с миниатюрой Мира: заснеженная деревня, дупло
+   древнего дерева, спящий дракон, терем с жар-птицей, окно с лошадкой.
+   Стоит рядом с именем Мира — как гравюра на форзаце книги, с которой
+   начинается глава. Внутри картуша своя сцена, поэтому текст в него не
+   кладём: он рядом, а не поверх. */
+.world-stage__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, .92fr);
+  gap: clamp(1.4rem, 3.5vw, 3.4rem);
+  align-items: center;
+}
+
+.world-page .world-stage__intro {
+  min-height: min(40svh, 24rem) !important;
+  place-items: start !important;
+  padding: clamp(2.4rem, 4.5vw, 4rem) 0 clamp(2rem, 3.5vw, 3rem) !important;
+  text-align: left !important;
+}
+
+.world-page .world-stage__intro h1 { margin: .4rem 0 0 !important; max-width: 16ch; }
+.world-page .world-stage__intro > p:last-of-type { margin: 1rem 0 0 !important; max-width: 42ch; }
+.world-page .world-stage__facts { justify-content: flex-start; }
+
+.world-stage__crest {
+  width: 100%;
+  max-width: 34rem;
+  height: auto;
+  justify-self: center;
+  /* Гравюра стоит на гравюре — без отбивки они сливаются. Тень мягкая и
+     смещённая вниз: сплошное тёмное свечение по кругу читалось пятном. */
+  filter: drop-shadow(0 .7rem 1.8rem rgb(0 0 0 / .55));
+}
+
+@media (max-width: 62rem) {
+  /* Сначала имя Мира, потом виньетка: человек должен понять, куда зашёл. */
+  .world-stage__grid { grid-template-columns: 1fr; gap: .6rem; }
+  .world-page .world-stage__intro { min-height: 0 !important; padding-bottom: .6rem !important; }
+  .world-stage__crest { max-width: 26rem; }
+}
+
+/* ——— Иконки «чем эта работа отличается» ———
+   Пришли гравюрами золотом по прозрачному: рука с фигуркой, палитра с
+   кистью, камень на ладони. На кремовом кружке бледное золото пропадало,
+   поэтому кружок стал тёмным медальоном — на нём гравюра и читается. */
+.home-feature__icon {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 30% 24%, rgb(232 201 143 / .16), transparent 64%),
+    #1a120d !important;
+  border-color: #b78a4f !important;
+}
+
+.home-feature__icon img {
+  width: 86%;
+  height: 86%;
+  object-fit: contain;
+}
+
+/* Гравюра — это иллюстрация, а не пиктограмма: на 71px штриховка
+   сливалась в пятно. Медальон увеличен, и вместе с ним колонка под него —
+   иначе текст заезжал под кружок. */
+.home-feature {
+  grid-template-columns: 6.4rem 1fr !important;
+  gap: 1.15rem !important;
+}
+
+.home-feature__icon {
+  width: 6.4rem !important;
+  height: 6.4rem !important;
+}
+
+@media (max-width: 62rem) {
+  .home-feature { grid-template-columns: 5.2rem 1fr !important; }
+  .home-feature__icon { width: 5.2rem !important; height: 5.2rem !important; }
+}

@@ -921,51 +921,6 @@ function homeFaqItem([question, answer], index) {
   </details>`;
 }
 
-function homeFeatureIcon(type) {
-  if (type === 'hand') {
-    // Отпечаток пальца: и «сделано руками», и «второго такого нет».
-    // Руку линией в этом размере не прочесть, а папиллярный узор — да.
-    return `<svg viewBox="0 0 44 44" aria-hidden="true">
-      <g class="icon-main">
-        <path d="M22 7.4c-7.2 0-13.1 5.9-13.1 13.2v5.9"/>
-        <path d="M35.1 20.6v6.8c0 2.6-.5 5.2-1.5 7.6"/>
-        <path d="M15.2 32.9a13 13 0 0 1-1.6-6.3v-5.9c0-4.6 3.8-8.4 8.4-8.4s8.4 3.8 8.4 8.4v6.8c0 2.2-.4 4.4-1.2 6.5"/>
-        <path d="M22 18.2c-1.3 0-2.4 1.1-2.4 2.4v6.4c0 2.4-.5 4.7-1.5 6.9"/>
-        <path d="M24.4 20.6v6.8c0 2.4-.3 4.8-1 7.1"/>
-      </g>
-      <g class="icon-detail">
-        <path d="M11.4 14.6a13.2 13.2 0 0 1 6.2-5.5M32.6 14.6a13.2 13.2 0 0 0-6.2-5.5"/>
-      </g>
-    </svg>`;
-  }
-  if (type === 'palette') {
-    // Палитра с красками и кистью поверх неё.
-    return `<svg viewBox="0 0 44 44" aria-hidden="true">
-      <g class="icon-main">
-        <path d="M21.6 5.5c-8.6 0-15.6 6.6-15.6 14.8 0 8.2 7 14.8 15.6 14.8 1.7 0 2.9-1.3 2.9-2.8 0-.8-.3-1.4-.8-1.9-.5-.5-.8-1.2-.8-1.9 0-1.6 1.3-2.8 2.9-2.8h3.4c5.3 0 9.6-4.1 9.6-9.2 0-6.6-7.7-11-17.2-11Z"/>
-        <path d="m30.6 26.8 6.6 9.1a2.6 2.6 0 0 1-4.2 3l-6.1-9.4"/>
-      </g>
-      <g class="icon-detail">
-        <circle cx="13.4" cy="15.4" r="1.5"/>
-        <circle cx="19.6" cy="11.2" r="1.5"/>
-        <circle cx="27" cy="12.4" r="1.5"/>
-        <circle cx="12.2" cy="23.4" r="1.5"/>
-      </g>
-    </svg>`;
-  }
-  // Гранёный камень с бликом — единственный экземпляр.
-  return `<svg viewBox="0 0 44 44" aria-hidden="true">
-    <g class="icon-main">
-      <path d="M13.1 7h17.8l7.1 9.6L22 38.4 6 16.6 13.1 7Z"/>
-      <path d="M6 16.6h32"/>
-      <path d="m13.1 7 3.6 9.6L22 38.4l5.3-21.8L30.9 7"/>
-    </g>
-    <g class="icon-detail">
-      <path d="m16.7 16.6 5.3-9.6 5.3 9.6"/>
-      <path d="M33.6 21.6c.9 1 1.4 2.3 1.4 3.6M9.4 11.6c.6-.8 1.4-1.4 2.3-1.8"/>
-    </g>
-  </svg>`;
-}
 
 function homeResidentCard(resident) {
   if (!resident) return '';
@@ -1230,9 +1185,9 @@ function home() {
           </div>
         </div>
         <div class="home-features">
-          <div class="home-feature"><span class="home-feature__icon">${homeFeatureIcon('hand')}</span><span><b>Ручная лепка</b><small>Каждая фигурка создаётся вручную, без форм</small></span></div>
-          <div class="home-feature"><span class="home-feature__icon">${homeFeatureIcon('palette')}</span><span><b>Авторская роспись</b><small>Уникальные цвета и характеры</small></span></div>
-          <div class="home-feature"><span class="home-feature__icon">${homeFeatureIcon('diamond')}</span><span><b>Один экземпляр</b><small>Таких больше не будет</small></span></div>
+          <div class="home-feature"><span class="home-feature__icon"><img src="/media/icons/icon-hands.webp" alt="" loading="lazy"></span><span><b>Ручная лепка</b><small>Каждая фигурка создаётся вручную, без форм</small></span></div>
+          <div class="home-feature"><span class="home-feature__icon"><img src="/media/icons/icon-paint.webp" alt="" loading="lazy"></span><span><b>Авторская роспись</b><small>Уникальные цвета и характеры</small></span></div>
+          <div class="home-feature"><span class="home-feature__icon"><img src="/media/icons/icon-unique.webp" alt="" loading="lazy"></span><span><b>Один экземпляр</b><small>Таких больше не будет</small></span></div>
         </div>
       </div>
     </section>
@@ -1558,16 +1513,19 @@ function collectionPage() {
 
   paint(app, `<main id="main">
     <section class="world-stage theme-${esc(collection.theme)}" style="--world-accent:${esc(collection.accent)}">
-      <div class="shell world-stage__intro">
-        <a class="world-back" href="/collections.html">← Все Миры</a>
-        <p class="eyebrow eyebrow--light">Мир Мастерской</p>
-        <h1>${esc(collection.name)}</h1>
-        <p>${esc(collection.description)}</p>
-        <div class="world-stage__facts">
-          <span class="world-badge">${residentsInWorld.length} ${residentWord(residentsInWorld.length)}</span>
-          ${available.length ? `<span class="world-badge world-badge--free">${available.length} можно забрать домой</span>` : ''}
+      <div class="shell world-stage__grid">
+        <div class="world-stage__intro">
+          <a class="world-back" href="/collections.html">← Все Миры</a>
+          <p class="eyebrow eyebrow--light">Мир Мастерской</p>
+          <h1>${esc(collection.name)}</h1>
+          <p>${esc(collection.description)}</p>
+          <div class="world-stage__facts">
+            <span class="world-badge">${residentsInWorld.length} ${residentWord(residentsInWorld.length)}</span>
+            ${available.length ? `<span class="world-badge world-badge--free">${available.length} можно забрать домой</span>` : ''}
+          </div>
+          ${residentsInWorld.length ? `<a class="world-stage__down" href="#world-residents">Кто здесь живёт <b aria-hidden="true">↓</b></a>` : ''}
         </div>
-        ${residentsInWorld.length ? `<a class="world-stage__down" href="#world-residents">Кто здесь живёт <b aria-hidden="true">↓</b></a>` : ''}
+        <img class="world-stage__crest" src="/media/ornaments/${esc(collection.theme)}-cartouche.webp" alt="" fetchpriority="low">
       </div>
     </section>
 
