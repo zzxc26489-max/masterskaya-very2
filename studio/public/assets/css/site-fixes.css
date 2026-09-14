@@ -898,8 +898,8 @@ html:has(body.menu-open) { overflow: hidden; }
 .world-page .world-stage__intro {
   display: grid;
   place-items: center;
-  min-height: min(72svh, 42rem) !important;
-  padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(2.6rem, 5vw, 4rem) !important;
+  min-height: min(54svh, 31rem) !important;
+  padding: clamp(2.2rem, 4.5vw, 3.6rem) 0 clamp(2rem, 3.5vw, 2.8rem) !important;
   text-align: center;
 }
 
@@ -921,7 +921,7 @@ html:has(body.menu-open) { overflow: hidden; }
 
 .world-page .world-stage__facts {
   justify-content: center;
-  margin-top: 1.6rem;
+  margin-top: 1.2rem;
 }
 
 /* Стрелка вниз — единственная подсказка, что страница продолжается: узор
@@ -930,7 +930,7 @@ html:has(body.menu-open) { overflow: hidden; }
   display: inline-flex;
   gap: .5rem;
   align-items: center;
-  margin-top: clamp(1.8rem, 4vw, 3rem);
+  margin-top: clamp(1.2rem, 2.6vw, 2rem);
   padding: .55rem .2rem;
   color: rgb(255 239 218 / .74);
   font-size: .74rem;
@@ -1041,3 +1041,141 @@ html:has(body.menu-open) { overflow: hidden; }
    неправдой. Пластину убираем — остаются цветовая заливка Мира и его
    частицы, которые и так сменяются при прокрутке. */
 body[data-page="collections"] .world-air__ornament { display: none; }
+
+/* ——— Разделитель с ромбом ———
+   Между титулом и списком Жителей нужна граница: узор идёт сплошняком, и
+   без неё разделы сливаются. Тонкая линия с ромбом посередине — тот же
+   приём, что и в присланных примерах, только рисуется, а не картинкой. */
+.world-page .world-residents-section > .shell::before {
+  content: '';
+  display: block;
+  height: 1px;
+  margin-bottom: clamp(2rem, 4vw, 3.2rem);
+  background:
+    radial-gradient(circle at 50% 50%, var(--world-accent, #b78a4f) .18rem, transparent .19rem) center / 100% 100% no-repeat,
+    linear-gradient(90deg, transparent, rgb(183 138 79 / .5) 22%, rgb(183 138 79 / .5) 78%, transparent);
+}
+
+/* ——— Жители Мира: широкие строки ———
+   Сетка карточек ужимала каждую работу до превью в треть колонки, а тут
+   штучные вещи: кадр — это и есть товар. Строка отдаёт кадру половину
+   ширины, а вторую половину — всему, из-за чего человек решает: имя,
+   описание, статус, цена, сколько осталось и две кнопки. Заходить в
+   Хронику, чтобы узнать цену, больше не нужно — она нужна за историей. */
+.world-list {
+  display: grid;
+  gap: clamp(1.4rem, 2.6vw, 2.4rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.world-list__item {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(1.4rem, 3vw, 2.8rem);
+  align-items: center;
+  padding-bottom: clamp(1.4rem, 2.6vw, 2.4rem);
+  border-bottom: 1px solid rgb(183 138 79 / .28);
+}
+
+.world-list__item:last-child { padding-bottom: 0; border-bottom: 0; }
+
+.world-list__photo {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 3 / 2;
+  border: 1px solid rgb(183 138 79 / .4);
+  border-radius: 1.1rem;
+  background: rgb(12 9 8 / .6);
+  box-shadow: 0 1.4rem 3.2rem rgb(0 0 0 / .45);
+}
+
+.world-list__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--resident-focus, center);
+  /* Кадры сняты тёмными под старую вёрстку с текстом поверх. Текст ушёл
+     в свою колонку — гасить работу больше нечего. */
+  filter: saturate(.98) contrast(1.03) brightness(1.05);
+  transition: transform 1s var(--ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .world-list__photo:hover img { transform: scale(1.035); }
+}
+
+.world-list__copy h3 {
+  margin: .4rem 0 .8rem;
+  color: #fff2df;
+  font-size: clamp(1.9rem, 2.8vw, 2.9rem);
+  line-height: 1.1;
+}
+
+.world-list__copy h3 a { color: inherit; }
+.world-list__copy h3 a:hover { color: var(--world-accent, #e8c98f); }
+
+.world-list__excerpt {
+  max-width: 46ch;
+  color: rgb(246 234 214 / .84);
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.world-list__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem .8rem;
+  align-items: center;
+  margin: 1.1rem 0 1.3rem;
+}
+
+.world-list__facts .price {
+  color: #f3e2c4;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.world-list__facts .stock {
+  color: rgb(246 234 214 / .66);
+  font-size: .84rem;
+}
+
+@media (max-width: 56rem) {
+  /* Кадр уходит наверх во всю ширину: на телефоне превью слева съедало бы
+     работу до размера иконки. */
+  .world-list__item {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .world-list__photo { aspect-ratio: 5 / 4; }
+  .world-list__photo img { object-position: var(--resident-focus-mobile, var(--resident-focus, center)); }
+  .world-list__copy h3 { margin: .3rem 0 .55rem; }
+  .world-list__excerpt { font-size: .88rem; }
+  .world-list__facts { margin: .9rem 0 1.1rem; }
+  .world-list__copy .cluster { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+}
+
+@media (max-width: 24rem) {
+  .world-list__copy .cluster { grid-template-columns: 1fr; }
+}
+
+/* Заголовок раздела Жителей: две строки заголовка тянули ссылку «Все
+   работы Веры» к нижнему краю, и она висела в пустоте у правого поля. */
+.world-page .world-residents-section .section-head {
+  align-items: baseline;
+  margin-bottom: clamp(1.8rem, 3.5vw, 2.8rem);
+}
+
+/* Зоны нажатия в списке Мира: имя-ссылка и стрелка вниз не дотягивали до
+   44px — нормы для пальца. Сама надпись не выросла, выросла область. */
+@media (max-width: 56rem) {
+  .world-list__copy h3 a {
+    display: inline-block;
+    padding-block: .45rem;
+  }
+
+  .world-stage__down { padding-block: .9rem; }
+}

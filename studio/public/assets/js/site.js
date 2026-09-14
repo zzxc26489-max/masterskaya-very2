@@ -1521,6 +1521,32 @@ function bindWorldWalk() {
 }
 
 
+// Житель Мира — широкой строкой: кадр во всю высоту слева, всё, что нужно
+// для решения, справа. Сетка карточек здесь не годилась: работы штучные,
+// и каждая заслуживает кадра, по которому её видно, а не превью в углу.
+function worldListItem(resident, index) {
+  const [label, className] = statusCopy(resident.availability);
+  const price = ['available', 'in-progress'].includes(resident.availability) ? priceLabel(resident) : '';
+  const stock = stockLabel(resident);
+  const link = `/chronicle.html?resident=${encodeURIComponent(resident.slug)}`;
+  return `<li class="world-list__item" data-reveal style="--reveal-delay:${index * 70}ms">
+    <a class="world-list__photo" href="${link}" tabindex="-1" aria-hidden="true">
+      <img src="${esc(resident.sceneImage || resident.heroImage)}" alt="" loading="lazy">
+    </a>
+    <div class="world-list__copy">
+      <p class="eyebrow eyebrow--light">${esc(resident.type)}</p>
+      <h3><a href="${link}">${esc(resident.shortName || resident.name)}</a></h3>
+      <p class="world-list__excerpt">${esc(resident.excerpt)}</p>
+      <div class="world-list__facts">
+        <span class="status ${className}">${label}</span>
+        ${price ? `<span class="price">${price}</span>` : ''}
+        ${stock ? `<span class="stock">${esc(stock)}</span>` : ''}
+      </div>
+      <div class="cluster">${residentActions(resident, true)}</div>
+    </div>
+  </li>`;
+}
+
 function collectionPage() {
   const collection = byId(content.collections, query('world')) || content.collections[0];
   const residentsInWorld = content.residents
@@ -1554,7 +1580,7 @@ function collectionPage() {
           </div>
           <a class="text-link text-link--light" href="/residents.html">Все работы Веры →</a>
         </header>
-        <div class="resident-grid">${residentsInWorld.map(residentCard).join('')}</div>
+        <ol class="world-list">${residentsInWorld.map(worldListItem).join('')}</ol>
       </div>
     </section>` : `<section class="section"><div class="shell empty-state empty-state--dark">Первые Жители этого Мира скоро появятся. Напишите Вере — она расскажет, кто здесь готовится.</div></section>`}
 

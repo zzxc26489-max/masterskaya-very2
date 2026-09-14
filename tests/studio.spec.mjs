@@ -37,9 +37,9 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
     await expect(page.getByRole('heading', { name: 'Русские сказки' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Змей Горыныч', exact: true })).toBeVisible();
     await expect(page.getByText('Азимондиас', { exact: true })).toHaveCount(0);
-    // Жители Мира лежат сплошным списком, а не в карусели: все карточки
+    // Жители Мира лежат сплошным списком широких строк: все работы
     // страницы видны сразу, без переключения.
-    await expect(page.locator('.world-residents-section .resident-card')).toHaveCount(5);
+    await expect(page.locator('.world-list__item')).toHaveCount(5);
     await expect(page.getByRole('heading', { name: 'Змей Горыныч II', exact: true })).toBeVisible();
     await expect(page.locator('.site-footer')).toBeVisible();
     if (viewport.width === 390) {
