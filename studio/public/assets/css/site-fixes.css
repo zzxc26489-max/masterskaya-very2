@@ -1331,3 +1331,51 @@ body .site-header.is-compact { z-index: 70; }
 body[data-page="residents"] :target,
 body[data-page="residents"] #main,
 body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--shell-header, 4.4rem) + 6rem); }
+
+/* ——— Орнамент светлых страниц ———
+   Золото Миров сделано под тёмный фон: на кремовых страницах его не
+   поставить. Сепия-орнамент — его светлая пара. Он не фон, а кромка:
+   рисунок идёт только по верхнему и нижнему краю, середина пустая, —
+   поэтому лежит двумя полосами, а не подложкой во весь экран. Кремовая
+   часть страницы получает рамку сверху и снизу, текст остаётся на чистом.
+
+   Отдельная мобильная версия не нужна: полоса тянется по ширине и
+   пропорционально уменьшается по высоте. Подложкам Миров вторая версия
+   была нужна потому, что это готовая композиция в размер экрана, и на
+   телефоне её обрезало бы поперёк. */
+.page-hero + .section--paper,
+#main > .section--paper:last-child { position: relative; }
+
+.page-hero + .section--paper::before,
+#main > .section--paper:last-child::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: clamp(2.2rem, 5vw, 4.2rem);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  opacity: .72;
+  pointer-events: none;
+}
+
+.page-hero + .section--paper::before {
+  top: 0;
+  background-image: url('../../media/patterns/paper-rule-top.webp');
+}
+
+#main > .section--paper:last-child::after {
+  bottom: 0;
+  background-image: url('../../media/patterns/paper-rule-bottom.webp');
+}
+
+@media (max-width: 50rem) {
+  /* На узком экране завиток растягивался бы вчетверо: полоса прижимается
+     к высоте и обрезается по бокам, рисунок остаётся в своих пропорциях. */
+  .page-hero + .section--paper::before,
+  #main > .section--paper:last-child::after {
+    height: 1.8rem;
+    background-size: auto 100%;
+  }
+}
