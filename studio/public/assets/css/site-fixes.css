@@ -1052,9 +1052,12 @@ body[data-page="collections"] .world-air__ornament { display: none; }
 .world-page .world-residents-section > .shell::before {
   content: '';
   display: block;
-  height: clamp(.9rem, 1.6vw, 1.3rem);
-  margin-bottom: clamp(2rem, 4vw, 3.2rem);
-  background: url('../../media/ornaments/divider.webp') center / contain no-repeat;
+  /* До краёв экрана, а не по ширине текстовой колонки: это граница между
+     разделами страницы, а не элемент внутри неё. */
+  width: 100vw;
+  margin: 0 calc(50% - 50vw) clamp(2rem, 4vw, 3.2rem);
+  height: clamp(1rem, 1.9vw, 1.4rem);
+  background: url('../../media/ornaments/divider.webp') center / 100% 100% no-repeat;
 }
 
 /* ——— Жители Мира: широкие строки ———
@@ -1405,7 +1408,7 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
 .home-v2-steps > .shell > .home-crest,
 .home-v2-workshop > .shell > .home-crest {
   padding-top: clamp(1.6rem, 3.5vw, 2.8rem);
-  background: url('../../media/ornaments/divider.webp') top center / min(34rem, 70%) auto no-repeat;
+  background: url('../../media/ornaments/divider.webp') top center / 100% auto no-repeat;
 }
 
 /* ——— «Мастерская сегодня»: цифрами надо гордиться ———
@@ -1443,9 +1446,10 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
 .about-tally .section-head::after {
   content: '';
   display: block;
-  height: clamp(.8rem, 1.4vw, 1.1rem);
-  margin-top: clamp(1.2rem, 2.5vw, 1.8rem);
-  background: url('../../media/ornaments/divider.webp') center / contain no-repeat;
+  width: 100vw;
+  margin: clamp(1.2rem, 2.5vw, 1.8rem) calc(50% - 50vw) 0;
+  height: clamp(1rem, 1.9vw, 1.4rem);
+  background: url('../../media/ornaments/divider.webp') center / 100% 100% no-repeat;
 }
 
 @media (max-width: 50rem) {
@@ -1488,9 +1492,9 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
   pointer-events: none;
 }
 
-/* На всю ширину разделитель вырождается в волосок: у него пропорция 82:1,
-   и на телефоне от него остаётся три пикселя поверх плотного узора. На шве
-   стоит вырезанный из него центральный завиток — он читается и там. */
+/* Полоса идёт от края до края окна: это фон страницы, а не элемент внутри
+   колонки. Узор тянется на всю ширину — у него пропорция 82:1, поэтому по
+   высоте он задан отдельно и растягивается, иначе от него остаётся волосок. */
 .residents-world + .residents-world::after {
   content: '';
   position: absolute;
@@ -1498,8 +1502,8 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
   top: clamp(1.2rem, 2.6vw, 2.1rem);
   right: 0;
   left: 0;
-  height: clamp(1.5rem, 3vw, 2.1rem);
-  background: url('../../media/ornaments/seam-mark.webp') center / auto 100% no-repeat;
+  height: clamp(1.1rem, 2.2vw, 1.6rem);
+  background: url('../../media/ornaments/divider.webp') center / 100% 100% no-repeat;
   filter: drop-shadow(0 0 .5rem rgb(8 6 5 / .95));
   pointer-events: none;
 }
@@ -1557,9 +1561,10 @@ body[data-page="collections"] .worlds-section { padding-top: 0 !important; }
 .atlas-tally::after {
   content: '';
   display: block;
-  height: clamp(1.4rem, 2.8vw, 2rem);
-  margin-top: clamp(1.1rem, 2.4vw, 1.7rem);
-  background: url('../../media/ornaments/seam-mark.webp') left center / auto 100% no-repeat;
+  width: 100vw;
+  margin: clamp(1.1rem, 2.4vw, 1.7rem) calc(50% - 50vw) 0;
+  height: clamp(1.1rem, 2.2vw, 1.6rem);
+  background: url('../../media/ornaments/divider.webp') center / 100% 100% no-repeat;
 }
 
 /* ——— Переход от Мира к Миру в Атласе ———
@@ -1571,8 +1576,12 @@ body[data-page="collections"] .worlds-section { padding-top: 0 !important; }
    отдельной ячейкой сетки между карточками. */
 .atlas-seam {
   grid-column: 1 / -1;
-  height: clamp(1.3rem, 2.4vw, 1.8rem);
-  background: url('../../media/ornaments/seam-mark.webp') center / auto 100% no-repeat;
+  width: 100vw;
+  /* Ячейка лежит внутри колонки контента, а узор должен доходить до краёв
+     экрана: выносим её за поля колонки. */
+  margin-inline: calc(50% - 50vw);
+  height: clamp(1.1rem, 2.2vw, 1.6rem);
+  background: url('../../media/ornaments/divider.webp') center / 100% 100% no-repeat;
   filter: drop-shadow(0 0 .4rem rgb(8 6 5 / .9));
 }
 
