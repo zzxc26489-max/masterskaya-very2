@@ -1474,13 +1474,20 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
    колонки. Узор тянется на всю ширину — у него пропорция 82:1, поэтому по
    высоте он задан отдельно и растягивается, иначе от него остаётся волосок. */
 /* ——— Разделитель ———
-   Единственное место, где он сейчас стоит: шов между Мирами на «Жителях».
-   Пока это образец, на котором подбирается размер, — остальные места
-   заказчик назовёт отдельно.
+   Узор стыкуется сам с собой: правый край продолжается левым без шва, а
+   мотив повторяется с шагом 600 пикселей. Поэтому вместо целой ленты
+   лежит одна плитка, и она не масштабируется, а повторяется до края окна.
 
-   Правила: узор всегда в своих пропорциях (12:1), всегда во всю ширину
-   окна, лишнее уходит за края. Ни растяжения, ни сжатия — от них и было
-   мыло. Размер регулируется одной высотой, cover доводит остальное. */
+   Это снимает разом всё, на чём мы спотыкались: нечего растягивать,
+   нечего сжимать, нечего обрезать. На любой ширине экрана узор одинаково
+   резкий и одинаково идёт от края до края.
+
+   Высота подобрана под плотность экрана: 40px при тройной плотности и
+   60px при двойной дают ровно 120 устройственных пикселей — высоту самой
+   плитки, один к одному, без пересчёта.
+
+   Пока стоит в одном месте — на шве между Мирами в «Жителях». Остальные
+   места заказчик назовёт отдельно. */
 .residents-world + .residents-world::after {
   content: '';
   position: absolute;
@@ -1488,15 +1495,20 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
   top: 0;
   right: 0;
   left: 0;
-  height: clamp(3.6rem, 6.5vw, 8rem);
-  background: url('../../media/ornaments/divider.webp') center / cover no-repeat;
-  filter: drop-shadow(0 0 .5rem rgb(8 6 5 / .95));
+  height: 2.5rem;
+  background: url('../../media/ornaments/divider.webp') repeat-x center / auto 100%;
+  filter: drop-shadow(0 0 .4rem rgb(8 6 5 / .9));
   pointer-events: none;
 }
 
-.residents-world + .residents-world .residents-world__inner {
-  padding-top: clamp(4.4rem, 8vw, 9rem);
+@media (min-width: 50rem) {
+  .residents-world + .residents-world::after { height: 3.75rem; }
 }
+
+.residents-world + .residents-world .residents-world__inner {
+  padding-top: clamp(3.4rem, 6vw, 6rem);
+}
+
 
 
 /* Хвост предыдущей полосы гасим встречной тенью, иначе узор упирается в
