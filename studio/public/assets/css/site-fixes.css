@@ -1501,15 +1501,14 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
   content: '';
   position: absolute;
   z-index: 2;
-  /* Ровно на стыке двух полос, по центру границы: раньше черта стояла на
-     два сантиметра ниже, то есть посреди новой полосы, и читалась как
-     украшение поверх текста, а не как граница между Мирами. */
+  /* Впритык к границе и целиком внутри полосы. Половину вверх сдвигать
+     нельзя: у полосы Мира overflow: hidden ради скруглённых углов, и всё,
+     что вылезло за край, срезается — у дракона пропадала голова. */
   top: 0;
   right: 0;
   left: 0;
   aspect-ratio: 12 / 1;
   max-height: 5.8rem;
-  transform: translateY(-50%);
   background: url('../../media/ornaments/divider.webp') center / 100% 100% no-repeat;
   filter: drop-shadow(0 0 .5rem rgb(8 6 5 / .95));
   pointer-events: none;
@@ -1633,7 +1632,6 @@ body[data-page="collections"] .worlds-section { padding-top: 0 !important; }
   top: 0;
   right: 0;
   left: 0;
-  transform: translateY(-50%);
   aspect-ratio: 12 / 1;
   max-height: 5.8rem;
   background: url('../../media/ornaments/divider.webp') center / 100% 100% no-repeat;
@@ -1644,7 +1642,6 @@ body[data-page="collections"] .worlds-section { padding-top: 0 !important; }
    как и шву между полосами. */
 .residents-world:first-of-type::before {
   top: 0;
-  transform: translateY(-50%);
   filter: drop-shadow(0 0 .5rem rgb(8 6 5 / .95));
 }
 
@@ -1734,3 +1731,13 @@ body[data-page="collections"] .worlds-section { padding-top: 0 !important; }
     background-size: auto 100%;
   }
 }
+
+/* ——— Место под черту ———
+   Черта занимает верхнюю полосу секции, и содержимому надо начинаться под
+   ней. У двух секций верхнего отступа не было вовсе, и заголовок оказался
+   прямо под узором: у «Найти своего Жителя» и у первой полосы Мира на
+   «Жителях». Остальным четырём своих отступов хватает — проверено замером
+   на обеих ширинах. */
+.home-v2-cta { padding-top: clamp(4.6rem, 7vw, 7rem) !important; }
+
+.residents-world:first-of-type .residents-world__inner { padding-top: clamp(4.2rem, 9vw, 6.4rem); }
