@@ -1332,6 +1332,16 @@ function home() {
     </section>
   </main>`);
   document.title = 'Мастерская Веры — авторские фигурки ручной работы';
+  setJsonLd({
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Мастерская Веры',
+    description: 'Авторские фигурки ручной работы из полимерной глины. Каждая — в единственном экземпляре.',
+    url: absolute('/'),
+    logo: absolute('/media/brand/logo-mark.webp'),
+    sameAs: ['https://t.me/masterskayaver'],
+    makesOffer: { '@type': 'Offer', itemOffered: { '@type': 'Product', name: 'Авторская фигурка ручной работы', material: 'Полимерная глина' } }
+  });
   bindHomeWorldCarousel();
   bindHomeResidentFilters();
   markHomeReveal();
@@ -1370,6 +1380,18 @@ function residents() {
     <section class="section section--paper" hidden data-empty-section><div class="shell empty-state" data-empty>В этом разделе пока нет Жителей. Выберите другой Мир или напишите Вере.</div></section>
   </main>`);
   document.title = 'Жители — Мастерская Веры';
+  setJsonLd({
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Жители Мастерской',
+    numberOfItems: content.residents.length,
+    itemListElement: content.residents.map((resident, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      url: absolute(`/chronicle.html?resident=${encodeURIComponent(resident.slug)}`),
+      name: resident.name
+    }))
+  });
   document.querySelector('[data-filters]').addEventListener('click', (event) => {
     const button = event.target.closest('[data-filter]');
     if (!button) return;
@@ -1388,7 +1410,28 @@ function residents() {
     });
     document.querySelector('[data-empty-section]').hidden = totalVisible > 0;
   });
+  lightWorldBands();
   enableAtmosphereMotion();
+}
+
+// Подложки пяти Миров весят вместе три четверти мегабайта, а на первом
+// экране видна одна. Браузер грузит фоны всех секций сразу, потому что
+// секции есть в разметке — поэтому адрес подложки подставляется не раньше,
+// чем полоса подойдёт к экрану. Первая зажигается сразу: она и так видна.
+function lightWorldBands() {
+  const bands = [...document.querySelectorAll('.residents-world')];
+  if (!bands.length) return;
+  const light = (band) => band.classList.add('is-lit');
+  if (!('IntersectionObserver' in window)) { bands.forEach(light); return; }
+  light(bands[0]);
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      light(entry.target);
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: '600px 0px' });
+  bands.slice(1).forEach((band) => observer.observe(band));
 }
 
 function collections() {
@@ -1689,6 +1732,7 @@ function chronicle() {
   </main>`);
   document.title = `${resident.name} — Хроника Мастерской Веры`;
   setCanonical(`resident=${encodeURIComponent(resident.slug || resident.id)}`);
+  setJsonLd(residentJsonLd(resident, collection));
   bindLightbox();
   bindChronicleDock();
   enableAtmosphereMotion();
@@ -1964,6 +2008,60 @@ function notFound() {
    ships one with the origin filled in at build time; this rewrites it from the
    address actually open, which also repairs it on a host the build did not
    know about. */
+// Разметка для поисковиков. Страницы собираются скриптом, поэтому и данные
+// подставляются здесь же — цена, наличие и фотография уходят в выдачу
+// прямо из тех же полей, что показаны человеку, и разойтись не могут.
+// Адрес берётся из window.location: домен ещё не куплен, и зашивать его
+// в файлы нельзя.
+function setJsonLd(data) {
+  document.querySelectorAll('script[data-jsonld]').forEach((node) => node.remove());
+  if (!data) return;
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.dataset.jsonld = 'true';
+  script.textContent = JSON.stringify(data);
+  document.head.append(script);
+}
+
+function absolute(path) {
+  if (!path) return undefined;
+  try { return new URL(path, window.location.origin).href; } catch { return undefined; }
+}
+
+const SCHEMA_AVAILABILITY = {
+  available: 'https://schema.org/InStock',
+  'in-progress': 'https://schema.org/PreOrder',
+  reserved: 'https://schema.org/LimitedAvailability',
+  archive: 'https://schema.org/SoldOut'
+};
+
+function residentJsonLd(resident, collection) {
+  const price = Number(resident.price);
+  const offer = {
+    '@type': 'Offer',
+    availability: SCHEMA_AVAILABILITY[resident.availability] || 'https://schema.org/SoldOut',
+    itemCondition: 'https://schema.org/NewCondition',
+    priceCurrency: 'RUB',
+    url: absolute(`/chronicle.html?resident=${encodeURIComponent(resident.slug)}`),
+    seller: { '@type': 'Organization', name: 'Мастерская Веры' }
+  };
+  // Цену указываем только настоящую: выдумывать её ради красивой карточки
+  // в поиске нельзя — человек придёт с этой цифрой.
+  if (price > 0) offer.price = price;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: resident.name,
+    description: resident.excerpt,
+    category: collection?.name,
+    image: [resident.heroImage, resident.sceneImage, ...(resident.gallery || [])]
+      .filter(Boolean).map((src) => absolute(src.split('?')[0])).filter(Boolean).slice(0, 6),
+    brand: { '@type': 'Brand', name: 'Мастерская Веры' },
+    material: 'Полимерная глина',
+    offers: offer
+  };
+}
+
 function setCanonical(query) {
   const link = document.querySelector('link[rel="canonical"]');
   if (!link) return;

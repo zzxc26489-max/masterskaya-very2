@@ -1280,7 +1280,11 @@ body .site-header.is-compact { z-index: 70; }
    что это один Мир, а не два разных раздела. */
 .residents-world__scene { display: none; }
 
-.residents-world {
+.residents-world { background: #120d0b; }
+
+/* Подложка подставляется, когда полоса подходит к экрану: иначе браузер
+   тянет фоны всех пяти Миров сразу, а видна на первом экране одна. */
+.residents-world.is-lit {
   background:
     var(--world-bg, none) center center / cover no-repeat,
     #120d0b;
