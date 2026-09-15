@@ -1951,8 +1951,14 @@ function bindInquiryForm() {
 function bindLightbox() {
   const lightbox = document.createElement('div');
   lightbox.className = 'lightbox';
+  // Роль диалога: без неё скринридер не объявляет, что открылось окно, и
+  // продолжает читать страницу под ним.
+  lightbox.setAttribute('role', 'dialog');
+  lightbox.setAttribute('aria-modal', 'true');
+  lightbox.setAttribute('aria-label', 'Фотография крупно');
   lightbox.innerHTML = '<button type="button" aria-label="Закрыть фотографию">×</button>';
   document.body.append(lightbox);
+  const closeButton = lightbox.querySelector('button');
 
   // The <img> is built on first open, so no src-less image ever sits in the
   // document waiting to be used.
@@ -1966,14 +1972,24 @@ function bindLightbox() {
     return picture;
   };
 
+  // Откуда окно открыли: фокус уходит внутрь, и на закрытии его надо вернуть
+  // ровно туда, иначе человек с клавиатуры окажется в начале страницы.
+  let opener = null;
+
   const close = () => {
+    if (!lightbox.classList.contains('is-open')) return;
     lightbox.classList.remove('is-open');
     document.body.classList.remove('menu-open');
+    opener?.focus();
+    opener = null;
   };
+
+  const isOpen = () => lightbox.classList.contains('is-open');
   lightbox.addEventListener('click', (event) => {
     if (event.target === lightbox || event.target.matches('button')) close();
   });
   document.querySelectorAll('[data-lightbox]').forEach((button) => button.addEventListener('click', () => {
+    opener = button;
     // Take the address off the thumbnail rather than the data- attribute: the
     // thumbnail's src is already absolute and already carries the Pages
     // subfolder, and .src (not .currentSrc) is the full-size photo, not the
@@ -1987,9 +2003,18 @@ function bindLightbox() {
     lightbox.classList.add('is-open');
     // Stop the page behind the overlay from scrolling under it.
     document.body.classList.add('menu-open');
+    // Фокус уходит внутрь окна: иначе следующий Tab уводит за него, в
+    // страницу, которой сейчас не видно.
+    closeButton.focus();
   }));
   window.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') close();
+    if (event.key === 'Escape') { close(); return; }
+    // В окне ровно одна кнопка, поэтому Tab всегда возвращается на неё, и
+    // фокус не уходит блуждать по скрытой странице.
+    if (event.key === 'Tab' && isOpen()) {
+      event.preventDefault();
+      closeButton.focus();
+    }
   });
 }
 
