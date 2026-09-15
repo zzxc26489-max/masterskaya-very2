@@ -1474,20 +1474,39 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
    колонки. Узор тянется на всю ширину — у него пропорция 82:1, поэтому по
    высоте он задан отдельно и растягивается, иначе от него остаётся волосок. */
 /* ——— Разделитель ———
-   Узор стыкуется сам с собой: правый край продолжается левым без шва, а
-   мотив повторяется с шагом 600 пикселей. Поэтому вместо целой ленты
-   лежит одна плитка, и она не масштабируется, а повторяется до края окна.
+   Четыре захода с картинками упёрлись в одно: растровый файл, натянутый на
+   произвольную ширину экрана, всегда либо мылит, либо режется. Ширина окна
+   заранее не известна, а у картинки она фиксированная — примирить это
+   нельзя.
 
-   Это снимает разом всё, на чём мы спотыкались: нечего растягивать,
-   нечего сжимать, нечего обрезать. На любой ширине экрана узор одинаково
-   резкий и одинаково идёт от края до края.
+   Поэтому разделитель теперь не картинка, а два слоя, и ни один из них не
+   масштабируется:
 
-   Высота подобрана под плотность экрана: 40px при тройной плотности и
-   60px при двойной дают ровно 120 устройственных пикселей — высоту самой
-   плитки, один к одному, без пересчёта.
+   1. Линия — градиент. У градиента нет пикселей, он рисуется под любую
+      ширину и всегда идеально резкий. Он и тянется от края до края.
+   2. Завиток по центру — вектор в своём размере, no-repeat. Он вообще
+      никогда не меняет размер, поэтому его нечем испортить.
 
-   Пока стоит в одном месте — на шве между Мирами в «Жителях». Остальные
-   места заказчик назовёт отдельно. */
+   Растягивается только то, что растягивать можно. */
+.section-rule {
+  --rule-ink: 200 164 104;
+  display: block;
+  height: 1.75rem;
+  background:
+    url('../../media/ornaments/divider-mark.svg') center center / auto 1.75rem no-repeat,
+    linear-gradient(90deg,
+      transparent,
+      rgb(var(--rule-ink) / .5) 14%,
+      rgb(var(--rule-ink) / .5) 86%,
+      transparent) center center / 100% 1px no-repeat;
+  color: rgb(var(--rule-ink));
+  pointer-events: none;
+}
+
+/* На тёмном узоре линия тонет — ей нужна отбивка. */
+.section-rule--dark { filter: drop-shadow(0 0 .35rem rgb(8 6 5 / .9)); }
+
+/* Шов между Мирами на «Жителях» — пока единственное место. */
 .residents-world + .residents-world::after {
   content: '';
   position: absolute;
@@ -1495,19 +1514,23 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
   top: 0;
   right: 0;
   left: 0;
-  height: 2.5rem;
-  background: url('../../media/ornaments/divider.webp') repeat-x center / auto 100%;
-  filter: drop-shadow(0 0 .4rem rgb(8 6 5 / .9));
+  height: 1.75rem;
+  background:
+    url('../../media/ornaments/divider-mark.svg') center center / auto 1.75rem no-repeat,
+    linear-gradient(90deg,
+      transparent,
+      rgb(200 164 104 / .5) 14%,
+      rgb(200 164 104 / .5) 86%,
+      transparent) center center / 100% 1px no-repeat;
+  color: rgb(200 164 104);
+  filter: drop-shadow(0 0 .35rem rgb(8 6 5 / .9));
   pointer-events: none;
 }
 
-@media (min-width: 50rem) {
-  .residents-world + .residents-world::after { height: 3.75rem; }
+.residents-world + .residents-world .residents-world__inner {
+  padding-top: clamp(3.2rem, 5.5vw, 5.5rem);
 }
 
-.residents-world + .residents-world .residents-world__inner {
-  padding-top: clamp(3.4rem, 6vw, 6rem);
-}
 
 
 
