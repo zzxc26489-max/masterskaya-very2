@@ -1395,7 +1395,7 @@ function collections() {
   const atlasFree = content.residents.filter((resident) => resident.availability === 'available').length;
   paint(app, `<main id="main">
     <section class="page-hero page-hero--atlas"><div class="shell"><p class="eyebrow eyebrow--light">Атлас Мастерской</p><h1>Миры Мастерской</h1><p class="lede lede--light">Не фильтры каталога, а отдельные сцены: лес дышит мхом и огоньками, зима — снегом, русская сказка — деревом и вязью. У каждого Мира свои Жители и свой воздух — заходите и смотрите, кто вам ближе.</p><p class="atlas-tally">${content.collections.length} ${pluralWorlds(content.collections.length)} · ${content.residents.length} ${pluralResidents(content.residents.length)} · ${atlasFree} ${atlasFree === 1 ? 'свободен' : 'свободны'} сейчас</p></div></section>
-    <section class="section section--night worlds-section"><div class="shell"><div class="world-atlas world-atlas--full">${content.collections.map(worldCard).join('<div class="atlas-seam" aria-hidden="true"></div>')}</div></div></section>
+    <section class="section section--night worlds-section"><div class="shell"><div class="world-atlas world-atlas--full">${content.collections.map(worldCard).join('')}</div></div></section>
 
     <section class="section world-invite atlas-outro"><div class="shell world-invite__panel" data-reveal>
       <p class="eyebrow eyebrow--light">Атлас Мастерской</p>

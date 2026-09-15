@@ -1052,13 +1052,6 @@ body[data-page="collections"] .world-air__ornament { display: none; }
 .world-page .world-residents-section > .shell::before {
   content: '';
   display: block;
-  /* До краёв экрана, а не по ширине текстовой колонки: это граница между
-     разделами страницы, а не элемент внутри неё. */
-  width: 100vw;
-  margin: 0 calc(50% - 50vw) clamp(2rem, 4vw, 3.2rem);
-  aspect-ratio: 12 / 1;
-  max-height: 5.8rem;
-  background: url('../../media/ornaments/divider.webp') center / 100% 100% no-repeat;
 }
 
 /* ——— Жители Мира: широкие строки ———
@@ -1404,13 +1397,6 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
   .home-crest { width: min(100%, 15rem); margin-bottom: 1.2rem; }
 }
 
-/* ——— Разделитель между разделами главной ———
-   Кремовые блоки шли встык, и границу держала только смена фона. */
-.home-v2-steps > .shell > .home-crest,
-.home-v2-workshop > .shell > .home-crest {
-  padding-top: clamp(1.6rem, 3.5vw, 2.8rem);
-  background: url('../../media/ornaments/divider.webp') top center / 100% auto no-repeat;
-}
 
 /* ——— «Мастерская сегодня»: цифрами надо гордиться ———
    Четыре числа стояли в столбик высокими карточками — экран пустого
@@ -1444,16 +1430,6 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
 
 /* Тёмная полоса была ровным прямоугольником без единой детали — та самая
    «база конструктора». Гравюрный разделитель под заголовком её размыкает. */
-.about-tally .section-head::after {
-  content: '';
-  display: block;
-  width: 100vw;
-  margin: clamp(1.2rem, 2.5vw, 1.8rem) calc(50% - 50vw) 0;
-  aspect-ratio: 12 / 1;
-  max-height: 5.8rem;
-  background: url('../../media/ornaments/divider.webp') center / 100% 100% no-repeat;
-}
-
 @media (max-width: 50rem) {
   /* Два в ряд вместо четырёх в столбик: воздуха вдвое меньше, числа те же. */
   .about-numbers { grid-template-columns: 1fr 1fr; gap: .7rem; }
@@ -1497,22 +1473,31 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
 /* Полоса идёт от края до края окна: это фон страницы, а не элемент внутри
    колонки. Узор тянется на всю ширину — у него пропорция 82:1, поэтому по
    высоте он задан отдельно и растягивается, иначе от него остаётся волосок. */
+/* ——— Разделитель ———
+   Единственное место, где он сейчас стоит: шов между Мирами на «Жителях».
+   Пока это образец, на котором подбирается размер, — остальные места
+   заказчик назовёт отдельно.
+
+   Правила: узор всегда в своих пропорциях (12:1), всегда во всю ширину
+   окна, лишнее уходит за края. Ни растяжения, ни сжатия — от них и было
+   мыло. Размер регулируется одной высотой, cover доводит остальное. */
 .residents-world + .residents-world::after {
   content: '';
   position: absolute;
   z-index: 2;
-  /* Впритык к границе и целиком внутри полосы. Половину вверх сдвигать
-     нельзя: у полосы Мира overflow: hidden ради скруглённых углов, и всё,
-     что вылезло за край, срезается — у дракона пропадала голова. */
   top: 0;
   right: 0;
   left: 0;
-  aspect-ratio: 12 / 1;
-  max-height: 5.8rem;
-  background: url('../../media/ornaments/divider.webp') center / 100% 100% no-repeat;
+  height: clamp(3.6rem, 6.5vw, 8rem);
+  background: url('../../media/ornaments/divider.webp') center / cover no-repeat;
   filter: drop-shadow(0 0 .5rem rgb(8 6 5 / .95));
   pointer-events: none;
 }
+
+.residents-world + .residents-world .residents-world__inner {
+  padding-top: clamp(4.4rem, 8vw, 9rem);
+}
+
 
 /* Хвост предыдущей полосы гасим встречной тенью, иначе узор упирается в
    шов на полном ходу. */
@@ -1564,15 +1549,6 @@ body[data-page="collections"] .worlds-section { padding-top: 0 !important; }
   letter-spacing: .02em;
 }
 
-.atlas-tally::after {
-  content: '';
-  display: block;
-  width: 100vw;
-  margin: clamp(1.1rem, 2.4vw, 1.7rem) calc(50% - 50vw) 0;
-  aspect-ratio: 12 / 1;
-  max-height: 5.8rem;
-  background: url('../../media/ornaments/divider.webp') center / 100% 100% no-repeat;
-}
 
 /* ——— Переход от Мира к Миру в Атласе ———
    Карточки лежали встык через ровный зазор: пять прямоугольников подряд,
@@ -1581,163 +1557,12 @@ body[data-page="collections"] .worlds-section { padding-top: 0 !important; }
 /* Вешать завиток на саму карточку нельзя: у неё overflow: hidden ради
    скруглённых углов, и всё, что выходит за край, срезается. Поэтому он
    отдельной ячейкой сетки между карточками. */
-.atlas-seam {
-  grid-column: 1 / -1;
-  width: 100vw;
-  /* Ячейка лежит внутри колонки контента, а узор должен доходить до краёв
-     экрана: выносим её за поля колонки. */
-  margin-inline: calc(50% - 50vw);
-  aspect-ratio: 12 / 1;
-  max-height: 5.8rem;
-  background: url('../../media/ornaments/divider.webp') center / 100% 100% no-repeat;
-  filter: drop-shadow(0 0 .4rem rgb(8 6 5 / .9));
-}
 
 /* Прощальный блок Атласа: страница обрывалась на последней карточке. */
 .atlas-outro { padding-top: clamp(2.4rem, 5vw, 4rem) !important; }
 
 @media (max-width: 50rem) {
-  .atlas-tally::after { background-position: center; }
 }
 
-/* ——— Где ещё нужна черта ———
-   Правило одно: черта имеет смысл там, где встречаются две секции одного
-   цвета. Где фон перекидывается с кремового на тёмный, границу рисует сама
-   смена фона, и вторая граница поверх неё — уже перебор. По этому правилу
-   на всём сайте набралось ровно пять мест, и ни одного больше:
 
-   1. Главная — «Частые вопросы» → «Найти своего Жителя» (две тёмные плиты)
-   2. «Жители» — шапка → первая полоса Мира (между остальными шов уже был)
-   3. Страница Мира — Жители → «Понравился кто-то из этого Мира»
-   4. Контакты — «Самый быстрый способ» → «Оставьте сообщение» (оба кремовые)
-   5. Хроника — «Хроника в трёх частях» → «Рассмотреть ближе»
 
-   Черта ставится абсолютом по верхнему краю секции: так она не попадает
-   внутрь рамок и панелей, которые лежат в этих секциях, и одинаково идёт
-   от края до края окна на всех пяти. */
-.home-v2-cta,
-.residents-world:first-of-type,
-.world-page .world-invite,
-.contact-form-section,
-.chronicle-gallery-section { position: relative; }
-
-.home-v2-cta::before,
-.residents-world:first-of-type::before,
-.world-page .world-invite::before,
-.contact-form-section::before,
-.chronicle-gallery-section::before {
-  content: '';
-  position: absolute;
-  z-index: 3;
-  top: 0;
-  right: 0;
-  left: 0;
-  aspect-ratio: 12 / 1;
-  max-height: 5.8rem;
-  background: url('../../media/ornaments/divider.webp') center / 100% 100% no-repeat;
-  pointer-events: none;
-}
-
-/* На «Жителях» черта ложится прямо на узор Мира — ей нужна отбивка тенью,
-   как и шву между полосами. */
-.residents-world:first-of-type::before {
-  top: 0;
-  filter: drop-shadow(0 0 .5rem rgb(8 6 5 / .95));
-}
-
-/* ——— «Что будет после письма» ———
-   Человек решается именно на странице работы, а условия лежали только на
-   «Контактах»: написал в Telegram — и что дальше, неизвестно. Четыре шага
-   отвечают на это там, где вопрос возникает. */
-.chronicle-how__steps {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-  gap: clamp(1rem, 2vw, 1.8rem);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: how;
-}
-
-.chronicle-how__steps li {
-  position: relative;
-  padding-top: 1.5rem;
-  border-top: 1px solid #d9c4a4;
-  counter-increment: how;
-}
-
-.chronicle-how__steps li::before {
-  content: '0' counter(how);
-  position: absolute;
-  top: .75rem;
-  left: 0;
-  color: #b0844c;
-  font: 600 .74rem/1 var(--body);
-  font-variant-numeric: lining-nums;
-  letter-spacing: .12em;
-}
-
-.chronicle-how__steps b {
-  display: block;
-  margin-bottom: .5rem;
-  color: #261a15;
-  font-family: var(--display);
-  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
-  font-weight: 500;
-}
-
-.chronicle-how__steps span {
-  color: var(--muted);
-  font-size: .92rem;
-  line-height: 1.6;
-}
-
-.chronicle-how__note {
-  margin: clamp(1.6rem, 3vw, 2.4rem) 0 0;
-  color: var(--muted);
-  font-size: .88rem;
-}
-
-@media (max-width: 50rem) {
-  .chronicle-how__steps { grid-template-columns: 1fr; gap: 1.1rem; }
-  .chronicle-how__steps li { padding-top: 1.35rem; }
-  .chronicle-how__steps span { font-size: .88rem; }
-}
-
-/* ——— Разделитель на узком экране ———
-   Узор нарисован в пропорции 12:1. На телефоне при полной ширине вся
-   композиция ужимается до 32 пикселей высоты: дракон в середине выходит
-   размером 32 на 32, и никакой акварели там уже не видно — отсюда
-   ощущение мыла, хотя растяжки нет.
-
-   Поэтому на узком экране берётся не вся композиция, а её середина в
-   родном масштабе: высота полосы вдвое больше, узор идёт от края до края
-   и просто уходит за них, вместо того чтобы сжиматься. Дракон и листья
-   рисуются теми пикселями, которыми нарисованы. */
-@media (max-width: 50rem) {
-  .atlas-seam,
-  .atlas-tally::after,
-  .about-tally .section-head::after,
-  .world-page .world-residents-section > .shell::before,
-  .residents-world + .residents-world::after,
-  .home-v2-cta::before,
-  .residents-world:first-of-type::before,
-  .world-page .world-invite::before,
-  .contact-form-section::before,
-  .chronicle-gallery-section::before {
-    aspect-ratio: auto;
-    height: 3.4rem;
-    max-height: none;
-    background-size: auto 100%;
-  }
-}
-
-/* ——— Место под черту ———
-   Черта занимает верхнюю полосу секции, и содержимому надо начинаться под
-   ней. У двух секций верхнего отступа не было вовсе, и заголовок оказался
-   прямо под узором: у «Найти своего Жителя» и у первой полосы Мира на
-   «Жителях». Остальным четырём своих отступов хватает — проверено замером
-   на обеих ширинах. */
-.home-v2-cta { padding-top: clamp(4.6rem, 7vw, 7rem) !important; }
-
-.residents-world:first-of-type .residents-world__inner { padding-top: clamp(4.2rem, 9vw, 6.4rem); }
