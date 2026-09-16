@@ -546,17 +546,6 @@ function mountWorldAir(theme) {
   return liveAir;
 }
 
-// Swaps the page-wide world theme with a colour crossfade on the wash and
-// ornament, used when scrolling through the world atlas.
-function setWorldTheme(theme) {
-  const air = document.querySelector('.world-air');
-  if (!air) return;
-  air.className = `world-air world-air--${theme}`;
-  const ornament = air.querySelector('.world-air__ornament');
-  if (ornament) ornament.innerHTML = worldOrnament(theme);
-  liveAir?.setTheme(theme);
-}
-
 // Ornament plates drawn as inline SVG so each world carries a motif of its own
 // rather than the same generic frame.
 function worldOrnament(theme) {
@@ -677,7 +666,6 @@ function setShell(active) {
   const nav = [
     ['home', '/', 'Главная'],
     ['residents', '/residents.html', 'Жители'],
-    ['collections', '/collections.html', 'Миры'],
     ['process', '/process.html', 'Как создаются'],
     ['about', '/about.html', 'О мастерской'],
     ['contact', '/contact.html', 'Контакты']
@@ -720,7 +708,6 @@ function setShell(active) {
           <nav class="home-footer-nav" aria-label="Навигация в подвале">
             <p class="home-footer-heading">Разделы</p>
             <a href="/residents.html">Жители</a>
-            <a href="/collections.html">Миры</a>
             <a href="/process.html">Как создаются</a>
             <a href="/about.html">О мастерской</a>
             <a href="/contact.html">Контакты</a>
@@ -771,10 +758,10 @@ function residentActions(resident, compact = false) {
   return chronicle;
 }
 
-function residentCard(resident) {
+function residentCard(resident, overflow = false) {
   const [label, className] = statusCopy(resident.availability);
   const world = collectionFor(resident);
-  return `<article class="resident-card theme-${esc(world.theme)}" data-collection="${esc(resident.collectionId)}" data-status="${esc(resident.availability)}">
+  return `<article class="resident-card theme-${esc(world.theme)}"${overflow ? ' data-world-overflow hidden' : ''} data-collection="${esc(resident.collectionId)}" data-status="${esc(resident.availability)}">
     <a class="resident-card__image" href="/chronicle.html?resident=${encodeURIComponent(resident.slug)}">
       <img src="${esc(resident.sceneImage || resident.heroImage)}" alt="${esc(resident.name)} в мире «${esc(world.name)}»" loading="lazy">
       <span class="resident-card__world">${esc(world.name)}</span>
@@ -784,29 +771,6 @@ function residentCard(resident) {
       <h3>${esc(resident.shortName || resident.name)}</h3>
       <p>${esc(resident.excerpt)}</p>
       <div class="cluster">${residentActions(resident, true)}</div>
-    </div>
-  </article>`;
-}
-
-function worldCard(collection, index = 0) {
-  const residentsInWorld = content.residents
-    .filter((resident) => resident.collectionId === collection.id)
-    .sort((left, right) => (left.worldOrder ?? 99) - (right.worldOrder ?? 99));
-  const count = residentsInWorld.length;
-  const free = residentsInWorld.filter((resident) => resident.availability === 'available').length;
-  const stageResident = residentsInWorld.find((resident) => resident.sceneImage) || residentsInWorld[0];
-  return `<article class="world-chapter theme-${esc(collection.theme)}" data-world="${esc(collection.theme)}" data-reveal>
-    <img class="world-chapter__scene" src="${esc(stageResident?.sceneImage || collection.sceneImage || collection.image)}" alt="" loading="lazy">
-    <div class="world-chapter__shade"></div>
-    ${atmosphereMarkup(collection.theme)}
-    <a class="world-chapter__link" href="/collection.html?world=${encodeURIComponent(collection.slug)}" aria-label="Открыть мир «${esc(collection.name)}»"></a>
-    <div class="world-chapter__copy">
-      <span class="world-chapter__number">0${index + 1}</span>
-      <p class="eyebrow eyebrow--light">Мир Мастерской</p>
-      <h3>${esc(collection.name)}</h3>
-      <p>${esc(collection.description)}</p>
-      <span class="world-chapter__count">${count} ${pluralResidents(count)}${free ? ` · ${free} свободны` : ''}</span>
-      <span class="text-link text-link--light">Войти в мир <b aria-hidden="true">↗</b></span>
     </div>
   </article>`;
 }
@@ -1197,7 +1161,7 @@ function home() {
       <div class="shell">
         <header class="home-v2-section-head home-v2-section-head--dark">
           <div><p class="eyebrow eyebrow--light">Где живут Жители</p><h2>Миры Мастерской</h2></div>
-          <a href="/collections.html">Открыть все Миры <span aria-hidden="true">→</span></a>
+          <a href="/residents.html">Открыть все Миры <span aria-hidden="true">→</span></a>
         </header>
         <div class="home-world-carousel">
           <button class="home-world-control home-world-control--prev" type="button" data-home-world-prev aria-label="Предыдущий Мир">‹</button>
@@ -1205,7 +1169,7 @@ function home() {
           <button class="home-world-control home-world-control--next" type="button" data-home-world-next aria-label="Следующий Мир">›</button>
         </div>
         <div class="home-world-dots" aria-label="Выбор Мира">${content.collections.map((collection, index) => `<button class="${index === 0 ? 'is-active' : ''}" type="button" data-home-world-dot aria-label="${esc(collection.name)}" aria-current="${index === 0 ? 'true' : 'false'}"></button>`).join('')}</div>
-        <a class="button button--forest home-world-all" href="/collections.html">Открыть все Миры <span aria-hidden="true">→</span></a>
+        <a class="button button--forest home-world-all" href="/residents.html">Открыть все Миры <span aria-hidden="true">→</span></a>
       </div>
     </section>
 
@@ -1348,20 +1312,29 @@ function home() {
   enableAtmosphereMotion();
 }
 
+// Сколько работ показывать в полосе Мира сразу. Остальные — за кнопкой:
+// иначе большой Мир растягивает страницу так, что до следующего не дойти.
+const WORLD_BAND_LIMIT = 6;
+
 function residentWorldSection(collection) {
   const residentsInWorld = content.residents
     .filter((resident) => resident.collectionId === collection.id)
     .sort((left, right) => (left.worldOrder ?? 99) - (right.worldOrder ?? 99));
+  const hidden = Math.max(0, residentsInWorld.length - WORLD_BAND_LIMIT);
   return `<section class="residents-world theme-${esc(collection.theme)}" data-world-residents data-collection="${esc(collection.id)}">
     <img class="residents-world__scene" src="${esc(collection.sceneImage || collection.image)}" alt="" loading="lazy">
     <div class="residents-world__shade"></div>
     ${atmosphereMarkup(collection.theme)}
     <div class="shell residents-world__inner">
       <header class="residents-world__head">
-        <div><p class="eyebrow eyebrow--light">Мир Мастерской</p><h2>${esc(collection.name)}</h2><p>${esc(collection.description)}</p></div>
+        <div><h2>${esc(collection.name)}</h2><p>${esc(collection.description)}</p></div>
         <a class="button button--light" href="/collection.html?world=${encodeURIComponent(collection.slug)}">Войти в мир</a>
       </header>
-      <div class="resident-grid">${residentsInWorld.map(residentCard).join('')}</div>
+      <div class="resident-grid">${residentsInWorld.map((resident, index) => residentCard(resident, index >= WORLD_BAND_LIMIT)).join('')}</div>
+      ${hidden ? `<div class="residents-world__more">
+        <button class="button button--light" type="button" data-world-more="${esc(collection.id)}">Показать ещё ${hidden} ${pluralResidents(hidden)}</button>
+        <a class="text-link text-link--light" href="/collection.html?world=${encodeURIComponent(collection.slug)}">Открыть Мир целиком →</a>
+      </div>` : ''}
     </div>
   </section>`;
 }
@@ -1376,7 +1349,7 @@ function residents() {
       <button class="filter-button" aria-pressed="false" data-filter="in-progress">В работе</button>
       <button class="filter-button" aria-pressed="false" data-filter="archive">Архив</button>
     </div></div>
-    <div data-resident-worlds>${content.collections.map(residentWorldSection).join('')}</div>
+    <div data-resident-worlds>${content.collections.map(residentWorldSection).join('<div class="residents-seam" data-seam aria-hidden="true"></div>')}</div>
     <section class="section section--paper" hidden data-empty-section><div class="shell empty-state" data-empty>В этом разделе пока нет Жителей. Выберите другой Мир или напишите Вере.</div></section>
   </main>`);
   document.title = 'Жители — Мастерская Веры';
@@ -1397,21 +1370,54 @@ function residents() {
     if (!button) return;
     const filter = button.dataset.filter;
     document.querySelectorAll('[data-filter]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+    // Без фильтра полоса показывает первые шесть работ, остальные ждут за
+    // кнопкой. С фильтром так нельзя: «Можно приобрести» обязано показать
+    // всё, что можно приобрести, иначе страница врёт. Поэтому выбранный
+    // фильтр раскрывает полосы целиком, а «Все Миры» снова их сворачивает.
+    const collapse = filter === 'all';
     let totalVisible = 0;
     document.querySelectorAll('[data-world-residents]').forEach((section) => {
       let sectionVisible = 0;
       section.querySelectorAll('.resident-card').forEach((card) => {
         const match = filter === 'all' || section.dataset.collection === filter || card.dataset.status === filter;
-        card.hidden = !match;
-        if (match) sectionVisible += 1;
+        const folded = collapse && card.hasAttribute('data-world-overflow');
+        card.hidden = !match || folded;
+        if (match && !folded) sectionVisible += 1;
       });
       section.hidden = sectionVisible === 0;
+      // Кнопка «Показать ещё» имеет смысл только в свёрнутой полосе.
+      const more = section.querySelector('.residents-world__more');
+      if (more) more.hidden = !collapse || sectionVisible === 0;
       totalVisible += sectionVisible;
     });
+    syncWorldSeams();
     document.querySelector('[data-empty-section]').hidden = totalVisible > 0;
   });
+  document.querySelectorAll('[data-world-more]').forEach((button) => button.addEventListener('click', () => {
+    const section = button.closest('[data-world-residents]');
+    section.querySelectorAll('[data-world-overflow]').forEach((card) => {
+      card.hidden = false;
+      card.removeAttribute('data-world-overflow');
+    });
+    button.closest('.residents-world__more').remove();
+  }));
   lightWorldBands();
   enableAtmosphereMotion();
+}
+
+// Черта между полосами — отдельная строка в потоке, а не украшение самой
+// полосы: у полосы обрезано всё, что выходит за её край. Значит, о ней надо
+// заботиться при фильтре. Считать по соседям нельзя: если спрятан Мир между
+// двумя видимыми, между ними окажутся две спрятанные черты и ни одной
+// видимой. Поэтому черта поднимается перед каждым видимым Миром, кроме
+// первого, — сколько границ осталось, столько и черт.
+function syncWorldSeams() {
+  document.querySelectorAll('[data-seam]').forEach((seam) => { seam.hidden = true; });
+  const visible = [...document.querySelectorAll('[data-world-residents]')].filter((band) => !band.hidden);
+  visible.slice(1).forEach((band) => {
+    const seam = band.previousElementSibling;
+    if (seam?.hasAttribute('data-seam')) seam.hidden = false;
+  });
 }
 
 // Подложки пяти Миров весят вместе три четверти мегабайта, а на первом
@@ -1434,37 +1440,13 @@ function lightWorldBands() {
   bands.slice(1).forEach((band) => observer.observe(band));
 }
 
-function collections() {
-  const atlasFree = content.residents.filter((resident) => resident.availability === 'available').length;
-  paint(app, `<main id="main">
-    <section class="page-hero page-hero--atlas"><div class="shell"><p class="eyebrow eyebrow--light">Атлас Мастерской</p><h1>Миры Мастерской</h1><p class="lede lede--light">Не фильтры каталога, а отдельные сцены: лес дышит мхом и огоньками, зима — снегом, русская сказка — деревом и вязью. У каждого Мира свои Жители и свой воздух — заходите и смотрите, кто вам ближе.</p><p class="atlas-tally">${content.collections.length} ${pluralWorlds(content.collections.length)} · ${content.residents.length} ${pluralResidents(content.residents.length)} · ${atlasFree} ${atlasFree === 1 ? 'свободен' : 'свободны'} сейчас</p></div></section>
-    <section class="section section--night worlds-section"><div class="shell"><div class="world-atlas world-atlas--full">${content.collections.map(worldCard).join('<div class="atlas-seam" aria-hidden="true"></div>')}</div></div></section>
-
-    <section class="section world-invite atlas-outro"><div class="shell world-invite__panel" data-reveal>
-      <p class="eyebrow eyebrow--light">Атлас Мастерской</p>
-      <h2>Не нашли своего Мира?</h2>
-      <p>Миры добавляются по мере того, как Вера придумывает новых Жителей. Напишите ей — расскажет, кто сейчас в работе, и придумает Жителя специально для вас.</p>
-      <div class="cluster">
-        <a class="button button--wine" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Написать Вере</a>
-        <a class="button button--light" href="/residents.html">Посмотреть всех Жителей</a>
-      </div>
-    </div></section>
-  </main>`);
-  document.title = 'Миры Мастерской — Мастерская Веры';
-  enableAtmosphereMotion();
-  bindWorldWalk();
-}
-
-// Scrolling the atlas walks the reader through the worlds: whichever world
-// card is nearest the middle of the screen sets the page's air. This is what
-// makes the atlas feel like moving between places rather than reading a list.
 // Card micro-interactions. Pointer-only: a tilt that follows a finger just
 // fights the scroll on a phone, so touch devices get the plain card.
 function bindCardMotion() {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  document.querySelectorAll('.resident-card, .world-chapter').forEach((card) => {
+  document.querySelectorAll('.resident-card').forEach((card) => {
     let raf = 0;
     const move = (event) => {
       if (raf) return;
@@ -1503,30 +1485,6 @@ function bindHeaderShrink() {
   };
   check();
   window.addEventListener('scroll', check, { passive: true });
-}
-
-function bindWorldWalk() {
-  const cards = [...document.querySelectorAll('[data-world]')];
-  if (!cards.length || !('IntersectionObserver' in window)) return;
-
-  mountWorldAir(cards[0].dataset.world);
-  document.body.classList.add('world-walk');
-
-  let current = cards[0].dataset.world;
-  const observer = new IntersectionObserver((entries) => {
-    // Pick the most-visible card rather than the first to cross the line, so a
-    // fast scroll settles on what the reader is actually looking at.
-    let best = null;
-    entries.forEach((entry) => {
-      if (entry.isIntersecting && (!best || entry.intersectionRatio > best.intersectionRatio)) best = entry;
-    });
-    const next = best?.target?.dataset?.world;
-    if (!next || next === current) return;
-    current = next;
-    setWorldTheme(next);
-  }, { threshold: [.35, .6], rootMargin: '-20% 0px -20% 0px' });
-
-  cards.forEach((card) => observer.observe(card));
 }
 
 
@@ -1569,7 +1527,7 @@ function collectionPage() {
     <section class="world-stage theme-${esc(collection.theme)}" style="--world-accent:${esc(collection.accent)}">
       <div class="shell world-stage__grid">
         <div class="world-stage__intro">
-          <a class="world-back" href="/collections.html">← Все Миры</a>
+          <a class="world-back" href="/residents.html">← Все Миры</a>
           <p class="eyebrow eyebrow--light">Мир Мастерской</p>
           <h1>${esc(collection.name)}</h1>
           <p>${esc(collection.description)}</p>
@@ -1603,7 +1561,7 @@ function collectionPage() {
         <p>Напишите Вере — она расскажет о размере, сроках и стоимости, поможет выбрать или придумает нового Жителя специально для вас.</p>
         <div class="cluster">
           <a class="button button--wine" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Написать Вере</a>
-          <a class="button button--light" href="/collections.html">Посмотреть другие Миры</a>
+          <a class="button button--light" href="/residents.html">Посмотреть другие Миры</a>
         </div>
       </div>
     </section>
@@ -2114,18 +2072,15 @@ async function loadContent() {
 async function boot() {
   try {
     content = await loadContent();
-    const active = page === 'collection' || page === 'collections'
-      ? 'collections'
-      : page === 'chronicle'
-        ? 'residents'
-        : page === 'create'
-          ? ''
-          : page;
+    const active = page === 'collection' || page === 'chronicle'
+      ? 'residents'
+      : page === 'create'
+        ? ''
+        : page;
     setShell(active);
     ({
       home,
       residents,
-      collections,
       collection: collectionPage,
       process,
       create: createResident,

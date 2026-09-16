@@ -3,7 +3,7 @@ import path from 'node:path';
 import { expect, test } from '@playwright/test';
 
 const screenshots = path.resolve('artifacts/studio-screenshots');
-const publicPages = ['/', '/residents.html', '/collections.html', '/collection.html?world=winter-legends', '/collection.html?world=forest-secrets', '/collection.html?world=russian-tales', '/process.html', '/create.html', '/chronicle.html?resident=azimondias', '/about.html', '/contact.html'];
+const publicPages = ['/', '/residents.html', '/collection.html?world=winter-legends', '/collection.html?world=forest-secrets', '/collection.html?world=russian-tales', '/process.html', '/create.html', '/chronicle.html?resident=azimondias', '/about.html', '/contact.html'];
 
 test.beforeAll(async () => {
   await fs.mkdir(screenshots, { recursive: true });

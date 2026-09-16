@@ -352,31 +352,6 @@
 html:has(body.menu-open) { overflow: hidden; }
 .main-nav { overscroll-behavior: contain; }
 
-/* ——— Страница Миров ———
-   Герой занимал 666px — целый экран под двумя строками текста. */
-
-.world-chapter__count {
-  display: inline-flex;
-  align-items: center;
-  margin-top: .9rem;
-  padding: .3rem .7rem;
-  border: 1px solid rgb(183 138 79 / .55);
-  border-radius: 999px;
-  background: rgb(18 13 11 / .5);
-  color: #e8c98f;
-  font-size: .78rem;
-  font-weight: 600;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .world-chapter { transition: box-shadow .4s var(--ease); }
-  .world-chapter:hover { box-shadow: 0 1.6rem 3.2rem rgb(0 0 0 / .4); }
-}
-
-@media (max-width: 50rem) {
-  .world-chapter__count { margin-top: .7rem; font-size: .74rem; }
-}
-
 /* ——— Хроника Жителя ———
    Человек пришёл сюда решать: берёт или нет. Статус, цена и кнопка стояли
    ниже 817-пиксельного героя — до них нужно было домотать. */
@@ -710,14 +685,13 @@ html:has(body.menu-open) { overflow: hidden; }
 
   /* Обычный текст: описания, факты, пункты списков, ссылки-стрелки. */
   .fact span,
-  .facts span,
-  .contact-list li,
-  .meta-list dd,
-  .text-link,
-  .world-chapter__count,
-  .home-world-card__lives,
-  .home-world-card__tally,
-  .home-resident-card__price { font-size: .84rem; }
+.facts span,
+.contact-list li,
+.meta-list dd,
+.text-link,
+.home-world-card__lives,
+.home-world-card__tally,
+.home-resident-card__price { font-size: .84rem; }
 
   .home-footer-heading { font-size: .76rem; }
 }
@@ -965,79 +939,6 @@ html:has(body.menu-open) { overflow: hidden; }
    На главной и в Атласе пластина остаётся — там подложки нет. */
 .world-page .world-air__ornament { display: none; }
 
-/* ——— Карточки Миров: видно работу, а не темноту ———
-   Фотографию гасили трижды: brightness(.7) на самом кадре, плотная штора
-   поверх (до .97 у нижнего края) и воздух Мира сверху. На телефоне
-   Щелкунчик и лесной дракон читались как тёмное пятно. Та же правка, что
-   уже сделана в шапке Мира: кадр возвращён к нормальной яркости, а штора
-   осталась только там, где под ней лежит текст. */
-.world-chapter__scene {
-  filter: saturate(.95) contrast(1.04) brightness(1.06) !important;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .world-chapter:hover .world-chapter__scene {
-    filter: saturate(1.06) contrast(1.05) brightness(1.14) !important;
-  }
-}
-
-.world-chapter__shade {
-  background:
-    linear-gradient(0deg, rgb(10 8 7 / .66) 0, rgb(10 8 7 / .3) 30%, transparent 56%),
-    linear-gradient(90deg, rgb(10 8 7 / .5), rgb(10 8 7 / .12) 44%, transparent 64%) !important;
-}
-
-.world-chapter:not(:first-child) .world-chapter__shade {
-  background:
-    linear-gradient(0deg, rgb(10 8 7 / .68) 0, rgb(10 8 7 / .32) 32%, transparent 58%),
-    linear-gradient(90deg, rgb(10 8 7 / .3), transparent 48%) !important;
-}
-
-@media (max-width: 50rem) {
-  /* Текст занимает всю ширину карточки, поэтому боковая штора здесь лишняя:
-     она гасила кадр и ничего не защищала. Остаётся только нижняя. */
-  .world-chapter__shade,
-  .world-chapter:not(:first-child) .world-chapter__shade {
-    background:
-      linear-gradient(0deg, rgb(9 7 6 / .7) 0, rgb(9 7 6 / .34) 26%, transparent 54%) !important;
-  }
-
-  /* Кадр режется по высоте, и работа оказывалась ровно под текстовым
-     блоком: композиция сдвинута вверх, в чистую половину карточки. */
-  .world-chapter__scene { object-position: 66% 30% !important; }
-}
-
-/* Заголовок Мира ложится на саму работу: у Щелкунчика это белое лицо и
-   золото мундира, и буквы на них терялись. Тень по букве держит контраст
-   там, где штора уже почти прозрачная. */
-.world-chapter__copy h3,
-.world-chapter__copy > p:not(.eyebrow),
-.world-chapter__copy .eyebrow,
-.world-chapter__number {
-  text-shadow: 0 .12em .5em rgb(8 6 5 / .85);
-}
-
-/* Общая штора карточки рассчитана на тёмный кадр. У «Домашних легенд» фон
-   светлый — лён и солнце, — и там же, где на других Мирах текст лежал на
-   темноте, он лёг на свет: номер и надзаголовок почти пропадали. Поэтому
-   подложка привязана не к карточке, а к самому текстовому блоку: она
-   расходится от нижнего левого угла и растворяется по краям, поэтому
-   работает одинаково и на тёмном кадре, и на светлом. */
-.world-chapter__copy::after {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  inset: -3.4rem -2.6rem -3rem -2.6rem;
-  background: radial-gradient(150% 125% at 18% 100%, rgb(8 6 5 / .9) 0, rgb(8 6 5 / .74) 46%, transparent 80%);
-}
-
-/* ——— Атлас: верх перестал быть отдельным тёмным пятном ———
-   У шапки «Миры Мастерской» была своя непрозрачная заливка, а ниже сквозь
-   карточки шёл воздух Мира — со сменой цвета и частиц при прокрутке.
-   Получалось, что страница начинается плитой и только потом оживает.
-   Заливка снята: воздух идёт с первого экрана. */
-.world-walk .page-hero--atlas { background: transparent !important; }
-
 /* Сняв заливку, мы открыли ту самую SVG-пластину — огромную снежинку во
    весь экран. На странице Мира её заменила настоящая подложка, а в Атласе
    заменить нечем: это список пяти Миров, и фон одного из них здесь был бы
@@ -1262,11 +1163,9 @@ body[data-page="collections"] .world-air__ornament { display: none; }
    светлую плашку шапки. Шапка поднята выше всего, что идёт по странице;
    выпадающее меню — её ребёнок, поэтому едет вместе с ней. */
 body.world-page .site-header,
-body.world-walk .site-header,
 body .site-header { z-index: 70; }
 
 body.world-page .site-header.is-compact,
-body.world-walk .site-header.is-compact,
 body .site-header.is-compact { z-index: 70; }
 
 /* ——— Полосы Миров на «Жителях» ———
@@ -1401,7 +1300,6 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
   .home-crest { width: min(100%, 15rem); margin-bottom: 1.2rem; }
 }
 
-
 /* ——— «Мастерская сегодня»: цифрами надо гордиться ———
    Четыре числа стояли в столбик высокими карточками — экран пустого
    тёмного поля на четыре строчки текста. Теперь два на два: блок стал
@@ -1453,16 +1351,40 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
   .process-stage__image figcaption { font-size: .72rem !important; }
 }
 
-/* ——— Переход от Мира к Миру ———
-   Полосы шли встык: узор одного Мира обрывался, и тут же начинался узор
-   следующего. Границы не было — были две картинки, склеенные по линии.
+/* ——— Разделитель между Мирами на «Жителях» ———
+   Три правила, которые он должен выполнять:
 
-   Теперь между ними шов: узор верхней полосы гаснет в ночной цвет, из
-   него же поднимается узор нижней, а по самой границе идёт гравюрный
-   разделитель. Переход читается как смена главы, а не как стык. */
-.residents-world + .residents-world { position: relative; }
+   1. Разделять два блока, а не украшать страницу — ставится только там,
+      где тёмное встречается с тёмным и граница сама себя не рисует.
+   2. Не налезать ни на один блок — лежит в промежутке между ними, на
+      фоне самой страницы.
+   3. Тянуться от края до края экрана.
 
-.residents-world + .residents-world::before {
+   Отсюда и место: стык полос Миров. Полосы шли встык — узор одного Мира
+   обрывался, и сразу начинался узор следующего; границы не было, были две
+   картинки, склеенные по линии. Повесить черту на саму полосу нельзя: у
+   неё overflow: hidden, и всё, что выходит за край, срезается. Поэтому
+   между полосами стоит отдельная строка с фоном страницы, а черта лежит
+   в ней и ничего не задевает. Края полос при этом гаснут в ночной цвет,
+   чтобы узор не обрывался на срезе.
+
+   Сам разделитель — два слоя, и ни один не масштабируется: линия рисуется
+   градиентом (у него нет пикселей, он резкий под любую ширину), завиток —
+   вектором в своём размере. Растягивается только то, что можно. */
+.residents-seam {
+  height: 1.75rem;
+  margin-block: clamp(1.4rem, 3vw, 2.6rem);
+  background:
+    url('../../media/ornaments/divider-mark.svg') center center / auto 1.75rem no-repeat,
+    linear-gradient(90deg,
+      transparent,
+      rgb(200 164 104 / .45) 14%,
+      rgb(200 164 104 / .45) 86%,
+      transparent) center center / 100% 1px no-repeat;
+  pointer-events: none;
+}
+
+.residents-seam + .residents-world::before {
   content: '';
   position: absolute;
   z-index: 1;
@@ -1474,49 +1396,9 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
   pointer-events: none;
 }
 
-/* Полоса идёт от края до края окна: это фон страницы, а не элемент внутри
-   колонки. Узор тянется на всю ширину — у него пропорция 82:1, поэтому по
-   высоте он задан отдельно и растягивается, иначе от него остаётся волосок. */
-/* ——— Разделитель между блоками ———
-   Три правила, которые он должен выполнять:
-
-   1. Разделять два блока, а не украшать страницу — ставится только там,
-      где тёмное встречается с тёмным и граница сама себя не рисует.
-   2. Не налезать ни на один блок — лежит в промежутке между ними, на
-      фоне самой страницы.
-   3. Тянуться от края до края экрана.
-
-   Отсюда и место: зазор между карточками Миров в Атласе. Карточки —
-   тёмные фотографии на тёмном фоне, между ними пустая полоса, и это
-   единственная граница на сайте, которая ничем не обозначена.
-
-   Сам разделитель — два слоя, и ни один не масштабируется: линия рисуется
-   градиентом (у него нет пикселей, он резкий под любую ширину), завиток —
-   вектором в своём размере. Растягивается только то, что можно.  */
-.atlas-seam {
-  grid-column: 1 / -1;
-  /* Выходит за поля колонки на всю ширину окна: это фон страницы, а не
-     элемент внутри сетки. */
-  width: 100vw;
-  margin-inline: calc(50% - 50vw);
-  height: 1.75rem;
-  background:
-    url('../../media/ornaments/divider-mark.svg') center center / auto 1.75rem no-repeat,
-    linear-gradient(90deg,
-      transparent,
-      rgb(200 164 104 / .45) 14%,
-      rgb(200 164 104 / .45) 86%,
-      transparent) center center / 100% 1px no-repeat;
-  pointer-events: none;
-}
-
-
-
-
-
 /* Хвост предыдущей полосы гасим встречной тенью, иначе узор упирается в
    шов на полном ходу. */
-.residents-world:has(+ .residents-world) .residents-world__shade {
+.residents-world:has(+ .residents-seam) .residents-world__shade {
   background:
     linear-gradient(0deg, rgb(12 9 8 / .95) 0, rgb(12 9 8 / .5) 7%, transparent 18%),
     linear-gradient(90deg, rgb(8 7 6 / .8), rgb(8 7 6 / .34) 58%, transparent 82%),
@@ -1524,14 +1406,12 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
 }
 
 @media (max-width: 50rem) {
-  .residents-world:has(+ .residents-world) .residents-world__shade {
+  .residents-world:has(+ .residents-seam) .residents-world__shade {
     background:
       linear-gradient(0deg, rgb(12 9 8 / .95) 0, rgb(12 9 8 / .5) 6%, transparent 16%),
       linear-gradient(0deg, rgb(8 7 6 / .72), rgb(8 7 6 / .3) 40%, transparent 72%) !important;
   }
 
-  .residents-world + .residents-world__inner { padding-top: 3.4rem; }
-  .residents-world + .residents-world .residents-world__inner { padding-top: 3.6rem; }
 }
 
 /* ——— Фильтры Жителей на главной ———
@@ -1544,40 +1424,17 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
   .home-resident-filters .home-chip { flex: 1 1 auto; }
 }
 
-/* ——— Атлас: переход от заголовка к Мирам ———
-   Между шапкой и первой карточкой зияло 75px на телефоне и 130px на
-   широком экране — ровно ничего, просто тёмное поле. Заголовок висел сам
-   по себе, Миры начинались сами по себе.
-
-   Отступы срезаны, а между ними встал мостик: строка с итогом (сколько
-   Миров, Жителей и сколько свободно — то же, что на «Жителях» делает
-   панель фильтров) и золотой завиток под ней. Теперь видно, что заголовок
-   и карточки — одна страница, а не два куска. */
-.page-hero--atlas { padding-bottom: clamp(1.4rem, 3vw, 2.4rem) !important; }
-body[data-page="collections"] .worlds-section { padding-top: 0 !important; }
-
-.atlas-tally {
-  margin: clamp(1.2rem, 2.6vw, 1.8rem) 0 0;
-  color: #e8c98f;
-  font-size: clamp(.82rem, 1.1vw, .95rem);
-  font-weight: 600;
-  letter-spacing: .02em;
+/* ——— Кнопка «Показать ещё» в полосе Мира ——— */
+.residents-world__more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .9rem 1.4rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: clamp(1.4rem, 3vw, 2.2rem);
 }
-
-
-/* ——— Переход от Мира к Миру в Атласе ———
-   Карточки лежали встык через ровный зазор: пять прямоугольников подряд,
-   и ничто не говорило, что это разные Миры. В зазор встал тот же золотой
-   завиток, что на «Жителях», — граница главы, а не отступ по умолчанию. */
-/* Вешать завиток на саму карточку нельзя: у неё overflow: hidden ради
-   скруглённых углов, и всё, что выходит за край, срезается. Поэтому он
-   отдельной ячейкой сетки между карточками. */
-
-/* Прощальный блок Атласа: страница обрывалась на последней карточке. */
-.atlas-outro { padding-top: clamp(2.4rem, 5vw, 4rem) !important; }
 
 @media (max-width: 50rem) {
+  .residents-world__more { flex-direction: column; gap: .8rem; }
+  .residents-world__more .button { width: 100%; }
 }
-
-
-

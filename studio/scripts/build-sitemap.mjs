@@ -23,7 +23,6 @@ const today = new Date().toISOString().slice(0, 10);
 const urls = [
   ['/', '1.0'],
   ['/residents.html', '0.9'],
-  ['/collections.html', '0.9'],
   ['/process.html', '0.7'],
   ['/about.html', '0.7'],
   ['/contact.html', '0.6'],

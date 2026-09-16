@@ -49,8 +49,8 @@
 сайт**. Есть встроенная админка (`/admin`) для управления Жителями,
 коллекциями, историями, Хрониками, фото и видео — без правки кода.
 
-**Страницы:** Главная, Жители (`/residents.html`), Миры
-(`/collections.html`), Мир (`/collection.html?world=<slug>`), Хроника
+**Страницы:** Главная, Жители (`/residents.html`, там же полосы Миров),
+Мир (`/collection.html?world=<slug>`), Хроника
 Жителя (`/chronicle.html?resident=<slug>`), Как создаются
 (`/process.html`), О мастерской (`/about.html`), Контакты
 (`/contact.html`), Создать Жителя (`/create.html`).
