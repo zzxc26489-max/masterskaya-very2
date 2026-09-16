@@ -307,7 +307,7 @@
   /* Между заголовком Мира и первой карточкой зияло полтораста пикселей. */
   .residents-world__head { gap: .9rem; }
   .residents-world__inner { padding-block: 2.2rem 2.4rem; }
-  .residents-world__head h2 { font-size: clamp(2.1rem, 9.5vw, 2.9rem); }
+  .residents-world__head :is(h2, h3) { font-size: clamp(2.1rem, 9.5vw, 2.9rem); }
   .residents-world__head p { font-size: .92rem; line-height: 1.5; }
 }
 
@@ -646,7 +646,7 @@ html:has(body.menu-open) { overflow: hidden; }
   .residents-world { min-height: 0; padding: 0; }
   .residents-world__inner { padding-block: 1.8rem 2rem; }
   .residents-world__head { gap: .7rem; }
-  .residents-world__head h2 { margin-bottom: .4rem; }
+  .residents-world__head :is(h2, h3) { margin-bottom: .4rem; }
   .residents-world__head p:not(.eyebrow) { font-size: .9rem; line-height: 1.5; }
   .residents-world__head .button { width: 100%; }
 }
@@ -688,10 +688,7 @@ html:has(body.menu-open) { overflow: hidden; }
 .facts span,
 .contact-list li,
 .meta-list dd,
-.text-link,
-.home-world-card__lives,
-.home-world-card__tally,
-.home-resident-card__price { font-size: .84rem; }
+.text-link { font-size: .84rem; }
 
   .home-footer-heading { font-size: .76rem; }
 }
@@ -739,17 +736,8 @@ html:has(body.menu-open) { overflow: hidden; }
     min-height: 44px;
   }
 
-  .filter-button,
-  .home-chip,
-  .home-world-control,
-  .home-card-arrow { min-height: 44px; }
-
-  .home-world-control { width: 44px; height: 44px; }
-  .home-card-arrow { width: 44px; height: 44px; }
+  .filter-button { min-height: 44px; }
   .brand { min-height: 44px; }
-
-  /* Точки каруселей: сама точка остаётся маленькой, зона вокруг — нет. */
-  .home-world-dots button { width: 44px; height: 44px; }
 }
 
 /* ——— Галерея Хроники ———
@@ -774,13 +762,9 @@ html:has(body.menu-open) { overflow: hidden; }
 /* Остатки: у этих целей нашлись более специфичные правила — в том числе
    мои собственные, поставленные раньше в этом же файле. */
 @media (max-width: 50rem) {
-  .home-world-dots button,
-  .home-world-dots button.is-active { width: 44px !important; height: 44px !important; }
   .home-footer-nav a,
   .home-footer-contact a:not(.button),
   .home-footer-handle { min-height: 44px !important; }
-  .home-card-arrow { width: 44px !important; height: 44px !important; }
-  .home-chip { min-height: 44px !important; }
 }
 
 /* Между заголовком героя и подзаголовком было 9px — строки читались одним
@@ -1414,16 +1398,6 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
 
 }
 
-/* ——— Фильтры Жителей на главной ———
-   Ряд занимал всю ширину, а сами кнопки оставались по содержимому и
-   висели у левого края: справа — пустая треть строки. Кнопки растягиваются
-   на свободное место, сохраняя пропорции между собой: «Все» остаётся узкой,
-   «Можно приобрести» широкой, но вместе они заполняют строку. */
-@media (max-width: 62rem) {
-  .home-resident-filters { width: 100%; margin-left: 0; }
-  .home-resident-filters .home-chip { flex: 1 1 auto; }
-}
-
 /* ——— Кнопка «Показать ещё» в полосе Мира ——— */
 .residents-world__more {
   display: flex;
@@ -1438,3 +1412,119 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
   .residents-world__more { flex-direction: column; gap: .8rem; }
   .residents-world__more .button { width: 100%; }
 }
+
+/* ——— Миры на главной ———
+   Раньше здесь стояли две витрины подряд: карусель Миров, где на превью
+   лежала одна игрушка и было непонятно, что внутри, и общий список работ
+   вперемешку. Теперь блок один и устроен как «Жители», только короче:
+   те же полосы Миров с подложкой, воздухом и чертой между ними, но по
+   четыре работы в полосе. Кто хочет весь Мир — нажимает «Войти в мир» и
+   попадает сразу в него, а не в список списков. */
+.home-world-bands .residents-seam { margin-block: clamp(1rem, 2vw, 1.7rem); }
+
+.home-world-bands {
+  position: relative;
+  z-index: 1;
+  /* Полосы тёмные, и черта между ними — золото по ночному. Светлая бумага
+     секции под ними не годится: разделитель на ней теряется. */
+  background: #0c0908;
+}
+
+.residents-world--compact {
+  min-height: 0;
+  padding: clamp(2.2rem, 3.6vw, 3.4rem) 0;
+}
+
+.residents-world--compact .residents-world__inner { padding-block: 0; }
+
+.residents-world--compact .residents-world__head {
+  margin-bottom: clamp(1.4rem, 2.6vw, 2rem);
+}
+
+.residents-world--compact .residents-world__head h3 {
+  margin-bottom: .5rem;
+  font-size: clamp(1.9rem, 3.2vw, 3rem);
+}
+
+.residents-world--compact .residents-world__head p:not(.eyebrow) {
+  max-width: 38rem;
+  font-size: .92rem;
+}
+
+/* Четыре работы в строку: Мир виден целиком, без прокрутки внутри полосы.
+   Колонка фиксированной ширины, а не доля от строки: в Мире может быть и
+   две работы, и растянутые на полстроки карточки выглядели бы ошибкой.
+   Ряд при этом стоит по центру — короткая полоса читается как задумано,
+   а не как обрезанная слева. */
+.residents-world--compact .resident-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 17rem));
+  justify-content: center;
+  gap: .9rem;
+}
+
+/* Карточка на главной — витринная: кадр, имя, цена и одно действие.
+   Полный разбор с двумя кнопками и длинным описанием ждёт внутри Мира и
+   в Хронике; пять полос таких карточек растянули бы главную вдвое.
+   Всё это — про широкий экран: на телефоне у карточки Жителя свой вид,
+   там описание и кнопки и так сняты, а работает сама карточка. */
+@media (min-width: 50.0625rem) {
+  .residents-world--compact .resident-card__image { aspect-ratio: 4 / 3.3; }
+
+  .residents-world--compact .resident-card__body {
+    min-height: 0;
+    gap: .15rem;
+    padding: .95rem 1rem 1.05rem;
+  }
+
+  .residents-world--compact .resident-card__body h3 { margin: .45rem 0 .3rem; font-size: 1.45rem; }
+  .residents-world--compact .resident-card__meta { gap: .35rem .6rem; }
+  .residents-world--compact .resident-card .cluster { gap: .5rem; }
+  .residents-world--compact .resident-card .button { padding: .5rem .85rem; font-size: .7rem; }
+
+  /* Одно действие в карточке: две кнопки в узкой колонке переносились на
+     вторую строку и растили полосу. Там, где «Открыть Хронику» —
+     единственная кнопка (уехавшие к Хранителям), она остаётся. */
+  .residents-world--compact .resident-card .cluster .button--light:not(:only-child) { display: none; }
+
+  /* Описание — две строки: дальше начинается Хроника. */
+  .residents-world--compact .resident-card__body p {
+    display: -webkit-box;
+    overflow: hidden;
+    margin-bottom: .85rem;
+    font-size: .76rem;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+}
+
+.residents-world--compact .residents-world__head .button {
+  border-color: rgb(255 240 220 / .5);
+  background: rgb(12 9 8 / .62);
+  color: #fff3e2;
+}
+
+.residents-world--compact .residents-world__more {
+  justify-content: flex-start;
+  margin-top: clamp(1.1rem, 2.2vw, 1.6rem);
+}
+
+/* Кнопка под полосами ведёт туда, где Миры показаны целиком. */
+.home-residents-outro {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(1.6rem, 3vw, 2.6rem);
+}
+
+.home-residents-outro .home-resident-all { display: inline-flex; margin: 0; }
+
+/* Имя Жителя — ссылка на его Хронику. Раньше кликался только кадр, и это
+   приходилось угадывать. */
+.resident-card__name {
+  color: inherit;
+  text-decoration: none;
+}
+
+.resident-card__name:hover,
+.resident-card__name:focus-visible { text-decoration: underline; text-underline-offset: .18em; }
+

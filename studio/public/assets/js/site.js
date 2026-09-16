@@ -90,18 +90,6 @@ function purchaseLink(resident) {
   return `https://t.me/vera120700?text=${encodeURIComponent(message)}`;
 }
 
-// What separates one world from another, in plain words a first-time visitor
-// can act on: what lives here, how it feels, and who it suits as a gift.
-// Кто живёт в каждом Мире — короткая подсказка на карточке Мира на главной:
-// там Жителей не видно, и по одному названию не понять, что внутри.
-const WORLD_TRAITS = {
-  winter: { lives: 'Щелкунчики, мышиные короли и зимние сцены' },
-  forest: { lives: 'Лесные драконы, грибы и молчаливые существа' },
-  dragons: { lives: 'Драконы, грифоны и авторские создания Веры' },
-  russian: { lives: 'Сирин, Змей Горыныч, Конёк-Горбунок и русалки' },
-  home: { lives: 'Курочка, лошадка-качалка и другие домашние Жители' }
-};
-
 function residentWord(count) {
   const tail = count % 100;
   if (tail >= 11 && tail <= 14) return 'Жителей';
@@ -768,7 +756,7 @@ function residentCard(resident, overflow = false) {
     </a>
     <div class="resident-card__body">
       <div class="resident-card__meta"><span class="status ${className}">${label}</span>${['available', 'in-progress'].includes(resident.availability) ? `<span class="price">${priceLabel(resident)}</span>` : ''}${stockLabel(resident) ? `<span class="stock">${esc(stockLabel(resident))}</span>` : ''}</div>
-      <h3>${esc(resident.shortName || resident.name)}</h3>
+      <h3><a class="resident-card__name" href="/chronicle.html?resident=${encodeURIComponent(resident.slug)}">${esc(resident.shortName || resident.name)}</a></h3>
       <p>${esc(resident.excerpt)}</p>
       <div class="cluster">${residentActions(resident, true)}</div>
     </div>
@@ -817,40 +805,6 @@ function enableAtmosphereMotion() {
   });
 }
 
-const HOME_WORLD_COPY = {
-  winter: ['Зимние легенды', 'Там, где живёт волшебство зимних вечеров', '/media/scenes/nutcracker-ernst.webp', '52% center'],
-  forest: ['Тайны древнего леса', 'Среди корней и мха рождаются свои истории', '/media/scenes/forest-dragon.webp', '72% center'],
-  dragons: ['Древние существа', 'Те, кто помнит забытые времена', '/media/scenes/azimondias.webp', '66% center'],
-  russian: ['Русские сказки', 'Любимые герои в новом воплощении', '/media/scenes/little-humpbacked-horse.webp', '70% center'],
-  home: ['Домашние легенды', 'Истории, которые живут рядом', '/media/scenes/rocking-horse.webp', '66% center']
-};
-
-function homeWorldCard(collection, index) {
-  const [title, description, image, focus = 'center'] = HOME_WORLD_COPY[collection.theme] || [collection.name, collection.description, collection.sceneImage || collection.image];
-  const traits = WORLD_TRAITS[collection.theme] || {};
-  const inWorld = content.residents.filter((resident) => resident.collectionId === collection.id);
-  const free = inWorld.filter((resident) => resident.availability === 'available').length;
-  // Счётчик берём из данных: он же показывает, что Мир живой и наполняется.
-  const tally = [
-    inWorld.length ? `${inWorld.length} ${pluralResidents(inWorld.length)}` : '',
-    free ? `${free} свободны` : ''
-  ].filter(Boolean).join(' · ');
-  return `<article class="home-world-card theme-${esc(collection.theme)}" data-home-world-card>
-    <a href="/collection.html?world=${encodeURIComponent(collection.slug)}" aria-label="Открыть мир «${esc(title)}»">
-      <span class="home-world-card__frame">
-        <img src="${esc(image)}" alt="${esc(title)}" fetchpriority="low" style="--home-world-focus: ${esc(focus)}">
-        ${tally ? `<span class="home-world-card__tally">${esc(tally)}</span>` : ''}
-      </span>
-      <span class="home-world-card__copy">
-        <b>${esc(title)}</b>
-        <small>${esc(description)}</small>
-        ${traits.lives ? `<span class="home-world-card__lives"><i aria-hidden="true"></i>${esc(traits.lives)}</span>` : ''}
-        <span class="home-world-card__enter">Войти в мир <b aria-hidden="true">→</b></span>
-      </span>
-    </a>
-  </article>`;
-}
-
 function pluralResidents(count) {
   const tail = count % 100;
   if (tail > 10 && tail < 20) return 'Жителей';
@@ -886,72 +840,6 @@ function homeFaqItem([question, answer], index) {
 }
 
 
-function homeResidentCard(resident) {
-  if (!resident) return '';
-  const [statusText, statusClass] = statusCopy(resident.availability);
-  const stock = stockLabel(resident);
-  return `<article class="home-resident-card" data-home-resident data-availability="${esc(resident.availability)}">
-
-    <a class="home-resident-card__image" href="/chronicle.html?resident=${encodeURIComponent(resident.slug)}">
-      <img src="${esc(resident.sceneImage || resident.heroImage)}" alt="${esc(resident.shortName || resident.name)} в своём мире" loading="lazy">
-    </a>
-    <div class="home-resident-card__copy">
-      <span class="status ${esc(statusClass)} home-resident-card__status">${esc(statusText)}</span>
-      <p class="home-resident-card__world">${esc(collectionFor(resident).name)}</p>
-      <h3>${esc(resident.shortName || resident.name)}</h3>
-      ${resident.excerpt ? `<p class="home-resident-card__note">${esc(resident.excerpt)}</p>` : ''}
-      <p class="home-resident-card__price">${esc(priceLabel(resident))}${stock ? ` <span>· ${esc(stock)}</span>` : ''}</p>
-    </div>
-    <a class="home-card-arrow" href="/chronicle.html?resident=${encodeURIComponent(resident.slug)}" aria-label="Открыть Хронику: ${esc(resident.shortName || resident.name)}">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
-    </a>
-  </article>`;
-}
-
-// На широком экране витрина — горизонтальная галерея, там влезают все.
-// На телефоне карточки идут в столбик, и двенадцать подряд превращают
-// главную в каталог — поэтому сначала показываем шесть.
-const HOME_RESIDENT_PHONE_LIMIT = 6;
-
-// Чипы над витриной прячут карточки на месте, без перерисовки и без похода
-// на сервер — на главной их дюжина.
-function bindHomeResidentFilters() {
-  const chips = [...document.querySelectorAll('[data-home-resident-filter]')];
-  const cards = [...document.querySelectorAll('[data-home-resident]')];
-  if (!chips.length || !cards.length) return;
-  const empty = document.querySelector('[data-home-resident-empty]');
-  const more = document.querySelector('[data-home-resident-more]');
-  const phone = window.matchMedia('(max-width: 50rem)');
-  let filter = 'all';
-  let expanded = false;
-
-  const apply = () => {
-    const limit = phone.matches && !expanded ? HOME_RESIDENT_PHONE_LIMIT : Infinity;
-    let matched = 0;
-    cards.forEach((card) => {
-      const fits = filter === 'all' || card.dataset.availability === filter;
-      if (fits) matched += 1;
-      card.hidden = !fits || matched > limit;
-    });
-    if (empty) empty.hidden = matched > 0;
-    if (more) {
-      const rest = matched - limit;
-      more.hidden = !(rest > 0);
-      more.textContent = `Показать ещё ${rest > 0 ? rest : ''}`.trim();
-    }
-  };
-
-  chips.forEach((chip) => chip.addEventListener('click', () => {
-    filter = chip.dataset.homeResidentFilter;
-    expanded = false;
-    chips.forEach((item) => item.setAttribute('aria-pressed', String(item === chip)));
-    apply();
-  }));
-  more?.addEventListener('click', () => { expanded = true; apply(); });
-  phone.addEventListener('change', apply);
-  apply();
-}
-
 // Блоки проявляются по мере прокрутки. Элементы внутри одного блока идут
 // с небольшой задержкой друг за другом — карточки «разбираются» слева
 // направо, а не всплывают разом. Первый экран не анимируем: он уже виден,
@@ -964,11 +852,8 @@ function markHomeReveal() {
     ['.home-v2-workshop__copy > *', 70],
     ['.home-process-print', 110],
     ['.home-feature', 90],
-    ['.home-v2-worlds .home-v2-section-head > *', 70],
-    ['.home-world-card', 85],
     ['.home-v2-residents .home-v2-section-head > *', 70],
-    ['.home-resident-bar > *', 80],
-    ['.home-resident-card', 55],
+    ['.home-world-bands .residents-world__head > *', 70],
     ['.home-v2-chronicles .home-v2-section-head > *', 70],
     ['.home-chronicle', 80],
     ['.home-chronicle-story', 90],
@@ -988,116 +873,7 @@ function markHomeReveal() {
   });
 }
 
-// Карусель едет сама, пока читатель её не трогает. После любого касания —
-// пауза, чтобы лента не уезжала из-под пальца; через полминуты ход
-// возобновляется. На широком экране все Миры и так лежат рядом, там ход не
-// нужен, как и при отключённой анимации в системе.
-const HOME_WORLD_STEP_MS = 5000;
-const HOME_WORLD_RESUME_MS = 30000;
-
-function bindHomeWorldCarousel() {
-  const track = document.querySelector('[data-home-world-track]');
-  if (!track) return;
-  const cards = [...track.querySelectorAll('[data-home-world-card]')];
-  const dots = [...document.querySelectorAll('[data-home-world-dot]')];
-  let current = 0;
-
-  const paint = () => {
-    cards.forEach((card, index) => card.classList.toggle('is-current', index === current));
-    dots.forEach((dot, index) => {
-      dot.classList.toggle('is-active', index === current);
-      dot.setAttribute('aria-current', index === current ? 'true' : 'false');
-    });
-  };
-  const show = (next) => {
-    current = (next + cards.length) % cards.length;
-    // Двигаем саму ленту, а не страницу: scrollIntoView тащил к карусели
-    // весь документ, и читателя выдёргивало сюда с любого места главной.
-    const card = cards[current];
-    track.scrollTo({
-      left: card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2,
-      behavior: 'smooth'
-    });
-    paint();
-  };
-  paint();
-
-  // Лента едет там, где её есть куда листать — теперь это все размеры,
-  // включая широкий экран: карточки Миров стали втрое крупнее и в ряд
-  // помещаются три из пяти.
-  const slidable = () => track.scrollWidth - track.clientWidth > 8;
-  const calm = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let stepTimer = 0;
-  let resumeTimer = 0;
-  const stop = () => { window.clearInterval(stepTimer); stepTimer = 0; };
-  const play = () => {
-    stop();
-    if (!slidable() || calm.matches) return;
-    stepTimer = window.setInterval(() => {
-      if (document.hidden) return;
-      show(current + 1);
-    }, HOME_WORLD_STEP_MS);
-  };
-  // Пауза после ручного листания, наведения и ухода со вкладки.
-  const hold = (resume = true) => {
-    stop();
-    window.clearTimeout(resumeTimer);
-    if (resume) resumeTimer = window.setTimeout(play, HOME_WORLD_RESUME_MS);
-  };
-
-  const carousel = track.closest('.home-world-carousel') || track;
-  carousel.addEventListener('pointerenter', () => hold(false));
-  carousel.addEventListener('pointerleave', play);
-  carousel.addEventListener('focusin', () => hold(false));
-  carousel.addEventListener('focusout', play);
-  track.addEventListener('pointerdown', () => hold(), { passive: true });
-  track.addEventListener('touchstart', () => hold(), { passive: true });
-  window.addEventListener('resize', play, { passive: true });
-  document.addEventListener('visibilitychange', () => (document.hidden ? stop() : play()));
-  play();
-
-  document.querySelector('[data-home-world-prev]')?.addEventListener('click', () => { hold(); show(current - 1); });
-  document.querySelector('[data-home-world-next]')?.addEventListener('click', () => { hold(); show(current + 1); });
-  dots.forEach((dot, index) => dot.addEventListener('click', () => { hold(); show(index); }));
-  track.addEventListener('scroll', () => {
-    const center = track.scrollLeft + track.clientWidth / 2;
-    let nearest = 0;
-    let distance = Infinity;
-    cards.forEach((card, index) => {
-      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-      const nextDistance = Math.abs(cardCenter - center);
-      if (nextDistance < distance) { nearest = index; distance = nextDistance; }
-    });
-    if (nearest !== current) {
-      current = nearest;
-      paint();
-    }
-  }, { passive: true });
-}
-
-// Витрина на главной — четыре свободных Жителя и два рождающихся: проданных
-// сюда не берём, но показать, что работа идёт, важнее ещё двух ценников.
-// Оба фильтра над витриной обязаны что-то находить, поэтому квоты жёсткие.
-const HOME_SHOWCASE = [['available', 8], ['in-progress', 4]];
-
-// Сначала по одному Жителю из каждого Мира, и только потом вторые — иначе
-// витрина забивается одним Миром и выглядит уже, чем Мастерская на самом деле.
-function spreadAcrossWorlds(residents, limit) {
-  const seen = new Set();
-  const first = [];
-  const rest = [];
-  residents.forEach((resident) => {
-    if (seen.has(resident.collectionId)) rest.push(resident);
-    else { seen.add(resident.collectionId); first.push(resident); }
-  });
-  return [...first, ...rest].slice(0, limit);
-}
-
 function home() {
-  const residents = HOME_SHOWCASE.flatMap(([availability, limit]) => spreadAcrossWorlds(
-    content.residents.filter((resident) => resident.availability === availability),
-    limit
-  ));
   const freeCount = content.residents.filter((resident) => resident.availability === 'available').length;
   const workCount = content.residents.filter((resident) => resident.availability === 'in-progress').length;
   const openPrices = content.residents
@@ -1155,47 +931,20 @@ function home() {
       </div>
     </section>
 
-    <section id="worlds" class="home-v2-worlds">
-      <div class="home-ornament home-ornament--worlds-left" aria-hidden="true">${worldOrnament('forest')}</div>
-      <div class="home-ornament home-ornament--worlds-right" aria-hidden="true">${worldOrnament('forest')}</div>
-      <div class="shell">
-        <header class="home-v2-section-head home-v2-section-head--dark">
-          <div><p class="eyebrow eyebrow--light">Где живут Жители</p><h2>Миры Мастерской</h2></div>
-          <a href="/residents.html">Открыть все Миры <span aria-hidden="true">→</span></a>
-        </header>
-        <div class="home-world-carousel">
-          <button class="home-world-control home-world-control--prev" type="button" data-home-world-prev aria-label="Предыдущий Мир">‹</button>
-          <div class="home-world-track" data-home-world-track>${content.collections.map(homeWorldCard).join('')}</div>
-          <button class="home-world-control home-world-control--next" type="button" data-home-world-next aria-label="Следующий Мир">›</button>
-        </div>
-        <div class="home-world-dots" aria-label="Выбор Мира">${content.collections.map((collection, index) => `<button class="${index === 0 ? 'is-active' : ''}" type="button" data-home-world-dot aria-label="${esc(collection.name)}" aria-current="${index === 0 ? 'true' : 'false'}"></button>`).join('')}</div>
-        <a class="button button--forest home-world-all" href="/residents.html">Открыть все Миры <span aria-hidden="true">→</span></a>
-      </div>
-    </section>
-
     <section id="residents" class="home-v2-residents">
-      <div class="home-ornament home-ornament--residents-left" aria-hidden="true">${worldOrnament('forest')}</div>
-      <div class="home-ornament home-ornament--residents-right" aria-hidden="true">${worldOrnament('forest')}</div>
       <div class="shell">
         <header class="home-v2-section-head home-v2-section-head--residents">
           <div>
             <h2>Кто ждёт своего Хранителя</h2>
             <p>Больше, чем декор — это истории, которые остаются</p>
           </div>
-          <a href="/residents.html">Смотреть всех жителей <span aria-hidden="true">→</span></a>
+          <a href="/residents.html">Смотреть всех Жителей <span aria-hidden="true">→</span></a>
         </header>
-        <div class="home-resident-bar">
-          <p class="home-resident-summary">${esc(summary)}</p>
-          <div class="home-resident-filters" role="group" aria-label="Показать Жителей">
-            <button class="home-chip" type="button" aria-pressed="true" data-home-resident-filter="all">Все</button>
-            <button class="home-chip" type="button" aria-pressed="false" data-home-resident-filter="available">Можно приобрести</button>
-            <button class="home-chip" type="button" aria-pressed="false" data-home-resident-filter="in-progress">В работе</button>
-          </div>
-        </div>
-        <div class="home-resident-grid">${residents.map(homeResidentCard).join('')}</div>
-        <p class="home-resident-empty" data-home-resident-empty hidden>Здесь сейчас пусто — посмотрите всех Жителей Мастерской.</p>
-        <button class="home-resident-more" type="button" data-home-resident-more hidden>Показать ещё</button>
-        <a class="button button--forest home-resident-all" href="/residents.html">Смотреть всех жителей <span aria-hidden="true">→</span></a>
+        <p class="home-resident-summary">${esc(summary)}</p>
+      </div>
+      <div class="home-world-bands">${content.collections.map(homeWorldBand).join('<div class="residents-seam" aria-hidden="true"></div>')}</div>
+      <div class="shell home-residents-outro">
+        <a class="button button--forest home-resident-all" href="/residents.html">Смотреть всех Жителей <span aria-hidden="true">→</span></a>
       </div>
     </section>
 
@@ -1306,10 +1055,44 @@ function home() {
     sameAs: ['https://t.me/masterskayaver'],
     makesOffer: { '@type': 'Offer', itemOffered: { '@type': 'Product', name: 'Авторская фигурка ручной работы', material: 'Полимерная глина' } }
   });
-  bindHomeWorldCarousel();
-  bindHomeResidentFilters();
+  lightWorldBands({ eager: false });
   markHomeReveal();
   enableAtmosphereMotion();
+}
+
+// Сколько работ показывать в полосе Мира на главной. Четыре — это одна
+// строка на широком экране и две на телефоне: Мир видно целиком, а до
+// следующего рукой подать. Кто хочет больше — заходит в сам Мир.
+const HOME_BAND_LIMIT = 4;
+
+// Порядок показа: сначала то, что можно забрать сегодня, потом то, что
+// рождается, и только в конце уехавшие к Хранителям. Витрина должна
+// начинаться с живого предложения, а не с архива.
+const AVAILABILITY_RANK = { available: 0, 'in-progress': 1, reserved: 2, archive: 3 };
+
+function homeWorldBand(collection) {
+  const residentsInWorld = content.residents
+    .filter((resident) => resident.collectionId === collection.id)
+    .sort((left, right) => (AVAILABILITY_RANK[left.availability] ?? 9) - (AVAILABILITY_RANK[right.availability] ?? 9)
+      || (left.worldOrder ?? 99) - (right.worldOrder ?? 99));
+  const shown = residentsInWorld.slice(0, HOME_BAND_LIMIT);
+  const rest = residentsInWorld.length - shown.length;
+  const worldLink = `/collection.html?world=${encodeURIComponent(collection.slug)}`;
+  return `<section class="residents-world residents-world--compact theme-${esc(collection.theme)}" data-collection="${esc(collection.id)}">
+    <img class="residents-world__scene" src="${esc(collection.sceneImage || collection.image)}" alt="" loading="lazy">
+    <div class="residents-world__shade"></div>
+    ${atmosphereMarkup(collection.theme)}
+    <div class="shell residents-world__inner">
+      <header class="residents-world__head">
+        <div><h3>${esc(collection.name)}</h3><p>${esc(collection.description)}</p></div>
+        <a class="button button--light" href="${worldLink}">Войти в мир</a>
+      </header>
+      <div class="resident-grid">${shown.map((resident) => residentCard(resident)).join('')}</div>
+      ${rest > 0 ? `<div class="residents-world__more">
+        <a class="text-link text-link--light" href="${worldLink}">Открыть Мир целиком — ещё ${rest} ${pluralResidents(rest)} <b aria-hidden="true">→</b></a>
+      </div>` : ''}
+    </div>
+  </section>`;
 }
 
 // Сколько работ показывать в полосе Мира сразу. Остальные — за кнопкой:
@@ -1424,12 +1207,14 @@ function syncWorldSeams() {
 // экране видна одна. Браузер грузит фоны всех секций сразу, потому что
 // секции есть в разметке — поэтому адрес подложки подставляется не раньше,
 // чем полоса подойдёт к экрану. Первая зажигается сразу: она и так видна.
-function lightWorldBands() {
+function lightWorldBands({ eager = true } = {}) {
   const bands = [...document.querySelectorAll('.residents-world')];
   if (!bands.length) return;
   const light = (band) => band.classList.add('is-lit');
   if (!('IntersectionObserver' in window)) { bands.forEach(light); return; }
-  light(bands[0]);
+  // На «Жителях» первая полоса видна сразу, и ждать наблюдателя ей незачем.
+  // На главной она стоит ниже первого экрана — там ждут все.
+  if (eager) light(bands[0]);
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
@@ -1437,7 +1222,7 @@ function lightWorldBands() {
       observer.unobserve(entry.target);
     });
   }, { rootMargin: '600px 0px' });
-  bands.slice(1).forEach((band) => observer.observe(band));
+  (eager ? bands.slice(1) : bands).forEach((band) => observer.observe(band));
 }
 
 // Card micro-interactions. Pointer-only: a tilt that follows a finger just

@@ -344,15 +344,6 @@ body .menu-toggle > span:not(.sr-only) { background: #261a15; }
 .home-feature b { display: block; font-size: 1.05rem; line-height: 1.35; }
 .home-feature small { display: block; margin-top: .25rem; color: #726357; font-size: .82rem; line-height: 1.4; }
 
-.home-v2-worlds {
-  position: relative;
-  padding: clamp(3.5rem, 5vw, 5rem) 0;
-  overflow: hidden;
-  border-bottom: 1px solid #b78a4f;
-  background: #120d0b;
-  color: #f8ead5;
-}
-
 .home-v2-section-head {
   display: flex;
   align-items: end;
@@ -374,133 +365,6 @@ body .menu-toggle > span:not(.sr-only) { background: #261a15; }
   font-size: .72rem;
   font-weight: 600;
 }
-
-/* Пять карточек в ряд делали огромные Миры мелкими картинками. Теперь это
-   лента по три: карточка вдвое шире, в неё помещается описание, кто там
-   живёт и сколько Жителей — а остальные Миры листаются. */
-.home-world-track {
-  display: flex;
-  gap: 1.15rem;
-  overflow-x: auto;
-  padding-bottom: .4rem;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-}
-
-.home-world-track::-webkit-scrollbar { display: none; }
-.home-world-card { flex: 0 0 calc((100% - 2.3rem) / 3); scroll-snap-align: center; }
-
-.home-world-card {
-  min-width: 0;
-  overflow: hidden;
-  border: 1px solid rgb(183 138 79 / .55);
-  border-radius: 14px;
-  background: #1a1310;
-  transition: border-color .25s ease;
-}
-.home-world-card:hover { border-color: rgb(183 138 79 / .9); }
-
-.home-world-card > a { display: grid; height: 100%; grid-template-rows: auto minmax(0, 1fr); }
-.home-world-card__frame { position: relative; display: block; overflow: hidden; }
-.home-world-card__tally {
-  position: absolute;
-  right: .7rem;
-  bottom: .7rem;
-  padding: .28rem .6rem;
-  border: 1px solid rgb(183 138 79 / .6);
-  border-radius: 999px;
-  background: rgb(18 13 11 / .78);
-  color: #e8c98f;
-  font-size: .72rem;
-  font-weight: 600;
-}
-
-.home-world-card img {
-  width: 100%;
-  aspect-ratio: 1.12;
-  object-fit: cover;
-  object-position: var(--home-world-focus, center);
-  filter: saturate(.94) contrast(1.04);
-  transition: transform .55s var(--ease);
-}
-
-.home-world-card:hover img { transform: scale(1.035); }
-.home-world-card__copy {
-  display: block;
-  min-height: 7.7rem;
-  padding: 1rem .85rem 1.1rem;
-  text-align: center;
-}
-
-.home-world-card__copy b {
-  display: block;
-  margin-bottom: .55rem;
-  color: #f8ead5;
-  font: 500 1.35rem/1 var(--display);
-  letter-spacing: -.035em;
-}
-
-.home-world-card__copy small {
-  display: block;
-  color: #d8c3a3;
-  font-size: .78rem;
-  line-height: 1.45;
-}
-
-.home-world-all { display: none; }
-
-.home-world-carousel { position: relative; }
-.home-world-control {
-  position: absolute;
-  top: 38%;
-  z-index: 3;
-  display: grid;
-  place-items: center;
-  width: 3rem;
-  height: 3rem;
-  border: 1px solid rgb(183 138 79 / .75);
-  border-radius: 50%;
-  background: rgb(18 13 11 / .82);
-  color: #e8c98f;
-  font-size: 1.3rem;
-  line-height: 1;
-  cursor: pointer;
-  transition: background-color .25s, border-color .25s, transform .25s var(--ease);
-}
-
-.home-world-control:hover { background: #17451f; border-color: #e8c98f; transform: scale(1.06); }
-.home-world-control--prev { left: -1.1rem; }
-.home-world-control--next { right: -1.1rem; }
-
-.home-world-dots {
-  display: flex;
-  justify-content: center;
-  gap: .15rem;
-  margin-top: 1rem;
-}
-
-.home-world-dots button {
-  display: grid;
-  place-items: center;
-  width: 1.9rem;
-  height: 1.9rem;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-}
-
-.home-world-dots button::before {
-  content: '';
-  width: .45rem;
-  height: .45rem;
-  border: 1px solid #b78a4f;
-  border-radius: 50%;
-  background: transparent;
-  transition: background-color .25s, transform .25s var(--ease);
-}
-
-.home-world-dots button.is-active::before { background: #e8c98f; border-color: #e8c98f; transform: scale(1.25); }
 
 .home-v2-residents {
   position: relative;
@@ -553,13 +417,6 @@ body .menu-toggle > span:not(.sr-only) { background: #261a15; }
 }
 
 .home-v2-section-head--residents > a { grid-column: 3; grid-row: 1; color: #7a5d34; }
-.home-resident-bar {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: .8rem 1.4rem;
-  margin-bottom: 1.5rem;
-}
 
 .home-resident-summary {
   margin: 0;
@@ -567,140 +424,6 @@ body .menu-toggle > span:not(.sr-only) { background: #261a15; }
   font-size: .95rem;
   font-weight: 600;
 }
-
-.home-resident-filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-left: auto; }
-.home-chip {
-  min-height: 2.4rem;
-  padding: .45rem 1.1rem;
-  border: 1px solid #d9c4a4;
-  border-radius: 999px;
-  background: #fbf4e7;
-  color: #4f3d32;
-  font-size: .82rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: border-color .25s, background-color .25s, color .25s;
-}
-
-.home-chip:hover { border-color: #b78a4f; color: #261a15; }
-.home-chip[aria-pressed='true'] { border-color: #1f4d26; background: #1f4d26; color: #fbf4e7; }
-.home-resident-empty {
-  margin: 1.5rem 0 0;
-  color: #726357;
-  font-size: .95rem;
-}
-
-/* Раскрывает остаток витрины. Нужна только на телефоне — на широком экране
-   карточки лежат в галерее и листаются вбок, там прятать нечего. */
-.home-resident-more {
-  display: none;
-  width: 100%;
-  min-height: 3rem;
-  margin-top: .85rem;
-  border: 1px solid #b78a4f;
-  border-radius: 999px;
-  background: transparent;
-  color: #7a5d34;
-  font-size: .92rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color .25s, border-color .25s, color .25s;
-}
-
-.home-resident-more:hover {
-  border-color: #17451f;
-  background: #17451f;
-  color: #fbf4e7;
-}
-
-.home-resident-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.5rem;
-}
-.home-resident-card {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  overflow: hidden;
-  border: 1px solid #d9c4a4;
-  border-radius: 1rem;
-  background: #fbf4e7;
-  box-shadow: 0 1rem 2.5rem rgb(23 13 8 / .12);
-}
-
-.home-resident-card[hidden] { display: none; }
-.home-resident-card__image {
-  position: relative;
-  grid-column: 1 / -1;
-  aspect-ratio: 5 / 4;
-  overflow: hidden;
-  /* Фотографии витрины грузятся лениво — пока кадр в пути, место под него
-     должно выглядеть частью бумаги, а не дырой в карточке. */
-  background: #e6d6ba;
-}
-
-/* На широком экране бейдж лежит поверх фотографии, на узком — становится
-   обычной строкой в тексте карточки (см. мобильный блок ниже). */
-.home-resident-card__status {
-  position: absolute;
-  top: .7rem;
-  left: .7rem;
-  box-shadow: 0 .4rem 1rem rgb(23 13 8 / .25);
-}
-.home-resident-card__image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform .55s var(--ease);
-}
-
-.home-resident-card:hover .home-resident-card__image img { transform: scale(1.035); }
-.home-resident-card__copy { padding: .85rem 1rem 1rem; }
-.home-resident-card__copy h3 { margin-top: .15rem; color: #261a15; font-size: 1.5rem; line-height: 1; }
-.home-resident-card__world {
-  margin: 0;
-  color: #7a5d34;
-  font-size: .62rem;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-}
-
-.home-resident-card__note {
-  margin-top: .4rem;
-  color: #726357;
-  font-size: .84rem;
-  line-height: 1.45;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-}
-
-.home-resident-card__price {
-  margin-top: .55rem;
-  color: #261a15;
-  font-size: .95rem;
-  font-weight: 700;
-}
-
-.home-resident-card__price span { color: #726357; font-weight: 600; }
-.home-card-arrow {
-  align-self: end;
-  display: grid;
-  place-items: center;
-  width: 2.8rem;
-  height: 2.8rem;
-  margin: 0 .85rem .8rem 0;
-  border: 1px solid #b78a4f;
-  border-radius: 50%;
-  color: #7a5d34;
-  font-size: 1.1rem;
-  transition: background-color .25s, color .25s;
-}
-
-.home-card-arrow:hover { background: #201713; color: #e8c98f; }
 .home-resident-all { display: none; }
 
 .home-v2-cta {
@@ -873,48 +596,9 @@ body .home-site-footer .brand__name { color: #f8ead5; }
   .home-feature__icon svg { width: 1.35rem; height: 1.35rem; }
   .home-feature b { font-size: .92rem; }
   .home-feature small { font-size: .74rem; }
-
-  .home-v2-worlds { padding: 2.3rem 0 1.8rem; }
   .home-v2-section-head { display: block; margin-bottom: 1rem; }
   .home-v2-section-head h2 { font-size: clamp(2.55rem, 12vw, 3.4rem); }
   .home-v2-section-head > a { display: none; }
-  .home-world-carousel { position: relative; }
-  .home-world-track {
-    display: flex;
-    gap: 1.1rem;
-    overflow-x: auto;
-    padding: 0 calc(50% - 8.6rem) .2rem;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-  }
-  .home-world-track::-webkit-scrollbar { display: none; }
-  .home-world-card { flex: 0 0 17.2rem; scroll-snap-align: center; }
-  .home-world-card img { aspect-ratio: 1.06; }
-  .home-world-card__copy { min-height: 5.8rem; padding: .75rem .85rem .85rem; }
-  .home-world-card__copy b { margin-bottom: .32rem; font-size: 1.22rem; }
-  .home-world-card__copy small { font-size: .74rem; }
-  .home-world-control {
-    position: absolute;
-    z-index: 5;
-    top: 42%;
-    display: grid;
-    place-items: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    padding: 0;
-    border: 1px solid #b78a4f;
-    border-radius: 50%;
-    background: #120d0b;
-    color: #e8c98f;
-    font: 500 1.7rem/1 var(--display);
-  }
-  .home-world-control--prev { left: -.6rem; }
-  .home-world-control--next { right: -.6rem; }
-  .home-world-dots { display: flex; justify-content: center; gap: 0; margin: .25rem 0; }
-  .home-world-dots button { display: grid; place-items: center; width: 2rem; height: 2rem; padding: 0; border: 0; background: transparent; }
-  .home-world-dots button::before { content: ''; width: .42rem; height: .42rem; border: 1px solid #e8c98f; border-radius: 50%; background: transparent; }
-  .home-world-dots button.is-active::before { background: #e8c98f; }
-  .home-world-all { display: flex; width: 100%; }
 
   .home-v2-residents { padding: 2.2rem 0 1.6rem; }
   .home-v2-section-head--residents { display: block; }
@@ -923,32 +607,7 @@ body .home-site-footer .brand__name { color: #f8ead5; }
   .home-v2-section-head--residents h2 { display: block; white-space: normal; font-size: clamp(2.35rem, 10.8vw, 3.15rem); }
   .home-v2-section-head--residents h2::after { display: none; }
   .home-v2-section-head--residents p { margin-top: .45rem; font-size: .52rem; line-height: 1.55; }
-  /* Строка со значком фотографии почти не показывала работу, а именно её
-     сюда и приходят смотреть — поэтому на телефоне витрина идёт сеткой
-     в две колонки с крупным кадром. */
-  .home-resident-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
-  .home-resident-card { grid-template-columns: 1fr auto; align-items: stretch; min-height: 0; border-radius: .8rem; box-shadow: 0 .5rem 1.4rem rgb(23 13 8 / .1); }
-  .home-resident-card__image { grid-column: 1 / -1; height: auto; aspect-ratio: 1; }
-  .home-resident-card__image img { width: 100%; height: 100%; min-height: 0; aspect-ratio: auto; object-fit: cover; }
-  .home-resident-card__copy { padding: .55rem .6rem .3rem; }
-  .home-resident-card__copy h3 { font-size: 1.08rem; }
-  .home-resident-card__status {
-    top: .4rem;
-    left: .4rem;
-    min-height: 1.4rem;
-    padding: .15rem .45rem;
-    font-size: .58rem;
-  }
-
-  .home-resident-card__world { display: none; }
-  .home-resident-card__note { display: none; }
-  .home-resident-card__price { margin-top: .2rem; font-size: .8rem; }
-  .home-resident-more { display: block; }
-  .home-resident-bar { gap: .7rem; margin-bottom: 1rem; }
   .home-resident-summary { font-size: .82rem; }
-  .home-resident-filters { width: 100%; margin-left: 0; }
-  .home-chip { min-height: 2.6rem; padding: .45rem .8rem; font-size: .74rem; }
-  .home-card-arrow { width: 2.75rem; height: 2.75rem; margin: 0 .25rem 0 0; }
   .home-resident-all { display: flex; width: 100%; margin-top: .75rem; }
 
   .home-v2-cta { min-height: 13rem; }
@@ -1137,10 +796,6 @@ body .home-site-footer .brand__name { color: #f8ead5; }
   .home-feature b { font-size: 1rem; }
   .home-feature small { margin-top: .1rem; font-size: .75rem; line-height: 1.35; }
 
-  .home-v2-worlds {
-    padding: 1.25rem 0 1.05rem;
-  }
-
   .home-v2-section-head {
     margin-bottom: .7rem;
   }
@@ -1148,72 +803,6 @@ body .home-site-footer .brand__name { color: #f8ead5; }
   .home-v2-section-head h2 {
     font-size: 2.48rem;
     line-height: .9;
-  }
-
-  /* Соседние Миры выглядывают по краям — так видно, что карусель можно
-     листать, и сколько всего Миров в Мастерской. */
-  .home-world-track {
-    gap: .6rem;
-    padding: 0 5.5% .1rem;
-  }
-
-  .home-world-card {
-    flex: 0 0 88%;
-    border-radius: .55rem;
-    transition: opacity .45s var(--ease), transform .45s var(--ease), border-color .25s ease;
-  }
-
-  /* Боковые приглушены, чтобы взгляд держался за среднюю карточку. */
-  .home-world-card:not(.is-current) {
-    opacity: .55;
-    transform: scale(.94);
-  }
-
-  .home-world-card img {
-    aspect-ratio: 1.6;
-  }
-
-  .home-world-card__copy {
-    min-height: 5rem;
-    padding: .65rem .75rem .72rem;
-  }
-
-  .home-world-card__copy b {
-    margin-bottom: .24rem;
-    font-size: 1.2rem;
-  }
-
-  .home-world-card__copy small {
-    font-size: .8rem;
-    line-height: 1.32;
-  }
-
-  .home-world-control {
-    top: 43%;
-    width: 2.7rem;
-    height: 2.7rem;
-    font-size: 1.35rem;
-  }
-
-  .home-world-control--prev { left: .08rem; }
-  .home-world-control--next { right: .08rem; }
-
-  .home-world-dots {
-    margin: .05rem 0 .1rem;
-  }
-
-  .home-world-dots button {
-    width: 1.35rem;
-    height: 1.35rem;
-  }
-
-  .home-world-dots button::before {
-    width: .32rem;
-    height: .32rem;
-  }
-
-  .home-world-all {
-    min-height: 2.75rem;
   }
 
   .home-v2-residents {
@@ -1235,41 +824,6 @@ body .home-site-footer .brand__name { color: #f8ead5; }
     font-size: .53rem;
     letter-spacing: .13em;
     line-height: 1.35;
-  }
-
-  .home-resident-grid {
-    gap: .38rem;
-  }
-
-  .home-resident-card {
-    grid-template-columns: 4.2rem minmax(0, 1fr) 2.65rem;
-    min-height: 4.2rem;
-    border-radius: .48rem;
-  }
-
-  .home-resident-card__image img {
-    width: 4.2rem;
-    min-height: 4.2rem;
-  }
-
-  .home-resident-card__copy {
-    padding: .42rem .58rem;
-  }
-
-  .home-resident-card__copy h3 {
-    font-size: 1.08rem;
-  }
-
-  .home-resident-card__copy p {
-    margin-top: .14rem;
-    font-size: .72rem;
-  }
-
-  .home-card-arrow {
-    width: 2.25rem;
-    height: 2.25rem;
-    margin-right: .28rem;
-    font-size: .86rem;
   }
 
   .home-resident-all {
@@ -1453,25 +1007,8 @@ body .home-site-footer .brand__name { color: #f8ead5; }
   .home-feature b { font-size: 1.15rem; }
   .home-feature small { font-size: .88rem; }
 
-  .home-v2-worlds {
-    padding: 1.9rem 0;
-  }
-
   .home-v2-section-head {
     margin-bottom: 1.3rem;
-  }
-
-  .home-world-card__copy {
-    min-height: 6.8rem;
-    padding: .85rem .8rem .95rem;
-  }
-
-  .home-world-card__copy b {
-    font-size: 1.5rem;
-  }
-
-  .home-world-card__copy small {
-    font-size: .9rem;
   }
 
   .home-v2-residents {
@@ -1480,28 +1017,6 @@ body .home-site-footer .brand__name { color: #f8ead5; }
 
   .home-v2-section-head--residents {
     margin-bottom: .5rem;
-  }
-
-  .home-resident-card__image {
-    aspect-ratio: 2.18 / 1;
-  }
-
-  .home-resident-card__copy {
-    padding: .68rem .85rem .75rem;
-  }
-
-  .home-resident-card__copy h3 {
-    font-size: 1.5rem;
-  }
-
-  .home-resident-card__copy p {
-    font-size: .9rem;
-  }
-
-  .home-card-arrow {
-    width: 2.5rem;
-    height: 2.5rem;
-    margin: 0 .72rem .64rem 0;
   }
 
   .home-v2-cta {
@@ -1559,8 +1074,6 @@ body .home-site-footer .brand__name { color: #f8ead5; }
   body .shell,
   body .header-inner { width: min(calc(100% - 2rem), 82rem); }
   .home-v2-hero h1 { font-size: 2.45rem; }
-  .home-world-card { flex-basis: 15.7rem; }
-  .home-world-track { padding-inline: calc(50% - 7.85rem); }
 }
 
 /* Final workshop and Residents treatment from the approved editorial concept. */
@@ -1604,40 +1117,6 @@ body .home-site-footer .brand__name { color: #f8ead5; }
   color: #7a5d34;
   font: 500 1.45rem/1 var(--display);
   letter-spacing: .04em;
-}
-
-.home-resident-grid {
-  grid-template-columns: none;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(21rem, calc((100% - 3rem) / 2.4));
-  gap: 1.5rem;
-  overflow-x: auto;
-  padding: .15rem .1rem 1rem;
-  scroll-padding-inline: .1rem;
-  scroll-snap-type: x proximity;
-  scrollbar-color: #b78a4f #d9c4a4;
-  scrollbar-width: thin;
-}
-
-.home-resident-card { scroll-snap-align: start; }
-
-.home-card-arrow {
-  width: 2.75rem;
-  height: 2.75rem;
-  min-height: 0;
-  margin: 0 .85rem .78rem 0;
-  padding: 0;
-  border-radius: 50%;
-}
-
-.home-card-arrow svg {
-  width: 1rem;
-  height: 1rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 @media (min-width: 50.0625rem) {
@@ -1783,70 +1262,10 @@ body .home-site-footer .brand__name { color: #f8ead5; }
     line-height: 1.45;
   }
 
-  .home-resident-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-auto-flow: row;
-    grid-auto-columns: auto;
-    gap: .7rem;
-    overflow: visible;
-    padding: 0;
-    scroll-snap-type: none;
-  }
-
-  .home-resident-card {
-    grid-template-columns: 1fr auto;
-    min-height: 0;
-    border-radius: .8rem;
-    background: rgb(251 244 231 / .94);
-    box-shadow: 0 .5rem 1.4rem rgb(23 13 8 / .1);
-  }
-
-  .home-resident-card__image,
-  .home-resident-card__image img {
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-  }
-
-  .home-resident-card__image { grid-column: 1 / -1; aspect-ratio: 1; }
-
-  .home-resident-card__image img {
-    object-fit: cover;
-  }
-
-  .home-resident-card__copy {
-    align-self: center;
-    padding: .55rem .7rem;
-  }
-
-  .home-resident-card__copy h3 {
-    font-size: 1.18rem;
-    line-height: 1.05;
-  }
-
-  .home-resident-card__copy p {
-    margin-top: .22rem;
-    font-size: .74rem;
-  }
-
-  .home-card-arrow {
-    align-self: center;
-    width: 2.55rem;
-    height: 2.55rem;
-    min-height: 0;
-    margin: 0 .55rem 0 0;
-    padding: 0;
-  }
-
   .home-resident-all {
     min-height: 3rem;
     margin-top: .75rem;
   }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .home-world-card img,
-  .home-resident-card__image img { transition: none; }
 }
 
 /* ——— Появление блоков при прокрутке ———
@@ -2154,28 +1573,19 @@ body .home-site-footer .brand__name { color: #f8ead5; }
    поймало свет». Фотография внутри тянется чуть медленнее карточки, от
    этого движение кажется глубже, а не плоским сдвигом. */
 @media (hover: hover) and (pointer: fine) {
-  .home-world-card,
-  .home-resident-card,
   .home-chronicle,
-  .home-step,
-  .home-faq__item {
+.home-step,
+.home-faq__item {
     transition:
       transform .38s var(--ease),
       box-shadow .38s var(--ease),
       border-color .3s var(--ease);
   }
 
-  .home-world-card:hover,
   .home-chronicle:hover {
     transform: translateY(-.45rem);
     border-color: rgb(232 201 143 / .85);
     box-shadow: 0 1.6rem 3rem rgb(0 0 0 / .45);
-  }
-
-  .home-resident-card:hover {
-    transform: translateY(-.45rem);
-    border-color: #b78a4f;
-    box-shadow: 0 1.5rem 2.8rem rgb(38 26 21 / .22);
   }
 
   .home-chronicle:hover .home-chronicle__image img { transform: scale(1.05); }
@@ -2190,24 +1600,15 @@ body .home-site-footer .brand__name { color: #f8ead5; }
   .home-step:hover { background: rgb(183 138 79 / .07); }
   .home-step__number { transition: color .3s var(--ease), transform .3s var(--ease); }
   .home-step:hover .home-step__number { color: #7a5d34; transform: translateY(-.15rem); }
-
-  .home-card-arrow { transition: background-color .25s, color .25s, transform .3s var(--ease); }
-  .home-resident-card:hover .home-card-arrow { background: #17451f; border-color: #17451f; color: #fbf4e7; }
-  .home-chip { transition: transform .25s var(--ease), border-color .25s, background-color .25s, color .25s; }
-  .home-chip:hover { transform: translateY(-.1rem); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-world-card,
-  .home-resident-card,
   .home-chronicle,
-  .home-chronicle-story,
-  .home-step { transition: none !important; }
+.home-chronicle-story,
+.home-step { transition: none !important; }
 
-  .home-world-card:hover,
-  .home-resident-card:hover,
   .home-chronicle:hover,
-  .home-chronicle-story:hover { transform: none !important; }
+.home-chronicle-story:hover { transform: none !important; }
 }
 
 @media (max-width: 62rem) {
@@ -2222,71 +1623,6 @@ body .home-site-footer .brand__name { color: #f8ead5; }
   .home-chronicle-story h3 { font-size: 1.25rem; }
   .home-chronicle-story p { font-size: .89rem; }
   .home-chronicle-note { font-size: .82rem; }
-}
-
-/* ——— Карточка Мира: описание, кто живёт, кому в подарок ——— */
-.home-world-card__copy {
-  display: grid;
-  align-content: start;
-  gap: .5rem;
-  min-height: 0;
-  padding: 1.15rem 1.15rem 1.3rem;
-  text-align: left;
-}
-
-.home-world-card__copy b {
-  margin: 0;
-  color: #f8ead5;
-  font: 500 1.75rem/1 var(--display);
-  letter-spacing: -.03em;
-}
-
-.home-world-card__copy small {
-  color: #d8c3a3;
-  font-size: .92rem;
-  line-height: 1.5;
-}
-
-.home-world-card__lives {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: .55rem;
-  align-items: start;
-  padding-top: .6rem;
-  border-top: 1px solid rgb(183 138 79 / .3);
-  color: #c4ac8c;
-  font-size: .86rem;
-  line-height: 1.5;
-}
-
-.home-world-card__lives i {
-  width: .4rem;
-  height: .4rem;
-  margin-top: .48rem;
-  border-radius: 50%;
-  background: #b78a4f;
-}
-
-.home-world-card__enter {
-  margin-top: .3rem;
-  color: #e8c98f;
-  font-size: .85rem;
-  font-weight: 600;
-}
-
-.home-world-card__enter b { transition: transform .3s var(--ease); display: inline-block; }
-.home-world-card:hover .home-world-card__enter b { transform: translateX(.25rem); }
-
-@media (max-width: 62rem) {
-  .home-world-card__copy { padding: 1rem 1rem 1.15rem; gap: .42rem; }
-  .home-world-card__copy b { font-size: 1.5rem; }
-  .home-world-card__copy small { font-size: .86rem; }
-  .home-world-card__lives { font-size: .8rem; }
-}
-
-@media (max-width: 50rem) {
-  .home-world-card img { aspect-ratio: 1.2; }
-  .home-world-card__copy { min-height: 0; }
 }
 
 /* ——— Единый набор на всех страницах ———
