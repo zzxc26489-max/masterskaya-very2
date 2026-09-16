@@ -1322,7 +1322,6 @@ function collectionPage() {
       <div class="shell world-stage__grid">
         <div class="world-stage__intro">
           <a class="world-back" href="/residents.html">← Все Миры</a>
-          <p class="eyebrow eyebrow--light">Мир Мастерской</p>
           <h1>${esc(collection.name)}</h1>
           <p>${esc(collection.description)}</p>
           <div class="world-stage__facts">
@@ -1339,7 +1338,6 @@ function collectionPage() {
       <div class="shell">
         <header class="section-head section-head--light" data-reveal>
           <div>
-            <p class="eyebrow eyebrow--light">Жители этого Мира</p>
             <h2>Каждый сделан вручную в одном экземпляре</h2>
           </div>
           <a class="text-link text-link--light" href="/residents.html">Все работы Веры →</a>

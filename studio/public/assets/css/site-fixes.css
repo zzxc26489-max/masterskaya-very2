@@ -1228,54 +1228,6 @@ body[data-page="residents"] :target,
 body[data-page="residents"] #main,
 body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--shell-header, 4.4rem) + 6rem); }
 
-/* ——— Орнамент светлых страниц ———
-   Золото Миров сделано под тёмный фон: на кремовых страницах его не
-   поставить. Сепия-орнамент — его светлая пара. Он не фон, а кромка:
-   рисунок идёт только по верхнему и нижнему краю, середина пустая, —
-   поэтому лежит двумя полосами, а не подложкой во весь экран. Кремовая
-   часть страницы получает рамку сверху и снизу, текст остаётся на чистом.
-
-   Отдельная мобильная версия не нужна: полоса тянется по ширине и
-   пропорционально уменьшается по высоте. Подложкам Миров вторая версия
-   была нужна потому, что это готовая композиция в размер экрана, и на
-   телефоне её обрезало бы поперёк. */
-.page-hero + .section--paper,
-#main > .section--paper:last-child { position: relative; }
-
-.page-hero + .section--paper::before,
-#main > .section--paper:last-child::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  left: 0;
-  height: clamp(2.2rem, 5vw, 4.2rem);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  opacity: .72;
-  pointer-events: none;
-}
-
-.page-hero + .section--paper::before {
-  top: 0;
-  background-image: url('../../media/patterns/paper-rule-top.webp');
-}
-
-#main > .section--paper:last-child::after {
-  bottom: 0;
-  background-image: url('../../media/patterns/paper-rule-bottom.webp');
-}
-
-@media (max-width: 50rem) {
-  /* На узком экране завиток растягивался бы вчетверо: полоса прижимается
-     к высоте и обрезается по бокам, рисунок остаётся в своих пропорциях. */
-  .page-hero + .section--paper::before,
-  #main > .section--paper:last-child::after {
-    height: 1.8rem;
-    background-size: auto 100%;
-  }
-}
-
 /* ——— Виньетки разделов главной ———
    По углам «Как рождается фигурка» и «Пути от письма» лежали те же плоские
    SVG-пластины, что заказчик заметил на страницах Мира («сзади нарисована
@@ -1368,16 +1320,22 @@ body[data-page="residents"] .residents-world { scroll-margin-top: calc(var(--she
    Сам разделитель — два слоя, и ни один не масштабируется: линия рисуется
    градиентом (у него нет пикселей, он резкий под любую ширину), завиток —
    вектором в своём размере. Растягивается только то, что можно. */
-.residents-seam {
-  height: 1.75rem;
-  margin-block: clamp(1.4rem, 3vw, 2.6rem);
-  background:
+:root {
+  --seam-height: 1.75rem;
+  --seam-gap: clamp(1.4rem, 3vw, 2.6rem);
+  --seam-mark:
     url('../../media/ornaments/divider-mark.svg') center center / auto 1.75rem no-repeat,
     linear-gradient(90deg,
       transparent,
       rgb(200 164 104 / .45) 14%,
       rgb(200 164 104 / .45) 86%,
       transparent) center center / 100% 1px no-repeat;
+}
+
+.residents-seam {
+  height: var(--seam-height);
+  margin-block: var(--seam-gap);
+  background: var(--seam-mark);
   pointer-events: none;
 }
 
@@ -1589,3 +1547,34 @@ main section[id],
    бумаги. Колонки и так равны по высоте: это сетка, они тянутся по
    самой высокой. Минимум только добавлял пустоту. */
 .chronicle-grid > div { min-height: 0; padding: 1.5rem 1.5rem 1.7rem; }
+
+/* ——— Конец страницы, когда он тёмный ———
+   На «Контактах» последний блок, фон страницы и подвал — один и тот же
+   цвет, rgb(18 13 11). Страница просто продолжалась: где кончается
+   содержимое и начинается подвал, понять было нельзя.
+
+   Тот же случай, что между Мирами: тёмное встречается с тёмным, и граница
+   сама себя не рисует. Значит, и решение то же — зазор с фоном страницы и
+   черта в нём. Там, где страница кончается светлым блоком, граница видна
+   сама, и ставить туда нечего. */
+#main > .section--night:last-child {
+  margin-bottom: calc(var(--seam-gap) * 2 + var(--seam-height));
+}
+
+#main > .section--night:last-child::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: calc(100% + var(--seam-gap));
+  height: var(--seam-height);
+  background: var(--seam-mark);
+  pointer-events: none;
+}
+
+/* ——— Две светлые полосы подряд ———
+   На «Контактах» карточки Telegram и форма письма — обе на кремовой
+   бумаге. Между ними складывались два поля по 75px на телефоне и по
+   130px на широком экране: четверть экрана пустоты внутри одного
+   светлого куска, где и границы-то никакой нет. Нижнего поля хватает. */
+.section--paper + .section--paper { padding-top: 0; }
