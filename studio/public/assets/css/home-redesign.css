@@ -19,7 +19,7 @@ body .site-header {
 }
 
 body .site-header.is-compact {
-  background: rgb(240 227 205 / .96);
+  background: #f0e3cd;
   box-shadow: 0 .45rem 1.5rem rgb(38 26 21 / .12);
 }
 
@@ -831,10 +831,6 @@ body .home-site-footer .brand__name { color: #f8ead5; }
     margin-top: .45rem;
   }
 
-  /* The approved mobile composition moves directly from Residents to footer. */
-  .home-v2-cta {
-    display: none;
-  }
 
   .home-site-footer {
     padding-top: 1rem;

@@ -1270,6 +1270,15 @@ function bindHeaderShrink() {
   };
   check();
   window.addEventListener('scroll', check, { passive: true });
+
+  // Высота шапки нужна полосе фильтров: она липнет прямо под шапку, а шапка
+  // меняет рост — сжимается при прокрутке, перестраивается на узком экране,
+  // подрастает, когда доедут шрифты. Раньше под неё был вписан фиксированный
+  // отступ, и между шапкой и фильтрами зияла полоса страницы.
+  const measure = () => document.documentElement.style.setProperty('--header-h', `${header.offsetHeight}px`);
+  measure();
+  if ('ResizeObserver' in window) new ResizeObserver(measure).observe(header);
+  else window.addEventListener('resize', measure);
 }
 
 

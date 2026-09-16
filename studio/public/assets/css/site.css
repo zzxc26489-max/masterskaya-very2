@@ -538,9 +538,9 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
 .world-air__vignette {
   background: radial-gradient(ellipse at 50% 42%, transparent 34%, rgb(9 7 6 / .5) 100%);
 }
-/* Page content rides above the world air. */
+/* Page content rides above the world air. Шапке position здесь не
+   назначаем: она липкая, и relative сняло бы это. Свой слой у неё есть. */
 .world-page #app,
-.world-page .site-header,
 .world-page .site-footer { position: relative; z-index: 1; }
 
 /* Canvas layers: one page-wide, one per scene photo. Both are inert to
@@ -1398,7 +1398,7 @@ h3 { font-size: clamp(1.8rem, 3vw, 3.3rem); }
 
   .page-hero { padding: 5rem 0 5.5rem; }
   .page-hero h1 { font-size: clamp(3.8rem, 16vw, 6rem); }
-  .filter-dock { top: 4.65rem; }
+  .filter-dock { top: var(--header-h, 4.65rem); }
 
   .world-stage__scene,
   .world-stage__shade { inset: 0 0 auto; height: 31rem; }
