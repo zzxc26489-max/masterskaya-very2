@@ -679,7 +679,8 @@ function setShell(active) {
             <span></span><span></span><span></span><span class="sr-only">Открыть меню</span>
           </button>
         </div>
-      </div></div>`;
+      </div></div>
+      <div class="nav-scrim" data-nav-scrim aria-hidden="true"></div>`;
 
     footer.innerHTML = `<footer class="site-footer home-site-footer">
       <div class="home-ornament home-ornament--footer-left" aria-hidden="true">${worldOrnament('forest')}</div>
@@ -714,17 +715,26 @@ function setShell(active) {
 
   const toggle = document.querySelector('[data-menu-toggle]');
   const navElement = document.querySelector('#main-nav');
-  toggle.addEventListener('click', () => {
-    const open = navElement.classList.toggle('is-open');
+  const scrim = document.querySelector('[data-nav-scrim]');
+
+  // Меню закрывается всем, чем его пробует закрыть человек: кнопкой,
+  // пунктом, тапом мимо и Esc. Раньше закрыть его можно было только
+  // кнопкой в шапке — а шапка при открытии уезжала вверх за экран.
+  const setMenu = (open) => {
+    navElement.classList.toggle('is-open', open);
     document.body.classList.toggle('menu-open', open);
     toggle.classList.toggle('is-open', open);
     toggle.setAttribute('aria-expanded', String(open));
-  });
-  navElement.addEventListener('click', () => {
-    navElement.classList.remove('is-open');
-    document.body.classList.remove('menu-open');
-    toggle.classList.remove('is-open');
-    toggle.setAttribute('aria-expanded', 'false');
+  };
+
+  toggle.addEventListener('click', () => setMenu(!navElement.classList.contains('is-open')));
+  navElement.addEventListener('click', () => setMenu(false));
+  scrim?.addEventListener('click', () => setMenu(false));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && navElement.classList.contains('is-open')) {
+      setMenu(false);
+      toggle.focus();
+    }
   });
 
   const scrollButton = document.querySelector('[data-scroll-top]');
