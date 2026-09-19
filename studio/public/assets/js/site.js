@@ -905,11 +905,13 @@ function home() {
         <div class="home-v2-hero__copy">
           <h1><span>Сказки, которые</span> <span>можно взять в руки</span></h1>
           <p>Авторские фигурки ручной работы</p>
-          <div class="home-v2-actions">
-            <a class="button button--forest" href="/residents.html">Смотреть готовые работы <span aria-hidden="true">→</span></a>
-            <a class="button button--gold-outline" href="/contact.html">Заказать свою фигурку</a>
+          <div class="home-v2-foot">
+            <div class="home-v2-actions">
+              <a class="button button--forest" href="/residents.html">Смотреть готовые работы <span aria-hidden="true">→</span></a>
+              <a class="button button--gold-outline" href="/contact.html">Заказать свою фигурку</a>
+            </div>
+            <p class="home-v2-proof">Вера создаёт каждого Жителя — от идеи до последнего штриха.</p>
           </div>
-          <div class="home-v2-proof">1 экземпляр <i></i> ручная лепка <i></i> авторская роспись</div>
         </div>
         <div class="home-v2-note" aria-hidden="true">Сказки<br>живут<br>здесь</div>
       </div>

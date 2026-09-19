@@ -171,21 +171,11 @@ body .menu-toggle > span:not(.sr-only) { background: #261a15; }
 
 .home-v2-actions .button { width: auto; min-height: 3rem; padding: .85rem 1.6rem; }
 .home-v2-proof {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: .5rem;
-  margin-top: .9rem;
+  max-width: 30rem;
+  margin: .9rem 0 0;
   color: #d8c3a3;
   font-size: .75rem;
-  line-height: 1.4;
-}
-
-.home-v2-proof i {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: #b78a4f;
+  line-height: 1.45;
 }
 
 .home-v2-note,
@@ -574,10 +564,11 @@ body .home-site-footer .brand__name { color: #f8ead5; }
   .home-v2-hero__copy { width: 100%; }
   .home-v2-hero h1 { max-width: 21rem; margin-bottom: .75rem; font-size: clamp(2.55rem, 11.5vw, 3.4rem); line-height: .92; }
   .home-v2-hero__copy > p { max-width: 14.5rem; font-size: .77rem; line-height: 1.45; }
-  .home-v2-actions { position: absolute; right: 0; bottom: 2.65rem; left: 0; width: 100%; gap: .4rem; }
+  .home-v2-foot { position: absolute; right: 0; bottom: .7rem; left: 0; }
+  .home-v2-actions { width: 100%; gap: .4rem; }
   .home-v2-actions .button { width: 100%; min-height: 2.8rem; font-size: .76rem; }
-  .home-v2-proof { position: absolute; right: 0; bottom: .7rem; left: 0; justify-content: center; margin: 0; font-size: .52rem; }
-  .home-v2-note { top: 13.2rem; right: .6rem; width: 5.4rem; font-size: .95rem; }
+  .home-v2-proof { max-width: none; margin: .55rem 0 0; font-size: .58rem; text-align: center; }
+  .home-v2-note { top: 10.4rem; right: .6rem; width: 5.4rem; font-size: .95rem; }
 
   .home-v2-workshop { padding: 2.5rem 0 0; }
   .home-v2-workshop__grid { grid-template-columns: 1fr; gap: 1.35rem; }
@@ -711,17 +702,16 @@ body .home-site-footer .brand__name { color: #f8ead5; }
     line-height: 1.38;
   }
 
-  /* Подзаголовок занимает три строки — надпись уходит ниже него,
-     на тёмную часть фотографии. */
+  /* Надпись стоит над головой дальнего дракона и указывает на него
+     росчерком. Ниже она ложилась ему прямо на голову. */
   .home-v2-note {
-    top: 13.4rem;
+    top: 10.4rem;
     right: .4rem;
     width: 5.6rem;
     font-size: 1.05rem;
   }
 
   .home-v2-actions {
-    bottom: 2.7rem;
     gap: .38rem;
   }
 
@@ -732,9 +722,7 @@ body .home-site-footer .brand__name { color: #f8ead5; }
   }
 
   .home-v2-proof {
-    bottom: .78rem;
-    gap: .42rem;
-    font-size: .66rem;
+    font-size: .68rem;
   }
 
   .home-v2-workshop {
