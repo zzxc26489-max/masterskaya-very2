@@ -659,9 +659,11 @@ function setShell(active) {
     ['contact', '/contact.html', 'Контакты']
   ];
 
-  // Логотип ведёт на главную, поэтому отдельного пункта «Главная» в шапке
-  // нет — он появлялся только на внутренних страницах и ломал единство.
-  const shellNav = nav.filter(([id]) => id !== 'home');
+  // В строке шапки пункта «Главная» нет: логотип рядом и так ведёт туда,
+  // а лишний пункт ломал единство. В выпадающем меню на телефоне он нужен:
+  // логотипа в открытом меню не видно, и догадаться, что домой ведёт
+  // картинка в углу, человек не обязан. Пункт рисуется всегда и прячется
+  // на широком экране (см. site-fixes.css).
 
   {
     header.innerHTML = `<a class="skip-link" href="#main">Перейти к содержанию</a>
@@ -671,7 +673,7 @@ function setShell(active) {
           <span class="brand__name">Мастерская <br>Веры</span>
         </a>
         <nav class="main-nav" id="main-nav" aria-label="Основная навигация">
-          ${shellNav.map(([id, href, label]) => `<a class="${id === active ? 'is-active' : ''}"${id === active ? ' aria-current="page"' : ''} href="${href}">${label}</a>`).join('')}
+          ${nav.map(([id, href, label]) => `<a class="${id === active ? 'is-active' : ''}"${id === 'home' ? ' data-nav-home' : ''}${id === active ? ' aria-current="page"' : ''} href="${href}">${label}</a>`).join('')}
         </nav>
         <div class="header-actions">
           <a class="button button--forest button--compact header-cta" href="/residents.html">Смотреть работы</a>
