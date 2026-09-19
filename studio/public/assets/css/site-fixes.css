@@ -1640,3 +1640,65 @@ main section[id],
 @media (min-width: 50.0625rem) {
   .main-nav a[data-nav-home] { display: none; }
 }
+
+/* ——— Отзывы Хранителей ———
+   Переносятся с Авито руками: выгрузки оттуда нет, а выдумывать отзывы
+   нельзя. Пока ни одного не перенесли, блок вообще не рисуется — пустая
+   витрина отзывов говорит о мастерской хуже, чем её отсутствие. */
+.review-grid {
+  display: grid;
+  /* Колонка ограничена по ширине: один отзыв не должен растягиваться на
+     весь экран строкой в 150 знаков. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 26rem));
+  gap: 1rem;
+}
+
+.review {
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+  padding: 1.4rem 1.5rem 1.5rem;
+  border: 1px solid var(--line-dark);
+  border-radius: 1rem;
+  background: rgb(255 240 220 / .04);
+}
+
+.reviews-section:not(.section--night) .review {
+  border-color: var(--line);
+  background: var(--paper-light);
+}
+
+.review__stars {
+  color: #e8c98f;
+  font-size: 1rem;
+  letter-spacing: .12em;
+  line-height: 1;
+}
+
+/* Недостающие звёзды остаются на месте приглушёнными: по ряду сразу
+   видно, четыре это из пяти или пять из пяти. */
+.review__stars i { color: rgb(232 201 143 / .28); font-style: normal; }
+
+.review__text {
+  margin: 0;
+  color: #f2e2ca;
+  font-size: .92rem;
+  line-height: 1.55;
+}
+
+.reviews-section:not(.section--night) .review__text { color: var(--ink); }
+
+.review__meta {
+  margin: auto 0 0;
+  color: rgb(242 226 202 / .62);
+  font-size: .78rem;
+}
+
+.reviews-section:not(.section--night) .review__meta { color: var(--muted); }
+
+.review__meta b { font-weight: 600; }
+
+/* На кремовой бумаге бледное золото звёзд почти не видно — берём тон
+   темнее, тот же, что у цифр и акцентов на светлых страницах. */
+.reviews-section.section--paper .review__stars { color: #b07d2a; }
+.reviews-section.section--paper .review__stars i { color: rgb(176 125 42 / .3); }

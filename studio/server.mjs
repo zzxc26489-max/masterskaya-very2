@@ -31,15 +31,25 @@ async function readJson(file) {
 async function loadContent() {
   if (useLocalContent) {
     try {
-      return await readJson(localPath);
+      return withDefaults(await readJson(localPath));
     } catch (error) {
       if (error.code !== "ENOENT") throw error;
     }
   }
-  const seed = await readJson(seedPath);
+  const seed = withDefaults(await readJson(seedPath));
   if (useLocalContent) await persist(seed);
   else content = seed;
   return seed;
+}
+
+// Разделы, добавленные позже: в уже сохранённом content.local.json их нет.
+// Без этого админка падала бы на пустом месте после обновления сайта.
+function withDefaults(loaded) {
+  return {
+    ...loaded,
+    reviews: Array.isArray(loaded.reviews) ? loaded.reviews : [],
+    settings: { avitoUrl: "", ...loaded.settings }
+  };
 }
 
 function persist(next) {
@@ -106,6 +116,19 @@ function requireAdmin(request, response, next) {
 
 function safeText(value, max = 4000) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
+}
+
+// Ссылка из админки попадает в href на всех страницах: пускаем только
+// http(s), чтобы через настройки нельзя было протащить javascript:.
+function safeUrl(value, max = 300) {
+  const raw = safeText(value, max);
+  if (!raw) return "";
+  try {
+    const url = new URL(raw);
+    return url.protocol === "http:" || url.protocol === "https:" ? url.href : "";
+  } catch {
+    return "";
+  }
 }
 
 function safeArray(value, max = 30) {
@@ -197,13 +220,34 @@ function normaliseStory(payload, previous = {}) {
   };
 }
 
+// Отзыв переносится с Авито руками: там нет выгрузки, а выдумывать
+// отзывы нельзя. Поэтому поля ровно те, что видны в карточке на Авито.
+function normaliseReview(payload, previous = {}) {
+  const rating = Number(payload.rating ?? previous.rating);
+  return {
+    ...previous,
+    id: previous.id || id("review"),
+    author: safeText(payload.author || previous.author, 120),
+    text: safeText(payload.text || previous.text, 2000),
+    date: safeText(payload.date || previous.date, 60),
+    item: safeText(payload.item ?? previous.item, 160),
+    rating: Number.isFinite(rating) && rating >= 1 && rating <= 5 ? Math.round(rating) : 5,
+    published: payload.published === false ? false : true,
+    updatedAt: new Date().toISOString()
+  };
+}
+
 function findById(items, key) {
   return items.findIndex((item) => item.id === key || item.slug === key);
 }
 
 function publicContent() {
   const { inquiries, ...visible } = content;
-  return { ...visible, stories: visible.stories.filter((story) => story.published) };
+  return {
+    ...visible,
+    stories: visible.stories.filter((story) => story.published),
+    reviews: (visible.reviews || []).filter((review) => review.published)
+  };
 }
 
 function uploadFolder(request) {
@@ -272,7 +316,8 @@ app.put("/api/settings", async (request, response) => {
     ...content.settings,
     brand: safeText(request.body?.brand || content.settings.brand, 120),
     tagline: safeText(request.body?.tagline || content.settings.tagline, 300),
-    contactNote: safeText(request.body?.contactNote || content.settings.contactNote, 1000)
+    contactNote: safeText(request.body?.contactNote || content.settings.contactNote, 1000),
+    avitoUrl: safeUrl(request.body?.avitoUrl ?? content.settings.avitoUrl)
   };
   await persist(content);
   response.json(content.settings);
@@ -346,6 +391,28 @@ app.delete("/api/stories/:key", async (request, response) => {
   const index = findById(content.stories, request.params.key);
   if (index < 0) return response.status(404).json({ error: "История не найдена." });
   content.stories.splice(index, 1);
+  await persist(content);
+  response.status(204).end();
+});
+
+app.post("/api/reviews", async (request, response) => {
+  const review = normaliseReview(request.body || {});
+  if (!review.author || !review.text) return response.status(422).json({ error: "Укажите имя и текст отзыва." });
+  content.reviews.unshift(review);
+  await persist(content);
+  response.status(201).json(review);
+});
+app.put("/api/reviews/:key", async (request, response) => {
+  const index = findById(content.reviews, request.params.key);
+  if (index < 0) return response.status(404).json({ error: "Отзыв не найден." });
+  content.reviews[index] = normaliseReview(request.body || {}, content.reviews[index]);
+  await persist(content);
+  response.json(content.reviews[index]);
+});
+app.delete("/api/reviews/:key", async (request, response) => {
+  const index = findById(content.reviews, request.params.key);
+  if (index < 0) return response.status(404).json({ error: "Отзыв не найден." });
+  content.reviews.splice(index, 1);
   await persist(content);
   response.status(204).end();
 });

@@ -707,6 +707,7 @@ function setShell(active) {
             <p class="home-footer-heading">Связь</p>
             <span>Telegram-канал</span>
             <a class="home-footer-handle" href="https://t.me/masterskayaver" target="_blank" rel="noreferrer">t.me/masterskayaver</a>
+            ${avitoUrl() ? `<a class="home-footer-handle" href="${esc(avitoUrl())}" target="_blank" rel="noreferrer">Профиль на Авито</a>` : ''}
             <a class="button button--gold-outline" href="https://t.me/vera120700" target="_blank" rel="noreferrer">Написать Вере</a>
           </div>
         </div>
@@ -815,6 +816,51 @@ function enableAtmosphereMotion() {
       stage.style.setProperty('--py', '0');
     });
   });
+}
+
+// Отзывы переносятся с Авито руками — выгрузки там нет. Пока ни одного
+// не перенесли, блока на сайте не появляется: пустая витрина отзывов
+// говорит о мастерской хуже, чем её отсутствие.
+function publishedReviews() {
+  return (content.reviews || []).filter((review) => review.published !== false);
+}
+
+function avitoUrl() {
+  const url = content.settings?.avitoUrl || '';
+  return /^https?:\/\//.test(url) ? url : '';
+}
+
+function reviewStars(rating = 5) {
+  const value = Math.max(1, Math.min(5, Math.round(Number(rating) || 5)));
+  return `<span class="review__stars" role="img" aria-label="Оценка: ${value} из 5">${'★'.repeat(value)}<i>${'★'.repeat(5 - value)}</i></span>`;
+}
+
+function reviewCard(review) {
+  return `<article class="review">
+    ${reviewStars(review.rating)}
+    <p class="review__text">${esc(review.text)}</p>
+    <p class="review__meta"><b>${esc(review.author)}</b>${review.item ? ` · ${esc(review.item)}` : ''}${review.date ? ` · ${esc(review.date)}` : ''}</p>
+  </article>`;
+}
+
+// Блок отзывов: ставится и на главной, и на «Контактах» — человеку,
+// который уже дошёл до письма, чужой опыт нужнее всего.
+function reviewsSection({ light = false } = {}) {
+  const reviews = publishedReviews();
+  if (!reviews.length) return '';
+  const link = avitoUrl();
+  return `<section class="section reviews-section ${light ? 'section--paper' : 'section--night'}">
+    <div class="shell">
+      <header class="section-head${light ? '' : ' section-head--light'}" data-reveal>
+        <div>
+          <p class="eyebrow${light ? '' : ' eyebrow--light'}">Отзывы Хранителей</p>
+          <h2>Что говорят те, к кому Жители уже уехали</h2>
+        </div>
+        ${link ? `<a class="text-link${light ? '' : ' text-link--light'}" href="${esc(link)}" target="_blank" rel="noreferrer">Все отзывы на Авито <b aria-hidden="true">↗</b></a>` : ''}
+      </header>
+      <div class="review-grid" data-reveal>${reviews.slice(0, 6).map(reviewCard).join('')}</div>
+    </div>
+  </section>`;
 }
 
 function pluralResidents(count) {
@@ -995,6 +1041,8 @@ function home() {
         </div>
       </div>
     </section>
+
+    ${reviewsSection()}
 
     <section id="order" class="home-v2-steps">
       <div class="shell">
@@ -1639,6 +1687,8 @@ function contact() {
         </div>
       </form>
     </div></section>
+
+    ${reviewsSection({ light: true })}
 
     <section class="section section--night"><div class="shell">
       <header class="section-head section-head--light" data-reveal><div><p class="eyebrow eyebrow--light">Прежде чем писать</p><h2>Доставка и оплата</h2></div></header>

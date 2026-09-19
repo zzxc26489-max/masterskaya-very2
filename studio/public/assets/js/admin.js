@@ -32,7 +32,7 @@ function loginScreen() {
 }
 
 function shell() {
-  const nav = [['overview', 'Обзор'], ['residents', 'Жители'], ['collections', 'Коллекции'], ['stories', 'Истории'], ['inquiries', 'Заявки'], ['settings', 'Настройки']];
+  const nav = [['overview', 'Обзор'], ['residents', 'Жители'], ['collections', 'Коллекции'], ['stories', 'Истории'], ['reviews', 'Отзывы'], ['inquiries', 'Заявки'], ['settings', 'Настройки']];
   root.innerHTML = `<div class="admin-shell"><aside class="admin-sidebar"><a class="admin-brand" href="/"><span>✦</span> Мастерская Веры</a><nav class="admin-nav" aria-label="Разделы админки">${nav.map(([key, label]) => `<button type="button" data-nav="${key}" class="${activeView === key ? 'is-active' : ''}">${label}<span>→</span></button>`).join('')}</nav><div class="admin-sidebar__bottom"><a href="/" target="_blank" rel="noreferrer">Открыть сайт ↗</a><button type="button" data-logout>Выйти</button></div></aside><main class="admin-main"><header class="admin-top"><div><p class="admin-chip">Админка Мастерской</p><h1 data-view-title></h1><p data-view-lead></p></div><span class="admin-chip">Данные сохранены на сервере</span></header><section data-view></section></main></div>`;
   root.querySelectorAll('[data-nav]').forEach((button) => button.addEventListener('click', () => { activeView = button.dataset.nav; editor = null; render(); }));
   root.querySelector('[data-logout]').addEventListener('click', async () => { await api('/api/auth/logout', { method: 'POST' }); loginScreen(); });
@@ -46,7 +46,7 @@ function setViewMeta(title, lead) {
 
 function render() {
   if (!content) return;
-  const views = { overview, residents, collections, stories, inquiries, settings };
+  const views = { overview, residents, collections, stories, reviews, inquiries, settings };
   (views[activeView] || overview)();
 }
 
@@ -185,6 +185,36 @@ function bindStoryForm() {
   });
 }
 
+function reviews() {
+  setViewMeta('Отзывы с Авито', 'Авито не отдаёт отзывы автоматически — их переносят руками. Скопируйте текст, имя и дату из карточки отзыва как есть: выдуманные отзывы недопустимы.');
+  const list = content.reviews || [];
+  root.querySelector('[data-view]').innerHTML = `<section class="admin-card"><div class="admin-card__head"><div><h2>Отзывы Хранителей</h2><p>Показываются на главной и на странице контактов. Пока ни одного отзыва нет, блок на сайте не появляется.</p></div><button class="button button--primary" data-new="review">Добавить отзыв</button></div>${list.length ? `<div class="admin-list">${list.map((review) => `<article class="admin-row admin-row--text"><div><span class="status">${review.published === false ? 'Черновик' : 'Опубликован'}</span><h3>${esc(review.author)} · ${'★'.repeat(Number(review.rating) || 5)}</h3><p>${esc(review.text)}</p></div><div class="row-actions"><button class="button button--line button--small" data-edit-review="${esc(review.id)}">Редактировать</button></div></article>`).join('')}</div>` : '<p class="admin-empty">Отзывов пока нет. Откройте свой профиль на Авито и перенесите оттуда те, что хотите показать на сайте.</p>'}</section>${editor?.type === 'review' ? reviewEditor(editor.record) : ''}`;
+  bindCommonActions();
+  bindReviewForm();
+}
+
+function reviewEditor(review = {}) {
+  const isNew = !review.id;
+  return `<section class="admin-card"><div class="admin-card__head"><div><h2>${isNew ? 'Новый отзыв' : `Редактирование: ${esc(review.author)}`}</h2><p>Переносите текст дословно. Ничего не додумывайте за покупателя.</p></div><button class="button button--line" data-cancel>Закрыть</button></div><form class="editor" data-review-form data-review-id="${esc(review.id || '')}"><div class="editor-grid editor-grid--three">${input('author', 'Имя покупателя', review.author, { required: true })}${input('rating', 'Оценка', String(review.rating || 5), { type: 'select', items: [['5', '5 звёзд'], ['4', '4 звезды'], ['3', '3 звезды'], ['2', '2 звезды'], ['1', '1 звезда']] })}${input('date', 'Дата как на Авито', review.date, { placeholder: 'Например: июль 2026' })}</div><div class="editor-grid">${input('item', 'О какой работе отзыв (необязательно)', review.item, { full: true, placeholder: 'Например: Кот в сапогах' })}${input('text', 'Текст отзыва', review.text, { type: 'textarea', full: true, required: true })}${input('published', 'Статус', review.published === false ? 'false' : 'true', { type: 'select', items: [['true', 'Опубликовать'], ['false', 'Черновик']] })}</div><div class="editor-actions"><button class="button button--primary" type="submit">Сохранить отзыв</button>${!isNew ? `<button type="button" class="button button--danger" data-delete-review="${esc(review.id)}">Удалить отзыв</button>` : ''}<p class="admin-message" data-editor-message></p></div></form></section>`;
+}
+
+function bindReviewForm() {
+  const form = root.querySelector('[data-review-form]');
+  if (!form) return;
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const message = form.querySelector('[data-editor-message]');
+    try {
+      const payload = Object.fromEntries(new FormData(form));
+      payload.published = payload.published === 'true';
+      payload.rating = Number(payload.rating);
+      const key = form.dataset.reviewId;
+      await api(key ? `/api/reviews/${encodeURIComponent(key)}` : '/api/reviews', { method: key ? 'PUT' : 'POST', body: JSON.stringify(payload) });
+      await refresh(); editor = null; reviews();
+    } catch (error) { message.textContent = error.message; }
+  });
+}
+
 function inquiryRow(inquiry) {
   return `<article class="inquiry"><span class="status status--${esc(inquiry.status)}">${statusLabel(inquiry.status)}</span><div><h3>${esc(inquiry.name)}</h3><time>${date(inquiry.createdAt)} · ${esc(inquiry.contact)}</time><p>${esc(inquiry.message)}</p></div><select data-inquiry-status="${esc(inquiry.id)}"><option value="new" ${inquiry.status === 'new' ? 'selected' : ''}>Новая</option><option value="in-progress" ${inquiry.status === 'in-progress' ? 'selected' : ''}>В работе</option><option value="answered" ${inquiry.status === 'answered' ? 'selected' : ''}>Ответили</option><option value="archived" ${inquiry.status === 'archived' ? 'selected' : ''}>Архив</option></select></article>`;
 }
@@ -197,7 +227,7 @@ function inquiries() {
 
 function settings() {
   setViewMeta('Настройки Мастерской', 'Базовые тексты сайта. Пароль и секрет сессии меняются только в файле .env на сервере — так безопаснее.');
-  root.querySelector('[data-view]').innerHTML = `<section class="admin-card"><div class="admin-card__head"><div><h2>Тексты бренда</h2><p>Меняются сразу во всех местах, где они используются.</p></div></div><form class="editor" data-settings-form><div class="editor-grid">${input('brand', 'Название Мастерской', content.settings.brand, { required: true })}${input('tagline', 'Главная формула', content.settings.tagline, { full: true })}${input('contactNote', 'Текст для связи', content.settings.contactNote, { type: 'textarea', full: true })}</div><div class="editor-actions"><button class="button button--primary" type="submit">Сохранить настройки</button><p class="admin-message" data-editor-message></p></div></form></section><section class="admin-card"><h2>Как добавлять новые фотографии</h2><p class="editor-help">Откройте «Жители» → «Добавить Жителя», сначала укажите имя и адрес страницы, затем загрузите фото. Они окажутся в папке именно этого Жителя. Для уже созданного Жителя всё работает так же.</p></section>`;
+  root.querySelector('[data-view]').innerHTML = `<section class="admin-card"><div class="admin-card__head"><div><h2>Тексты бренда</h2><p>Меняются сразу во всех местах, где они используются.</p></div></div><form class="editor" data-settings-form><div class="editor-grid">${input('brand', 'Название Мастерской', content.settings.brand, { required: true })}${input('tagline', 'Главная формула', content.settings.tagline, { full: true })}${input('contactNote', 'Текст для связи', content.settings.contactNote, { type: 'textarea', full: true })}${input('avitoUrl', 'Ссылка на профиль Авито', content.settings.avitoUrl, { full: true, placeholder: 'https://www.avito.ru/user/...', help: 'Появится в подвале сайта и в заголовке блока отзывов. Пусто — ссылки нигде нет.' })}</div><div class="editor-actions"><button class="button button--primary" type="submit">Сохранить настройки</button><p class="admin-message" data-editor-message></p></div></form></section><section class="admin-card"><h2>Как добавлять новые фотографии</h2><p class="editor-help">Откройте «Жители» → «Добавить Жителя», сначала укажите имя и адрес страницы, затем загрузите фото. Они окажутся в папке именно этого Жителя. Для уже созданного Жителя всё работает так же.</p></section>`;
   root.querySelector('[data-settings-form]').addEventListener('submit', async (event) => {
     event.preventDefault();
     const message = event.currentTarget.querySelector('[data-editor-message]');
@@ -210,11 +240,13 @@ function bindCommonActions() {
   root.querySelectorAll('[data-edit-resident]').forEach((button) => button.addEventListener('click', () => { editor = { type: 'resident', record: find(content.residents, button.dataset.editResident) }; residents(); }));
   root.querySelectorAll('[data-edit-collection]').forEach((button) => button.addEventListener('click', () => { editor = { type: 'collection', record: find(content.collections, button.dataset.editCollection) }; collections(); }));
   root.querySelectorAll('[data-edit-story]').forEach((button) => button.addEventListener('click', () => { editor = { type: 'story', record: find(content.stories, button.dataset.editStory) }; stories(); }));
+  root.querySelectorAll('[data-edit-review]').forEach((button) => button.addEventListener('click', () => { editor = { type: 'review', record: find(content.reviews || [], button.dataset.editReview) }; reviews(); }));
   root.querySelectorAll('[data-cancel]').forEach((button) => button.addEventListener('click', () => { editor = null; render(); }));
   root.querySelectorAll('[data-nav-jump]').forEach((button) => button.addEventListener('click', () => { activeView = button.dataset.navJump; editor = null; render(); }));
   root.querySelectorAll('[data-delete-resident]').forEach((button) => button.addEventListener('click', async () => { if (!window.confirm('Удалить Жителя из сайта? Фотографии на диске останутся, но запись и Хроника исчезнут.')) return; try { await api(`/api/residents/${encodeURIComponent(button.dataset.deleteResident)}`, { method: 'DELETE' }); await refresh(); editor = null; residents(); } catch (error) { window.alert(error.message); } }));
   root.querySelectorAll('[data-delete-collection]').forEach((button) => button.addEventListener('click', async () => { if (!window.confirm('Удалить Мир? Сначала убедитесь, что в нём нет Жителей.')) return; try { await api(`/api/collections/${encodeURIComponent(button.dataset.deleteCollection)}`, { method: 'DELETE' }); await refresh(); editor = null; collections(); } catch (error) { window.alert(error.message); } }));
   root.querySelectorAll('[data-delete-story]').forEach((button) => button.addEventListener('click', async () => { if (!window.confirm('Удалить историю?')) return; try { await api(`/api/stories/${encodeURIComponent(button.dataset.deleteStory)}`, { method: 'DELETE' }); await refresh(); editor = null; stories(); } catch (error) { window.alert(error.message); } }));
+  root.querySelectorAll('[data-delete-review]').forEach((button) => button.addEventListener('click', async () => { if (!window.confirm('Удалить отзыв?')) return; try { await api(`/api/reviews/${encodeURIComponent(button.dataset.deleteReview)}`, { method: 'DELETE' }); await refresh(); editor = null; reviews(); } catch (error) { window.alert(error.message); } }));
 }
 
 async function refresh() {
